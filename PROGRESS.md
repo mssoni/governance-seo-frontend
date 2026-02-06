@@ -93,6 +93,18 @@
   - Week 1 expanded by default, others collapsed
   - Each action: action text, why, signal_strengthened, estimated_impact, verification_method
   - aria-expanded on collapsible sections, aria-hidden on decorative icons
+- [x] US-8.4: Tab navigation between reports (2026-02-07) — 12 tests
+  - ReportTabs component: role="tablist" with Governance and SEO tabs
+  - SEO tab disabled with lock icon + "Add competitors to unlock" tooltip when seoEnabled=false
+  - Active tab has aria-selected=true, inactive has aria-selected=false
+  - Keyboard navigation: ArrowLeft/ArrowRight to switch tabs
+  - aria-controls linking tabs to tabpanel, id on tabpanel
+  - ReportPage integration: tabs wrap governance + SEO content
+  - CompetitorForm CTA shown below governance report when no SEO job
+  - useSeoJobPolling hook: polls for SEO report with conditional activation
+  - Auto-switch to SEO tab when SEO report completes
+  - SEO tab content: CompetitorTable, StrengthsGaps, SEOActionPlan
+  - SEO polling progress indicator shown below governance report during generation
 
 ## In Progress
 (none)
@@ -107,8 +119,8 @@
 | Phase 0 (Bootstrap) | COMPLETE | US-0.2 | 2 |
 | Phase 1 (Foundation) | COMPLETE | US-1.1 through US-1.3 | 20 |
 | Phase 2 (Core Engine) | COMPLETE | US-5.1 through US-5.7 | 35 |
-| Phase 3 (SEO Module) | IN PROGRESS | US-6.2, US-8.1, US-8.2, US-8.3 | 23 |
-| **Total** | | **14 stories** | **80 tests** |
+| Phase 3 (SEO Module) | IN PROGRESS | US-6.2, US-8.1, US-8.2, US-8.3, US-8.4 | 35 |
+| **Total** | | **15 stories** | **92 tests** |
 
 ## Up Next (Phase 3 — SEO Module)
-- US-8.4: SEO tab integration
+(none pending)
