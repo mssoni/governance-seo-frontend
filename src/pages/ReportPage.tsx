@@ -3,12 +3,16 @@ import { useJobPolling } from '../hooks/useJobPolling'
 import ProgressBar from '../components/ProgressBar'
 import ReportHeader from '../components/ReportHeader'
 import ExecutiveSummary from '../components/report/ExecutiveSummary'
+import MetricsCards from '../components/report/MetricsCards'
+import IssuesList from '../components/report/IssuesList'
 import type { GovernanceReport } from '../types/api'
 
 function ReportContent({ report }: { report: GovernanceReport }) {
   return (
     <div>
       <ExecutiveSummary summary={report.summary} />
+      <MetricsCards metrics={report.metrics} />
+      <IssuesList issues={report.issues} />
     </div>
   )
 }

@@ -22,9 +22,14 @@ frontend/
 │   │   ├── ReportHeader.tsx       # Report header with URL, location, intent badge
 │   │   ├── report/
 │   │   │   ├── Badge.tsx          # Reusable DetectedAsBadge + ConfidenceChip components
+│   │   │   ├── EvidencePanel.tsx  # Reusable expandable evidence panel (toggle show/hide)
 │   │   │   ├── ExecutiveSummary.tsx # Executive summary with working/attention sections
+│   │   │   ├── IssuesList.tsx     # Issues list with severity filter, expandable details, badges
+│   │   │   ├── MetricsCards.tsx   # Metric cards grid with value, meaning, evidence, why_it_matters
 │   │   │   └── __tests__/
-│   │   │       └── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
+│   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
+│   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
+│   │   │       └── metrics-cards.test.tsx      # MetricsCards tests (4 cases)
 │   │   └── __tests__/
 │   │       └── input-form.test.tsx  # InputForm tests (8 cases)
 │   ├── hooks/
@@ -84,8 +89,12 @@ App (BrowserRouter + Routes)
     └── [complete]
         ├── ReportHeader           # Website URL, location, intent badge
         └── ReportContent
-            └── ExecutiveSummary   # Working items (green) + attention items (orange)
-                └── SummaryCard    # Per-item card with Badge + ConfidenceChip
+            ├── ExecutiveSummary   # Working items (green) + attention items (orange)
+            │   └── SummaryCard    # Per-item card with Badge + ConfidenceChip
+            ├── MetricsCards       # 2-col responsive grid of metric cards
+            │   └── MetricCardItem # Name, value, meaning, why_it_matters, EvidencePanel
+            └── IssuesList         # Severity-filtered list of expandable issue cards
+                └── IssueCard      # Title, badges, expandable details with EvidencePanel
 ```
 
 ## Routing
@@ -145,6 +154,28 @@ User Input (form)
 - "What Needs Attention" section (orange, data-testid="needs-attention")
 - Each item rendered as SummaryCard with DetectedAsBadge + ConfidenceChip
 
+### src/components/report/EvidencePanel.tsx
+- Default export: `EvidencePanel` component
+- Props: `{ evidence: Evidence[], label?: string, defaultOpen?: boolean }`
+- Toggle button: "Show evidence" / "Hide evidence" (customizable via label)
+- Lists evidence items with description + raw_value (mono badge)
+- Chevron rotates on expand/collapse
+
+### src/components/report/MetricsCards.tsx
+- Default export: `MetricsCards` component
+- Props: `{ metrics: MetricCard[] }`
+- Renders responsive grid (2 cols desktop, 1 col mobile)
+- Each card: name (uppercase label), value (large bold), meaning, "Why it matters" (indigo box), EvidencePanel
+
+### src/components/report/IssuesList.tsx
+- Default export: `IssuesList` component
+- Props: `{ issues: Issue[] }`
+- Severity filter buttons at top: All, High, Medium, Low (active = indigo)
+- Issues sorted by severity (High > Medium > Low)
+- Each IssueCard: title, SeverityBadge, ConfidenceChip, DetectedAsBadge, expand button
+- Expanded details: EvidencePanel (defaultOpen), why_it_matters, what_happens_if_ignored, what_to_do (list), expected_impact
+- SeverityBadge: High (red), Medium (orange), Low (green)
+
 ### src/components/report/Badge.tsx
 - Named exports: `DetectedAsBadge`, `ConfidenceChip`
 - `DetectedAsBadge({ detectedAs })` — Observed (blue) / Inferred (yellow)
@@ -191,3 +222,5 @@ User Input (form)
 - 2026-02-06 US-1.3: Form submission and navigation. react-router-dom, BrowserRouter in App, LandingPage POSTs to API and navigates on success, error handling with retry, ReportPage placeholder. 4 tests.
 - 2026-02-06 US-5.1: Report page layout and polling. useJobPolling hook (useReducer-based), ProgressBar with pipeline steps, ReportHeader, ReportPage rewrite with 3 states (loading/error/complete). 6 tests.
 - 2026-02-06 US-5.2: Executive summary section. ExecutiveSummary component with working/attention sections, Badge components (DetectedAsBadge, ConfidenceChip), integrated into ReportPage. 7 tests.
+- 2026-02-06 US-5.3: Metrics cards. MetricsCards component with responsive grid, EvidencePanel reusable component, integrated into ReportPage. 4 tests.
+- 2026-02-06 US-5.4: Issues list with expandable evidence. IssuesList with severity filter, expandable issue cards, SeverityBadge, reuses Badge.tsx + EvidencePanel, integrated into ReportPage. 4 tests.

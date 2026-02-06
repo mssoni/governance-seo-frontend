@@ -29,6 +29,19 @@
   - Badge.tsx: DetectedAsBadge (Observed/Inferred) + ConfidenceChip (High/Med/Low)
   - Green card layout for positives, orange/red for risks
   - Integrated into ReportPage render flow
+- [x] US-5.3: Metrics cards (2026-02-06) — 4 tests
+  - MetricsCards component with responsive 2-col grid
+  - EvidencePanel reusable expandable component with defaultOpen prop
+  - Each card: name, value (large), meaning, "Why it matters", expandable evidence
+  - Integrated into ReportPage after ExecutiveSummary
+- [x] US-5.4: Issues list with expandable evidence (2026-02-06) — 4 tests
+  - IssuesList component with severity filter buttons (All/High/Medium/Low)
+  - Issues sorted by severity (High first)
+  - Each issue: title, SeverityBadge (color-coded), ConfidenceChip, DetectedAsBadge
+  - Expandable details: evidence, why_it_matters, what_happens_if_ignored, what_to_do, expected_impact
+  - SeverityBadge: High (red), Medium (orange), Low (green)
+  - Reuses EvidencePanel and Badge components
+  - Integrated into ReportPage after MetricsCards
 
 ## In Progress
 (none)
@@ -37,4 +50,4 @@
 (none)
 
 ## Up Next
-- US-5.3+: Remaining report sections (metrics, issues, checklist, limitations)
+- US-5.5+: Remaining report sections (checklist, limitations)
