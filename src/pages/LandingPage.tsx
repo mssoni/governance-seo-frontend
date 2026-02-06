@@ -11,7 +11,7 @@ export default function LandingPage() {
     setIsLoading(true)
     try {
       // TODO: integrate with API client in US-1.3
-      console.log('Submitting report request:', data)
+      void data
       await new Promise((resolve) => setTimeout(resolve, 1000))
     } finally {
       setIsLoading(false)
