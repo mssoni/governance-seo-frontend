@@ -1,0 +1,157 @@
+{
+  "competitor_table": [
+    {
+      "name": "Your Site",
+      "url": "https://example.com",
+      "speed_band": "Needs Work (42)",
+      "content_coverage": "Basic",
+      "service_breadth": 4,
+      "local_signals": ["NAP present"],
+      "review_count": 12,
+      "review_rating": 4.2
+    },
+    {
+      "name": "Competitor A",
+      "url": "https://competitor-a.com",
+      "speed_band": "Good (78)",
+      "content_coverage": "Comprehensive",
+      "service_breadth": 8,
+      "local_signals": ["NAP present", "Location pages", "LocalBusiness schema"],
+      "review_count": 87,
+      "review_rating": 4.6
+    },
+    {
+      "name": "Competitor B",
+      "url": "https://competitor-b.com",
+      "speed_band": "Average (55)",
+      "content_coverage": "Good",
+      "service_breadth": 6,
+      "local_signals": ["NAP present", "Location pages"],
+      "review_count": 45,
+      "review_rating": 4.3
+    }
+  ],
+  "competitor_advantages": [
+    {
+      "title": "Review volume",
+      "description": "Competitor A has 87 reviews vs your 12. Higher review counts signal trust to both users and search engines.",
+      "evidence": ["Competitor A: 87 reviews (4.6 stars)", "Your site: 12 reviews (4.2 stars)"]
+    },
+    {
+      "title": "Service page coverage",
+      "description": "Competitor A covers 8 service categories with dedicated pages vs your 4.",
+      "evidence": ["Competitor A: 8 service pages detected", "Your site: 4 service pages detected"]
+    },
+    {
+      "title": "Local SEO signals",
+      "description": "Competitor A has LocalBusiness structured data and dedicated location pages.",
+      "evidence": ["LocalBusiness schema detected on competitor-a.com", "Location page at /locations/ detected"]
+    }
+  ],
+  "user_strengths": [
+    {
+      "title": "SSL and security",
+      "description": "Your site has proper HTTPS configuration. Competitor B serves mixed content.",
+      "evidence": ["Your site: valid SSL, no mixed content", "Competitor B: mixed content warnings detected"]
+    },
+    {
+      "title": "Review quality",
+      "description": "Your 4.2 star rating is solid. Focus on volume to complement quality.",
+      "evidence": ["Your site: 4.2 stars (12 reviews)", "Industry average: 3.8 stars"]
+    }
+  ],
+  "gaps": [
+    {
+      "category": "Reviews",
+      "your_value": "12 reviews (4.2 stars)",
+      "competitor_value": "87 reviews (4.6 stars) — Competitor A",
+      "significance": "Review count is a strong local ranking factor. 75-review gap is significant."
+    },
+    {
+      "category": "Content Coverage",
+      "your_value": "4 service pages",
+      "competitor_value": "8 service pages — Competitor A",
+      "significance": "Missing service pages mean missing search visibility for those terms."
+    },
+    {
+      "category": "Local Signals",
+      "your_value": "NAP only",
+      "competitor_value": "NAP + Location pages + Schema — Competitor A",
+      "significance": "Structured data and location pages strengthen local pack presence."
+    },
+    {
+      "category": "Performance",
+      "your_value": "PSI 42 (Needs Work)",
+      "competitor_value": "PSI 78 (Good) — Competitor A",
+      "significance": "36-point gap impacts user experience and Core Web Vitals signals."
+    }
+  ],
+  "plan_30d": [
+    {
+      "week": 1,
+      "theme": "Technical Foundation",
+      "actions": [
+        {
+          "action": "Fix NAP consistency across all pages and directories",
+          "why": "Inconsistent NAP confuses search engines about your business identity.",
+          "signal_strengthened": "Local trust signals",
+          "estimated_impact": "Directional improvement in local pack visibility. This is a foundational signal — inconsistency actively hurts, fixing it removes a penalty rather than adding a boost.",
+          "verification_method": "Search your business name + city. Verify NAP matches across top 10 directory listings."
+        },
+        {
+          "action": "Add XML sitemap and submit to Search Console",
+          "why": "Ensures all your pages are discoverable by search engines.",
+          "signal_strengthened": "Crawlability",
+          "estimated_impact": "Pages typically get indexed 2-4 weeks faster with a sitemap. No direct ranking impact, but prerequisite for visibility.",
+          "verification_method": "Check Google Search Console > Sitemaps for successful submission and indexed page count."
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "High-Intent Pages",
+      "actions": [
+        {
+          "action": "Create 4 missing service pages targeting your core offerings",
+          "why": "You're missing pages for services your competitors rank for.",
+          "signal_strengthened": "Content coverage and keyword targeting",
+          "estimated_impact": "Each well-optimized service page can capture relevant search traffic within 4-8 weeks. Impact depends on search volume and competition for those terms.",
+          "verification_method": "Verify pages are indexed in Search Console. Track impressions for target keywords after 4 weeks."
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Reviews and Trust",
+      "actions": [
+        {
+          "action": "Implement a review solicitation process for recent customers",
+          "why": "You have a 75-review gap with your top competitor. Reviews are a top local ranking factor.",
+          "signal_strengthened": "Review signals (count, recency, velocity)",
+          "estimated_impact": "Realistic target: 5-10 new reviews per month with active solicitation. Closing the gap fully takes 6-12 months, but even 10-20 new reviews can improve local pack positioning.",
+          "verification_method": "Track monthly review count on Google Business Profile."
+        },
+        {
+          "action": "Add FAQ schema and LocalBusiness structured data",
+          "why": "Competitor A has structured data that helps search engines understand their business.",
+          "signal_strengthened": "Structured data signals",
+          "estimated_impact": "Rich results eligibility (FAQ snippets, business info in knowledge panel). No guaranteed ranking boost, but improves CTR when appearing in results.",
+          "verification_method": "Test with Google Rich Results Test tool. Verify no errors."
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Measure and Adjust",
+      "actions": [
+        {
+          "action": "Review Search Console data and adjust content priorities",
+          "why": "Data from weeks 1-3 will reveal which actions had the most impact.",
+          "signal_strengthened": "Overall optimization efficiency",
+          "estimated_impact": "No direct ranking impact — this is a measurement and course-correction step.",
+          "verification_method": "Compare Search Console impressions and clicks week-over-week. Note which new pages are getting impressions."
+        }
+      ]
+    }
+  ]
+}

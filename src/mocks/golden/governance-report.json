@@ -1,0 +1,230 @@
+{
+  "summary": {
+    "whats_working": [
+      {
+        "title": "SSL/HTTPS enabled",
+        "description": "Site serves all pages over HTTPS with a valid certificate.",
+        "detected_as": "observed",
+        "confidence": "high"
+      },
+      {
+        "title": "Mobile viewport configured",
+        "description": "The site includes a proper viewport meta tag for mobile devices.",
+        "detected_as": "observed",
+        "confidence": "high"
+      },
+      {
+        "title": "Google Analytics active",
+        "description": "We detected Google Analytics tracking code on the site.",
+        "detected_as": "observed",
+        "confidence": "high"
+      }
+    ],
+    "needs_attention": [
+      {
+        "title": "No sitemap found",
+        "description": "We could not find a sitemap.xml at standard locations.",
+        "detected_as": "observed",
+        "confidence": "high"
+      },
+      {
+        "title": "Slow page load (mobile)",
+        "description": "Mobile performance score is below acceptable thresholds.",
+        "detected_as": "observed",
+        "confidence": "high"
+      },
+      {
+        "title": "Missing alt text on images",
+        "description": "Several images lack descriptive alt attributes.",
+        "detected_as": "observed",
+        "confidence": "medium"
+      }
+    ]
+  },
+  "metrics": [
+    {
+      "name": "Performance",
+      "value": "42/100",
+      "meaning": "Below average — page loads slowly on mobile devices.",
+      "evidence": [
+        { "description": "PageSpeed Insights mobile score: 42", "raw_value": "42" },
+        { "description": "Largest Contentful Paint: 4.2s", "raw_value": "4200" }
+      ],
+      "why_it_matters": "Slow sites lose visitors and may rank lower in search results."
+    },
+    {
+      "name": "Accessibility Risk",
+      "value": "Medium",
+      "meaning": "Some accessibility issues detected that may affect users with disabilities.",
+      "evidence": [
+        { "description": "5 images missing alt text", "raw_value": "5" },
+        { "description": "Missing lang attribute on html element", "raw_value": null }
+      ],
+      "why_it_matters": "Accessibility issues can exclude users and create legal risk."
+    },
+    {
+      "name": "Maintainability",
+      "value": "Good",
+      "meaning": "Site structure appears consistent across sampled pages.",
+      "evidence": [
+        { "description": "Consistent header/footer across 6 sampled pages", "raw_value": "6" }
+      ],
+      "why_it_matters": "Consistent structure reduces maintenance cost and user confusion."
+    },
+    {
+      "name": "Security Posture",
+      "value": "Fair",
+      "meaning": "HTTPS present but some security headers missing.",
+      "evidence": [
+        { "description": "HTTPS: enabled", "raw_value": "true" },
+        { "description": "HSTS header: missing", "raw_value": null },
+        { "description": "CSP header: missing", "raw_value": null }
+      ],
+      "why_it_matters": "Missing security headers increase risk of attacks and data exposure."
+    },
+    {
+      "name": "Integration Posture",
+      "value": "3 integrations",
+      "meaning": "Site uses Google Analytics, Google Tag Manager, and a contact form plugin.",
+      "evidence": [
+        { "description": "Google Analytics (GA4) detected", "raw_value": "GA4" },
+        { "description": "Google Tag Manager detected", "raw_value": "GTM-XXXX" },
+        { "description": "Contact Form 7 detected", "raw_value": "CF7" }
+      ],
+      "why_it_matters": "Third-party integrations add functionality but also maintenance burden."
+    },
+    {
+      "name": "Reliability Posture",
+      "value": "Unknown",
+      "meaning": "We cannot detect uptime monitoring from public signals alone.",
+      "evidence": [
+        { "description": "No public status page found", "raw_value": null }
+      ],
+      "why_it_matters": "Without monitoring, downtime may go unnoticed and damage reputation."
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "sitemap-missing",
+      "title": "No sitemap.xml found",
+      "severity": "high",
+      "confidence": "high",
+      "detected_as": "observed",
+      "evidence": [
+        { "description": "No sitemap.xml at /sitemap.xml", "raw_value": "404" },
+        { "description": "No Sitemap directive in robots.txt", "raw_value": null }
+      ],
+      "why_it_matters": "Search engines may discover pages inconsistently without a sitemap.",
+      "what_happens_if_ignored": "New or updated pages may take longer to appear in search results.",
+      "what_to_do": [
+        "Generate a sitemap.xml using your CMS or a tool like xml-sitemaps.com",
+        "Submit the sitemap to Google Search Console",
+        "Add a Sitemap directive to robots.txt"
+      ],
+      "expected_impact": "Improved page discovery speed. Most sites see indexed pages increase within 2-4 weeks."
+    },
+    {
+      "issue_id": "slow-lcp-mobile",
+      "title": "Slow Largest Contentful Paint (mobile)",
+      "severity": "high",
+      "confidence": "high",
+      "detected_as": "observed",
+      "evidence": [
+        { "description": "LCP: 4.2 seconds (threshold: < 2.5s)", "raw_value": "4200" }
+      ],
+      "why_it_matters": "LCP above 2.5s indicates the main content loads slowly, frustrating users.",
+      "what_happens_if_ignored": "Higher bounce rates and potential ranking penalties from Core Web Vitals.",
+      "what_to_do": [
+        "Optimize the largest image/element above the fold",
+        "Enable image compression and modern formats (WebP/AVIF)",
+        "Review server response time"
+      ],
+      "expected_impact": "Improving LCP below 2.5s typically reduces bounce rate by 10-25%."
+    },
+    {
+      "issue_id": "missing-alt-text",
+      "title": "Images missing alt text",
+      "severity": "medium",
+      "confidence": "medium",
+      "detected_as": "observed",
+      "evidence": [
+        { "description": "5 images found without alt attributes across 3 pages", "raw_value": "5" }
+      ],
+      "why_it_matters": "Screen readers cannot describe these images to visually impaired users.",
+      "what_happens_if_ignored": "Accessibility compliance risk and missed image search traffic.",
+      "what_to_do": [
+        "Add descriptive alt text to all content images",
+        "Use empty alt=\"\" only for decorative images"
+      ],
+      "expected_impact": "Better accessibility compliance and potential image search visibility."
+    }
+  ],
+  "checklist_30d": [
+    {
+      "action": "Generate and submit XML sitemap",
+      "category": "Technical Hygiene",
+      "frequency": "One-time",
+      "owner": "developer",
+      "effort": "S",
+      "why_it_matters": "Ensures search engines discover all your pages."
+    },
+    {
+      "action": "Optimize LCP element (hero image/banner)",
+      "category": "Performance",
+      "frequency": "One-time",
+      "owner": "developer",
+      "effort": "M",
+      "why_it_matters": "Directly impacts user experience and Core Web Vitals."
+    },
+    {
+      "action": "Add alt text to all images",
+      "category": "Accessibility",
+      "frequency": "Ongoing",
+      "owner": "business",
+      "effort": "S",
+      "why_it_matters": "Required for accessibility and helps image search."
+    },
+    {
+      "action": "Add HSTS and CSP security headers",
+      "category": "Security",
+      "frequency": "One-time",
+      "owner": "developer",
+      "effort": "S",
+      "why_it_matters": "Protects users from man-in-the-middle attacks and XSS."
+    },
+    {
+      "action": "Set up uptime monitoring",
+      "category": "Reliability",
+      "frequency": "One-time setup, ongoing monitoring",
+      "owner": "developer",
+      "effort": "S",
+      "why_it_matters": "Ensures you know about downtime before your customers do."
+    }
+  ],
+  "limitations": [
+    {
+      "title": "Algorithm changes",
+      "description": "Search engine algorithms change frequently. Rankings can shift without any action on your part."
+    },
+    {
+      "title": "Competitor actions",
+      "description": "Competitors may improve their sites at any time, affecting relative positioning."
+    },
+    {
+      "title": "Operational capacity",
+      "description": "Implementation speed depends on your team's availability and technical skills."
+    },
+    {
+      "title": "Seasonality",
+      "description": "Search traffic naturally varies by season and industry trends."
+    },
+    {
+      "title": "Service quality",
+      "description": "Online presence cannot compensate for service quality issues."
+    },
+    {
+      "title": "Brand and word of mouth",
+      "description": "Offline reputation significantly impacts online performance in ways we cannot measure."
+    }
+  ]
+}
