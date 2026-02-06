@@ -7,16 +7,22 @@ import MetricsCards from '../components/report/MetricsCards'
 import IssuesList from '../components/report/IssuesList'
 import ChecklistSection from '../components/report/ChecklistSection'
 import LimitationsSection from '../components/report/LimitationsSection'
+import SidePanel from '../components/report/SidePanel'
 import type { GovernanceReport } from '../types/api'
 
 function ReportContent({ report }: { report: GovernanceReport }) {
   return (
-    <div>
-      <ExecutiveSummary summary={report.summary} />
-      <MetricsCards metrics={report.metrics} />
-      <IssuesList issues={report.issues} />
-      <ChecklistSection items={report.checklist_30d} />
-      <LimitationsSection limitations={report.limitations} />
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_280px]">
+      <div className="min-w-0">
+        <ExecutiveSummary summary={report.summary} />
+        <MetricsCards metrics={report.metrics} />
+        <IssuesList issues={report.issues} />
+        <ChecklistSection items={report.checklist_30d} />
+        <LimitationsSection limitations={report.limitations} />
+      </div>
+      <div className="hidden lg:block">
+        <SidePanel issues={report.issues} />
+      </div>
     </div>
   )
 }
@@ -80,7 +86,7 @@ function ReportPageContent({
   if (status === 'complete' && report) {
     return (
       <div className="min-h-screen bg-gray-50 px-4 py-8">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <ReportHeader websiteUrl={websiteUrl} location={location} intent={intent} />
           <ReportContent report={report} />
         </div>

@@ -42,6 +42,28 @@
   - SeverityBadge: High (red), Medium (orange), Low (green)
   - Reuses EvidencePanel and Badge components
   - Integrated into ReportPage after MetricsCards
+- [x] US-5.5: 30-day checklist section (2026-02-06) — 5 tests
+  - ChecklistSection component: items grouped by category
+  - Collapsible category sections (expanded by default)
+  - Interactive checkboxes with local state (Set-based toggle)
+  - Effort badges: S=green, M=yellow, L=red
+  - Frequency tag, owner badge, why_it_matters per item
+  - Integrated into ReportPage after IssuesList
+- [x] US-5.6: "What we can't control" section (2026-02-06) — 3 tests
+  - LimitationsSection component: always visible, no collapse
+  - All limitation items with title (bold) + description
+  - Subtitle explaining scope context
+  - "What we can detect quickly" sub-section
+  - Integrated into ReportPage after ChecklistSection
+- [x] US-5.7: Sticky side panel and CTAs (2026-02-06) — 6 tests
+  - SidePanel component with top 5 actions from issues
+  - Print button triggers window.print()
+  - "Need help?" primary CTA button
+  - "Connect GA/GSC" disabled button (Coming soon)
+  - "Compare against competitors" link (href=#competitors)
+  - Desktop: sticky right column (2-col grid layout)
+  - @media print CSS hides .no-print elements
+  - ReportPage updated to max-w-6xl with 2-column grid
 
 ## In Progress
 (none)
@@ -50,4 +72,4 @@
 (none)
 
 ## Up Next
-- US-5.5+: Remaining report sections (checklist, limitations)
+- SEO report sections (competitor table, gaps, strengths, 30-day plan)

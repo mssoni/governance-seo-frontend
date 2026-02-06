@@ -26,10 +26,16 @@ frontend/
 │   │   │   ├── ExecutiveSummary.tsx # Executive summary with working/attention sections
 │   │   │   ├── IssuesList.tsx     # Issues list with severity filter, expandable details, badges
 │   │   │   ├── MetricsCards.tsx   # Metric cards grid with value, meaning, evidence, why_it_matters
+│   │   │   ├── ChecklistSection.tsx  # 30-day checklist grouped by category, interactive checkboxes
+│   │   │   ├── LimitationsSection.tsx # "What we can't control" always-visible section
+│   │   │   ├── SidePanel.tsx     # Sticky side panel with top actions, print, CTAs
 │   │   │   └── __tests__/
 │   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
 │   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
-│   │   │       └── metrics-cards.test.tsx      # MetricsCards tests (4 cases)
+│   │   │       ├── metrics-cards.test.tsx      # MetricsCards tests (4 cases)
+│   │   │       ├── checklist.test.tsx           # ChecklistSection tests (5 cases)
+│   │   │       ├── limitations.test.tsx         # LimitationsSection tests (3 cases)
+│   │   │       └── side-panel.test.tsx          # SidePanel tests (6 cases)
 │   │   └── __tests__/
 │   │       └── input-form.test.tsx  # InputForm tests (8 cases)
 │   ├── hooks/
@@ -93,8 +99,17 @@ App (BrowserRouter + Routes)
             │   └── SummaryCard    # Per-item card with Badge + ConfidenceChip
             ├── MetricsCards       # 2-col responsive grid of metric cards
             │   └── MetricCardItem # Name, value, meaning, why_it_matters, EvidencePanel
-            └── IssuesList         # Severity-filtered list of expandable issue cards
-                └── IssueCard      # Title, badges, expandable details with EvidencePanel
+            ├── IssuesList         # Severity-filtered list of expandable issue cards
+            │   └── IssueCard      # Title, badges, expandable details with EvidencePanel
+            ├── ChecklistSection   # 30-day checklist grouped by category
+            │   └── CategoryGroup  # Collapsible category with checkbox items
+            └── LimitationsSection # Always-visible limitations list
+        └── SidePanel (right col, sticky, desktop only, hidden on print)
+            ├── Top Actions (first 5 issues)
+            ├── Print Report button
+            ├── Need help? CTA
+            ├── Connect GA/GSC (disabled, Coming soon)
+            └── Compare against competitors (link)
 ```
 
 ## Routing
@@ -210,6 +225,36 @@ User Input (form)
 - Reads `job`, `url`, `location`, `intent` from URL search params
 - Uses `useJobPolling(jobId)` for polling logic
 - Three states: loading (ProgressBar), error (message + Try again), complete (ReportHeader + ReportContent)
+- Complete state uses 2-column grid: main content (left, wider) + SidePanel (right, 280px, sticky, desktop only)
+- Container max-w-6xl for 2-column layout
+
+### src/components/report/ChecklistSection.tsx
+- Default export: `ChecklistSection` component
+- Props: `{ items: ChecklistItem[] }`
+- Groups items by `category` field
+- Each category is a collapsible section (expanded by default)
+- Each item: checkbox (local state), action text, effort badge (S=green, M=yellow, L=red), frequency tag, owner badge, why_it_matters
+- Checkboxes use `useState<Set<string>>` — local only, not persisted
+
+### src/components/report/LimitationsSection.tsx
+- Default export: `LimitationsSection` component
+- Props: `{ limitations: LimitationItem[] }`
+- Always visible (no collapse toggle)
+- Title: "What We Can't Control"
+- Subtitle: "These factors affect outcomes but are outside the scope of this report."
+- Each item: title (bold) + description
+- "What we can detect quickly" sub-section at bottom
+
+### src/components/report/SidePanel.tsx
+- Default export: `SidePanel` component
+- Props: `{ issues: Issue[] }`
+- Shows first 5 issues as numbered "Top Actions"
+- Print button: calls `window.print()`
+- "Need help?" — primary CTA button
+- "Connect GA/GSC" — disabled button with "Coming soon"
+- "Compare against competitors" — link with href="#competitors"
+- Has `no-print` class (hidden via `@media print` in index.css)
+- Sticky positioning: `sticky top-4` in desktop right column
 
 ### src/types/api.ts
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
@@ -224,3 +269,6 @@ User Input (form)
 - 2026-02-06 US-5.2: Executive summary section. ExecutiveSummary component with working/attention sections, Badge components (DetectedAsBadge, ConfidenceChip), integrated into ReportPage. 7 tests.
 - 2026-02-06 US-5.3: Metrics cards. MetricsCards component with responsive grid, EvidencePanel reusable component, integrated into ReportPage. 4 tests.
 - 2026-02-06 US-5.4: Issues list with expandable evidence. IssuesList with severity filter, expandable issue cards, SeverityBadge, reuses Badge.tsx + EvidencePanel, integrated into ReportPage. 4 tests.
+- 2026-02-06 US-5.5: 30-day checklist section. ChecklistSection grouped by category, collapsible sections, interactive checkboxes (local state), effort badges (S/M/L), frequency/owner/why_it_matters. 5 tests.
+- 2026-02-06 US-5.6: Limitations section. LimitationsSection always visible, title+description per item, "What we can detect quickly" sub-section. 3 tests.
+- 2026-02-06 US-5.7: Sticky side panel. SidePanel with top 5 actions, print button, CTAs (Need help, Connect GA/GSC disabled, Compare competitors link). 2-column grid layout in ReportPage, @media print CSS. 6 tests.
