@@ -24,9 +24,14 @@
   - ReportHeader component with URL, location, intent badge
   - ReportPage rewrite: polling → progress → error/complete states
   - Error state with "Try again" button that restarts polling
+- [x] US-5.2: Executive summary section (2026-02-06) — 7 tests
+  - ExecutiveSummary component with "What's Working" / "What Needs Attention"
+  - Badge.tsx: DetectedAsBadge (Observed/Inferred) + ConfidenceChip (High/Med/Low)
+  - Green card layout for positives, orange/red for risks
+  - Integrated into ReportPage render flow
 
 ## In Progress
-- US-5.2: Executive summary section
+(none)
 
 ## Blocked
 (none)

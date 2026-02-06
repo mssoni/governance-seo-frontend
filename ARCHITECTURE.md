@@ -20,6 +20,11 @@ frontend/
 │   │   ├── InputForm.tsx          # Governance report input form with validation
 │   │   ├── ProgressBar.tsx        # Progress bar with step labels for report generation
 │   │   ├── ReportHeader.tsx       # Report header with URL, location, intent badge
+│   │   ├── report/
+│   │   │   ├── Badge.tsx          # Reusable DetectedAsBadge + ConfidenceChip components
+│   │   │   ├── ExecutiveSummary.tsx # Executive summary with working/attention sections
+│   │   │   └── __tests__/
+│   │   │       └── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
 │   │   └── __tests__/
 │   │       └── input-form.test.tsx  # InputForm tests (8 cases)
 │   ├── hooks/
@@ -78,7 +83,9 @@ App (BrowserRouter + Routes)
     ├── [error] Error display      # Error message + "Try again" button
     └── [complete]
         ├── ReportHeader           # Website URL, location, intent badge
-        └── ReportContent          # Executive summary (working + attention items)
+        └── ReportContent
+            └── ExecutiveSummary   # Working items (green) + attention items (orange)
+                └── SummaryCard    # Per-item card with Badge + ConfidenceChip
 ```
 
 ## Routing
@@ -131,6 +138,18 @@ User Input (form)
 - Props: `{ websiteUrl: string, location: string, intent: string }`
 - Renders website URL link, location, and intent badge
 
+### src/components/report/ExecutiveSummary.tsx
+- Default export: `ExecutiveSummary` component
+- Props: `{ summary: ExecutiveSummary }` (from types/api.ts)
+- "What's Working" section (green, data-testid="whats-working")
+- "What Needs Attention" section (orange, data-testid="needs-attention")
+- Each item rendered as SummaryCard with DetectedAsBadge + ConfidenceChip
+
+### src/components/report/Badge.tsx
+- Named exports: `DetectedAsBadge`, `ConfidenceChip`
+- `DetectedAsBadge({ detectedAs })` — Observed (blue) / Inferred (yellow)
+- `ConfidenceChip({ confidence })` — High (red) / Medium (orange) / Low (green)
+
 ### src/components/Hero.tsx
 - Default export: `Hero` component (no props)
 - Renders `<h1>`, `<p>`, and `<a href="#report-form">Generate Governance Report</a>`
@@ -171,3 +190,4 @@ User Input (form)
 - 2026-02-06 US-1.2: Input form with validation. InputForm component with all fields, client-side validation, loading state. 8 tests.
 - 2026-02-06 US-1.3: Form submission and navigation. react-router-dom, BrowserRouter in App, LandingPage POSTs to API and navigates on success, error handling with retry, ReportPage placeholder. 4 tests.
 - 2026-02-06 US-5.1: Report page layout and polling. useJobPolling hook (useReducer-based), ProgressBar with pipeline steps, ReportHeader, ReportPage rewrite with 3 states (loading/error/complete). 6 tests.
+- 2026-02-06 US-5.2: Executive summary section. ExecutiveSummary component with working/attention sections, Badge components (DetectedAsBadge, ConfidenceChip), integrated into ReportPage. 7 tests.

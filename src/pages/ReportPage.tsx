@@ -2,36 +2,13 @@ import { useSearchParams } from 'react-router-dom'
 import { useJobPolling } from '../hooks/useJobPolling'
 import ProgressBar from '../components/ProgressBar'
 import ReportHeader from '../components/ReportHeader'
+import ExecutiveSummary from '../components/report/ExecutiveSummary'
 import type { GovernanceReport } from '../types/api'
 
 function ReportContent({ report }: { report: GovernanceReport }) {
   return (
     <div>
-      <h2 className="mb-4 text-xl font-bold text-gray-900">Executive Summary</h2>
-      <div className="grid gap-6 md:grid-cols-2">
-        <div>
-          <h3 className="mb-3 text-lg font-semibold text-green-700">What&apos;s Working</h3>
-          <ul className="space-y-2">
-            {report.summary.whats_working.map((item, i) => (
-              <li key={i} className="rounded-lg border border-green-200 bg-green-50 p-3">
-                <p className="font-medium text-green-800">{item.title}</p>
-                <p className="mt-1 text-sm text-green-600">{item.description}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-3 text-lg font-semibold text-orange-700">Needs Attention</h3>
-          <ul className="space-y-2">
-            {report.summary.needs_attention.map((item, i) => (
-              <li key={i} className="rounded-lg border border-orange-200 bg-orange-50 p-3">
-                <p className="font-medium text-orange-800">{item.title}</p>
-                <p className="mt-1 text-sm text-orange-600">{item.description}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <ExecutiveSummary summary={report.summary} />
     </div>
   )
 }
