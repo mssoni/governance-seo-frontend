@@ -3,9 +3,13 @@
 ## Active Locks
 (none)
 
-## Phase 2 Complete — All Frontend Stories Done (57 tests, 10 stories)
+## Phase 3 In Progress — SEO Module (71 tests, 12 stories)
 
-## Recently Completed (Phase 2 — Core Engine)
+## Recently Completed (Phase 3 — SEO Module)
+- US-8.1: Competitor overview table | Agent B | completed 2026-02-07
+- US-6.2: Competitor input form UI | Agent B | completed 2026-02-07
+
+## Previously Completed (Phase 2 — Core Engine)
 - US-5.7: Sticky side panel and CTAs | Agent B | completed 2026-02-06 | REVIEWED+APPROVED
 - US-5.6: "What we can't control" section | Agent B | completed 2026-02-06 | REVIEWED+APPROVED
 - US-5.5: 30-day checklist section | Agent B | completed 2026-02-06 | REVIEWED+APPROVED

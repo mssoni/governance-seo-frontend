@@ -29,15 +29,19 @@ frontend/
 │   │   │   ├── ChecklistSection.tsx  # 30-day checklist grouped by category, interactive checkboxes
 │   │   │   ├── LimitationsSection.tsx # "What we can't control" always-visible section
 │   │   │   ├── SidePanel.tsx     # Sticky side panel with top actions, print, CTAs
+│   │   │   ├── CompetitorTable.tsx  # Competitor overview table with color coding, tooltips
 │   │   │   └── __tests__/
 │   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
 │   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
 │   │   │       ├── metrics-cards.test.tsx      # MetricsCards tests (4 cases)
 │   │   │       ├── checklist.test.tsx           # ChecklistSection tests (5 cases)
 │   │   │       ├── limitations.test.tsx         # LimitationsSection tests (3 cases)
-│   │   │       └── side-panel.test.tsx          # SidePanel tests (6 cases)
+│   │   │       ├── side-panel.test.tsx          # SidePanel tests (6 cases)
+│   │   │       └── competitor-table.test.tsx    # CompetitorTable tests (7 cases)
+│   │   ├── CompetitorForm.tsx     # Competitor input form (3 URL fields, validation, SEO submit)
 │   │   └── __tests__/
-│   │       └── input-form.test.tsx  # InputForm tests (8 cases)
+│   │       ├── input-form.test.tsx  # InputForm tests (8 cases)
+│   │       └── competitor-form.test.tsx  # CompetitorForm tests (7 cases)
 │   ├── hooks/
 │   │   └── useJobPolling.ts       # Custom hook: polls job status, returns state + retry
 │   ├── pages/
@@ -256,6 +260,29 @@ User Input (form)
 - Has `no-print` class (hidden via `@media print` in index.css)
 - Sticky positioning: `sticky top-4` in desktop right column
 
+### src/components/CompetitorForm.tsx
+- Default export: `CompetitorForm` component
+- Props: `{ websiteUrl: string, location: Location, businessType: BusinessType, intent: Intent, onSubmit: (data: SEOReportRequest) => Promise<void>, isLoading: boolean, error?: string }`
+- 3 competitor URL fields (competitor 1 & 2 required, competitor 3 optional)
+- URL validation matching InputForm pattern (same `isValidUrl` function)
+- Submit disabled until at least 2 valid competitor URLs entered
+- Builds `SEOReportRequest` payload with governance inputs + competitors array
+- Loading state: "Generating…" button text, disabled
+- Error state: alert banner above form
+- Section id="competitors" for anchor link from SidePanel
+
+### src/components/report/CompetitorTable.tsx
+- Default export: `CompetitorTable` component
+- Props: `{ userRow: CompetitorRow, competitors: CompetitorRow[] }`
+- Semantic `<table>` with `<thead>` and `<tbody>`
+- Columns: Name, Site Speed, Content Coverage, Service Breadth, Local Signals, Review Posture
+- User row always first with `data-testid="user-row"`, indigo highlight
+- Competitor rows with color coding per cell: green (user better), red (competitor better), yellow (tied)
+- Tooltips on all data cells with evidence details
+- Local signals displayed as count with tooltip listing signal names
+- Review posture as "N reviews (R★)" format
+- Responsive: horizontal scroll via `overflow-x-auto` container
+
 ### src/types/api.ts
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
 
@@ -272,3 +299,5 @@ User Input (form)
 - 2026-02-06 US-5.5: 30-day checklist section. ChecklistSection grouped by category, collapsible sections, interactive checkboxes (local state), effort badges (S/M/L), frequency/owner/why_it_matters. 5 tests.
 - 2026-02-06 US-5.6: Limitations section. LimitationsSection always visible, title+description per item, "What we can detect quickly" sub-section. 3 tests.
 - 2026-02-06 US-5.7: Sticky side panel. SidePanel with top 5 actions, print button, CTAs (Need help, Connect GA/GSC disabled, Compare competitors link). 2-column grid layout in ReportPage, @media print CSS. 6 tests.
+- 2026-02-07 US-6.2: Competitor input form UI. CompetitorForm component with 3 URL fields, validation, SEOReportRequest payload. 7 tests.
+- 2026-02-07 US-8.1: Competitor overview table. CompetitorTable with color-coded comparison, tooltips, responsive horizontal scroll. 7 tests.
