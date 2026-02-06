@@ -1,6 +1,30 @@
 # Review Log
 
-(No reviews logged yet. Review agent appends findings after each review.)
+## Phase 1 Review — Batch 1 — 2026-02-06
+
+### Frontend PRs Reviewed
+
+#### US-1.1: Landing page layout and hero
+- Status: **APPROVED+FIXED**
+- Tests: 8/8 passing (hero heading, subheading, CTA button, CTA link target, trust indicators, form section ID, responsive render, scroll anchor)
+- Quality gate: `make check` passed (18 tests total)
+- Issues found & fixed:
+  - `console.log` left in LandingPage.tsx (line 14) — removed, committed as `fix(US-1.1)`
+- ARCHITECTURE.md: Updated correctly (Hero, TrustIndicators, LandingPage added)
+- Code quality: Clean component separation, good Tailwind usage, accessible SVG icons
+
+#### US-1.2: Input form with validation
+- Status: **APPROVED**
+- Tests: 8/8 passing (all fields render, submit disabled when empty, invalid URL, missing fields, correct payload, loading state, 10 business types, 3 intents)
+- Quality gate: `make check` passed
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (InputForm added with props interface)
+- Code quality: Good validation logic, blur+submit validation, proper TypeScript typing, accessible form with labels
+
+### Patterns Observed
+1. `console.log` left in placeholder code — added to watch list
+2. Both stories follow TDD correctly
+3. Good component separation (Hero, TrustIndicators, InputForm are all independent, composable)
 
 <!-- Format:
 
