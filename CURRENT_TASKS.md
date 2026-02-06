@@ -1,7 +1,8 @@
 # Current Tasks
 
 ## Active Locks
-(none)
+- US-5.1: Report page layout and polling | Agent B | started 2026-02-06
+- US-5.2: Executive summary section | Agent B | started 2026-02-06
 
 ## Recently Completed
 - US-0.2: frontend-scaffold | Phase-0-Bootstrap | completed 2026-02-06

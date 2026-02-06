@@ -18,16 +18,20 @@ frontend/
 │   │   ├── Hero.tsx               # Hero section (headline, subheadline, CTA)
 │   │   ├── TrustIndicators.tsx    # Trust badges (no-login, fast, transparent)
 │   │   ├── InputForm.tsx          # Governance report input form with validation
+│   │   ├── ProgressBar.tsx        # Progress bar with step labels for report generation
+│   │   ├── ReportHeader.tsx       # Report header with URL, location, intent badge
 │   │   └── __tests__/
 │   │       └── input-form.test.tsx  # InputForm tests (8 cases)
+│   ├── hooks/
+│   │   └── useJobPolling.ts       # Custom hook: polls job status, returns state + retry
 │   ├── pages/
 │   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form + error UI)
-│   │   ├── ReportPage.tsx         # Report page placeholder (reads job_id from URL)
+│   │   ├── ReportPage.tsx         # Report page with polling, progress, header, report content
 │   │   └── __tests__/
 │   │       ├── landing-page.test.tsx     # Landing page tests (8 cases)
-│   │       └── form-submission.test.tsx  # Form submission + navigation tests (4 cases)
+│   │       ├── form-submission.test.tsx  # Form submission + navigation tests (4 cases)
+│   │       └── report-page.test.tsx     # Report page polling + display tests (6 cases)
 │   ├── lib/                       # Utility functions (empty)
-│   ├── hooks/                     # Custom React hooks (empty)
 │   ├── types/
 │   │   └── api.ts                 # TypeScript types matching backend Pydantic models
 │   ├── services/
@@ -69,7 +73,12 @@ App (BrowserRouter + Routes)
 │   ├── <section #report-form>
 │   │   └── InputForm     # URL, location, business type, intent fields + validation
 │   └── Error display     # API/network error alert with optional retry button
-└── /report → ReportPage  # Placeholder; reads ?job= param
+└── /report → ReportPage  # Reads ?job= param, polls for status
+    ├── [loading] ProgressBar      # Progress bar + step labels
+    ├── [error] Error display      # Error message + "Try again" button
+    └── [complete]
+        ├── ReportHeader           # Website URL, location, intent badge
+        └── ReportContent          # Executive summary (working + attention items)
 ```
 
 ## Routing
@@ -77,7 +86,7 @@ App (BrowserRouter + Routes)
 | Route | Component | Description |
 |-------|-----------|-------------|
 | `/` | LandingPage | Landing page with input form, API submission, error handling |
-| `/report` | ReportPage | Report display placeholder (reads `?job=` search param) |
+| `/report` | ReportPage | Report display with job polling, progress, error, report rendering |
 
 ## Data Flow
 
@@ -86,8 +95,11 @@ User Input (form)
   → API Client (services/api-client.ts)
   → POST /api/report/governance
   → Receive job_id
-  → Poll GET /api/report/status/{job_id}
-  → Render GovernanceReport when complete
+  → Navigate to /report?job={job_id}&url=...&location=...&intent=...
+  → useJobPolling hook polls GET /api/report/status/{job_id}
+  → Show ProgressBar while processing
+  → On error: show error + "Try again" button (retry resets polling)
+  → On complete: render ReportHeader + ReportContent
   → User submits competitors
   → POST /api/report/seo
   → Poll for SEO report
@@ -100,6 +112,24 @@ User Input (form)
 - `apiClient.get<T>(path)` → `Promise<T>`
 - `apiClient.post<T>(path, body)` → `Promise<T>`
 - `ApiError` class with `status` and `body`
+
+### src/hooks/useJobPolling.ts
+- `useJobPolling(jobId: string)` → `{ status, progress, currentStep, stepsCompleted, report, error, retry }`
+- Polls `GET /api/report/status/{jobId}` every 2.5 seconds
+- Uses `useReducer` for state management (RESET, POLL_SUCCESS, POLL_ERROR, RETRY actions)
+- Stops polling on `complete` or `failed` status
+- `retry()` resets state and restarts polling
+
+### src/components/ProgressBar.tsx
+- Default export: `ProgressBar` component
+- Props: `{ progress: number, currentStep: string | null, stepsCompleted: string[] }`
+- Renders percentage bar + list of pipeline steps with status icons
+- Pipeline steps: url_normalize, fetch_homepage, parse_sitemap, sample_pages, run_detectors, run_psi, build_issues, generate_checklist, build_report
+
+### src/components/ReportHeader.tsx
+- Default export: `ReportHeader` component
+- Props: `{ websiteUrl: string, location: string, intent: string }`
+- Renders website URL link, location, and intent badge
 
 ### src/components/Hero.tsx
 - Default export: `Hero` component (no props)
@@ -127,8 +157,9 @@ User Input (form)
 
 ### src/pages/ReportPage.tsx
 - Default export: `ReportPage` component (no props)
-- Reads `job` from URL search params via `useSearchParams`
-- Displays "Loading report for job {job_id}…" (placeholder for US-2.x)
+- Reads `job`, `url`, `location`, `intent` from URL search params
+- Uses `useJobPolling(jobId)` for polling logic
+- Three states: loading (ProgressBar), error (message + Try again), complete (ReportHeader + ReportContent)
 
 ### src/types/api.ts
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
@@ -139,3 +170,4 @@ User Input (form)
 - 2026-02-06 US-1.1: Landing page layout and hero. Hero, TrustIndicators, LandingPage. 8 tests.
 - 2026-02-06 US-1.2: Input form with validation. InputForm component with all fields, client-side validation, loading state. 8 tests.
 - 2026-02-06 US-1.3: Form submission and navigation. react-router-dom, BrowserRouter in App, LandingPage POSTs to API and navigates on success, error handling with retry, ReportPage placeholder. 4 tests.
+- 2026-02-06 US-5.1: Report page layout and polling. useJobPolling hook (useReducer-based), ProgressBar with pipeline steps, ReportHeader, ReportPage rewrite with 3 states (loading/error/complete). 6 tests.
