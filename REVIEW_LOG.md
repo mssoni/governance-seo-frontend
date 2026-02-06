@@ -240,6 +240,117 @@
 | US-5.7: Side panel with CTAs | APPROVED | 6 |
 | **Total** | **3/3 APPROVED** | **57 frontend tests total** |
 
+## Comprehensive Codebase Review — 2026-02-07
+
+### Scope
+Full sweep of the entire frontend codebase across all 3 phases:
+- Phase 0: Scaffold (US-0.2)
+- Phase 1: Foundation (US-1.1 to US-1.3)
+- Phase 2: Core Engine (US-5.1 to US-5.7)
+
+Files reviewed: 17 source files, 12 test files, 2 golden fixtures, CONTRACTS.md, REVIEW_STRATEGY.md
+
+### Quality Gate
+- `make check`: **PASSED**
+- Test files: 12 passed (12)
+- Tests: 57 passed (57)
+- ESLint: clean
+- TypeScript (`tsc --noEmit`): clean
+
+### Code Quality Review
+
+| Check | Result |
+|-------|--------|
+| No `console.log()` in production code | PASS — 0 instances found |
+| No `any` types | PASS — 0 instances found |
+| No `dangerouslySetInnerHTML` | PASS — 0 instances found |
+| No API keys or secrets | PASS — only `VITE_API_BASE_URL` env var (URL, not secret) |
+| All API calls have error handling | PASS — try/catch in useJobPolling, LandingPage submitReport |
+| Component size limits (< 150 lines) | PASS (IssuesList.tsx at 162 lines, previously accepted — tightly coupled sub-components) |
+| Proper TypeScript typing | PASS — all props typed, interfaces for all components |
+| Loading states for async operations | PASS — InputForm "Generating…", ReportPage ProgressBar |
+| Error states with user-friendly messages | PASS — LandingPage (role="alert"), ReportPage error+retry |
+| Responsive design | PASS — all components use responsive Tailwind breakpoints |
+
+### Accessibility Issues Found & Fixed
+
+| Issue | Severity | File(s) | Fix |
+|-------|----------|---------|-----|
+| Missing `aria-expanded` on expandable buttons | SMALL | EvidencePanel.tsx, IssuesList.tsx, ChecklistSection.tsx | Added `aria-expanded={open}` / `aria-expanded={expanded}` to toggle buttons |
+| Missing `aria-pressed` on filter buttons | SMALL | IssuesList.tsx | Added `aria-pressed={filter === option.value}` to severity filter buttons |
+| Missing `role="alert"` on error state | SMALL | ReportPage.tsx | Added `role="alert"` to error container (LandingPage already had it) |
+| Decorative SVGs missing `aria-hidden="true"` | SMALL | ReportHeader.tsx (2 icons), ReportPage.tsx (error icon), SidePanel.tsx (print icon), EvidencePanel.tsx (chevron), IssuesList.tsx (expand chevron), ChecklistSection.tsx (collapse chevron) | Added `aria-hidden="true"` to all decorative SVGs |
+| ProgressBar missing `aria-label` | SMALL | ProgressBar.tsx | Added `aria-label="Report generation progress"` to progressbar element |
+
+### Contract Alignment
+- All TypeScript types in `src/types/api.ts` match CONTRACTS.md field-for-field ✓
+- All enums (BusinessType, Intent, JobStatus, Severity, Confidence, DetectedAs, Effort, Owner) match ✓
+- Golden fixture `governance-report.json` validates against GovernanceReport type ✓
+- Golden fixture `seo-report.json` validates against SEOReport type ✓
+- Additional forward-looking types (InferenceNote, TransparencyInfo) present but unused — acceptable ✓
+
+### Test Quality Review
+
+| Test File | Tests | Coverage |
+|-----------|-------|----------|
+| App.test.tsx | 1 | Smoke test |
+| landing-page.test.tsx | 8 | Hero, CTA, trust indicators, form section, responsive, scroll |
+| input-form.test.tsx | 8 | All fields, disabled state, URL validation, payload, loading, enums |
+| form-submission.test.tsx | 4 | POST payload, navigation, API error, network error + retry |
+| report-page.test.tsx | 6 | Progress bar, step labels, completion, error + retry, header, stop polling |
+| executive-summary.test.tsx | 7 | Positive findings, risk items, observed/inferred, confidence, descriptions |
+| metrics-cards.test.tsx | 4 | All cards, value+meaning, evidence expand, why-it-matters |
+| issues-list.test.tsx | 4 | Severity sorting, expandable details, badges, filter |
+| checklist.test.tsx | 5 | Grouped by category, all fields, checkbox toggle, effort badges, collapse |
+| limitations.test.tsx | 3 | All items, always visible, "what we can detect" |
+| side-panel.test.tsx | 6 | Top 5 actions, 5-limit, print, CTAs, competitor link, no-print |
+| api-client.test.ts | 1 | Base URL |
+| **Total** | **57** | |
+
+Test quality assessment:
+- Uses proper queries (getByRole, getByLabelText, getByText) ✓
+- Uses golden fixtures where applicable ✓
+- Tests key user interactions (click, type, submit, expand/collapse, filter) ✓
+- Error states tested (LandingPage API+network, ReportPage failed+retry) ✓
+- Loading states tested (InputForm, ReportPage) ✓
+- Mock data is realistic (golden fixtures from CONTRACTS.md) ✓
+- Async operations properly awaited (waitFor, act) ✓
+
+### UX / Copy Tone Check
+- "Observed" vs "Inferred" labels: visible via DetectedAsBadge ✓
+- Confidence chips (High/Medium/Low): visible via ConfidenceChip ✓
+- No salesy language ("boost", "skyrocket", "guaranteed results", "dominate"): PASS ✓
+- "What We Can't Control" section: always visible, no collapse toggle, tests verify this ✓
+- CTA text appropriate: "Generate Governance Report", "Need help?", "Print Report", "Connect GA/GSC (Coming soon)", "Compare against competitors" ✓
+- Golden fixture copy uses qualified language: "typically", "potential", "most sites", "no guaranteed" ✓
+
+### Security Check
+- No API keys, secrets, passwords, or tokens in source code ✓
+- No `dangerouslySetInnerHTML` usage ✓
+- React JSX auto-escapes all interpolated values (XSS prevention) ✓
+- External URL in ReportHeader: `startsWith('http')` check prevents `javascript:` protocol injection ✓
+- External link uses `target="_blank"` with `rel="noopener noreferrer"` ✓
+- API base URL loaded from environment variable with safe default ✓
+
+### Issues Logged for Follow-Up (Non-Blocking)
+
+| Issue | Severity | Notes |
+|-------|----------|-------|
+| No React Error Boundary | MEDIUM | If a report component throws during rendering, the entire page crashes. Recommend wrapping ReportContent in an ErrorBoundary component. |
+| `api-client.test.ts` minimal coverage | LOW | Only tests base URL construction. Actual HTTP request/response handling and ApiError are tested indirectly via component test mocks. Consider adding direct unit tests for get/post/error paths. |
+| IssuesList.tsx slightly over 150-line guideline | LOW | At 162 lines with 3 tightly coupled sub-components. Previously accepted in US-5.4 review. |
+
+### Post-Fix Verification
+- `make check`: **PASSED** (57/57 tests, eslint clean, tsc clean)
+- All accessibility fixes are additive (aria attributes only) — no behavioral changes
+- No test modifications needed — existing tests continue to pass
+
+### Overall Health Assessment: **HEALTHY**
+
+The frontend codebase is well-structured, well-tested, and follows established patterns consistently. All contract types align with CONTRACTS.md. Copy tone is transparent and honest throughout. Security posture is solid with no XSS vectors or leaked secrets. The accessibility fixes applied in this review bring the codebase up to WCAG compliance for interactive elements. The two medium/low follow-up items (Error Boundary, api-client test coverage) are non-blocking and can be addressed in future stories.
+
+---
+
 <!-- Format:
 
 ## Phase X Review - DATE

@@ -59,6 +59,7 @@ function IssueCard({ issue }: { issue: Issue }) {
         <button
           type="button"
           aria-label="Expand issue details"
+          aria-expanded={expanded}
           onClick={() => setExpanded(!expanded)}
           className="shrink-0 rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
         >
@@ -68,6 +69,7 @@ function IssueCard({ issue }: { issue: Issue }) {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
@@ -136,6 +138,7 @@ export default function IssuesList({ issues }: IssuesListProps) {
           <button
             key={option.value}
             type="button"
+            aria-pressed={filter === option.value}
             onClick={() => setFilter(option.value)}
             className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
               filter === option.value

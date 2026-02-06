@@ -20,6 +20,7 @@ export default function EvidencePanel({ evidence, label, defaultOpen = false }: 
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-800"
       >
         <svg
@@ -28,6 +29,7 @@ export default function EvidencePanel({ evidence, label, defaultOpen = false }: 
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth={2}
+          aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
         </svg>

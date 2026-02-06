@@ -29,6 +29,7 @@ export default function ProgressBar({ progress, currentStep, stepsCompleted }: P
         aria-valuenow={progress}
         aria-valuemin={0}
         aria-valuemax={100}
+        aria-label="Report generation progress"
         className="mb-6 h-3 w-full overflow-hidden rounded-full bg-gray-200"
       >
         <div

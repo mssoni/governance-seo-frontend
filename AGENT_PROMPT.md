@@ -13,18 +13,19 @@ You are building the frontend for a Website Governance + Local Competitive SEO R
 
 ## Current Phase
 
-**Phase 2 -- Core Engine**
+**Phase 3 -- SEO Module** (awaiting kickoff)
 
-Active stories:
-- US-5.1: Report page layout and polling
-- US-5.2: Executive summary section
-- US-5.3: Metrics cards
-- US-5.4: Issues list with expandable evidence
-- US-5.5: 30-day checklist section
-- US-5.6: "What we can't control" section
-- US-5.7: Sticky side panel and CTAs
+Active stories: (to be assigned)
+- US-6.3: Competitor input form UI
+- US-8.1: Competitor overview table
+- US-8.2: Strengths and gaps sections
+- US-8.3: 30-day SEO plan UI
+- US-8.4: SEO tab integration
 
-Completed (Phase 1):
+Completed (Phase 2 — Core Engine):
+- US-5.1, US-5.2, US-5.3, US-5.4, US-5.5, US-5.6, US-5.7
+
+Completed (Phase 1 — Foundation):
 - US-0.2, US-1.1, US-1.2, US-1.3
 
 ## Mock-First Development
