@@ -16,7 +16,10 @@ frontend/
 │   ├── test-setup.ts              # Vitest setup (jest-dom matchers)
 │   ├── components/
 │   │   ├── Hero.tsx               # Hero section (headline, subheadline, CTA)
-│   │   └── TrustIndicators.tsx    # Trust badges (no-login, fast, transparent)
+│   │   ├── TrustIndicators.tsx    # Trust badges (no-login, fast, transparent)
+│   │   ├── InputForm.tsx          # Governance report input form with validation
+│   │   └── __tests__/
+│   │       └── input-form.test.tsx  # InputForm tests (8 cases)
 │   ├── pages/
 │   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form section)
 │   │   └── __tests__/
@@ -61,7 +64,8 @@ App
 └── LandingPage
     ├── Hero              # Headline, subheadline, CTA anchor to #report-form
     ├── TrustIndicators   # 3 trust badges in responsive grid
-    └── <section #report-form>  # Form placeholder (US-1.2)
+    └── <section #report-form>
+        └── InputForm     # URL, location, business type, intent fields + validation
 ```
 
 ## Routing
@@ -101,6 +105,14 @@ User Input (form)
 - Default export: `TrustIndicators` component (no props)
 - Renders three cards: "No login required", "Results in under 90 seconds", "100% transparent"
 
+### src/components/InputForm.tsx
+- Default export: `InputForm` component
+- Props: `{ onSubmit: (data: GovernanceReportRequest) => Promise<void>; isLoading: boolean }`
+- Fields: website_url, city, region, country, business_type (select), intent (select)
+- Client-side validation on blur and submit
+- URL validation: must start with http(s):// or be a valid domain
+- Disabled submit button when form invalid or loading
+
 ### src/pages/LandingPage.tsx
 - Default export: `LandingPage` component (no props)
 - Composes Hero, TrustIndicators, and a form section with `id="report-form"`
@@ -112,3 +124,4 @@ User Input (form)
 
 - 2026-02-06 US-0.2: Initial scaffold. Vite + React + TS + Tailwind v4, Vitest + RTL, API client, TypeScript types, golden fixtures, Makefile.
 - 2026-02-06 US-1.1: Landing page layout and hero. Hero, TrustIndicators, LandingPage. 8 tests.
+- 2026-02-06 US-1.2: Input form with validation. InputForm component with all fields, client-side validation, loading state. 8 tests.

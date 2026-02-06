@@ -3,6 +3,7 @@
 ## Completed
 - [x] US-0.2: Frontend scaffold (Phase 0 bootstrap, 2026-02-06)
 - [x] US-1.1: Landing page layout and hero (2026-02-06) — 8 tests
+- [x] US-1.2: Input form with validation (2026-02-06) — 8 tests
   - Vite + React 18 + TypeScript
   - Tailwind CSS v4 configured
   - Vitest + React Testing Library configured
@@ -13,7 +14,7 @@
   - All orientation documents created
 
 ## In Progress
-- [ ] US-1.2: Input form with validation
+(none)
 
 ## Blocked
 (none)
