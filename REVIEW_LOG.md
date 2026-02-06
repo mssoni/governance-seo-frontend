@@ -26,6 +26,31 @@
 2. Both stories follow TDD correctly
 3. Good component separation (Hero, TrustIndicators, InputForm are all independent, composable)
 
+---
+
+## Phase 1 Review — Batch 2 — 2026-02-06
+
+### Frontend PRs Reviewed
+
+#### US-1.3: Form submission and navigation
+- Status: **APPROVED**
+- Tests: 4/4 new + 18 existing = 22 total passing (POST payload, navigation, API error, network error w/ retry)
+- Quality gate: `make check` passed (22 tests, eslint, tsc all clean)
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (routing table, ReportPage placeholder, LandingPage interface update)
+- Code quality:
+  - Proper API client integration with `apiClient.post<JobCreateResponse>`
+  - Good error classification (ApiError vs network error)
+  - Retry pattern with stored last payload
+  - Clean React Router setup (BrowserRouter + Routes)
+  - No console.log (lesson from batch 1 applied)
+  - Accessible error display (`role="alert"`)
+
+### Patterns Observed
+1. No `console.log` this time — previous review feedback was absorbed
+2. React Router properly installed and configured — existing tests updated to wrap in MemoryRouter
+3. Error handling pattern (ApiError vs generic) is clean and reusable for future API calls
+
 <!-- Format:
 
 ## Phase X Review - DATE
