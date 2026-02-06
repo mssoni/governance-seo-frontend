@@ -3,9 +3,11 @@
 ## Active Locks
 (none)
 
-## Phase 3 In Progress — SEO Module (71 tests, 12 stories)
+## Phase 3 In Progress — SEO Module (80 tests, 14 stories)
 
 ## Recently Completed (Phase 3 — SEO Module)
+- US-8.3: 30-day SEO action plan UI | Agent B | completed 2026-02-07
+- US-8.2: Strengths, weaknesses & gap breakdown | Agent B | completed 2026-02-07
 - US-8.1: Competitor overview table | Agent B | completed 2026-02-07
 - US-6.2: Competitor input form UI | Agent B | completed 2026-02-07
 

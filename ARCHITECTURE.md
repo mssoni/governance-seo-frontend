@@ -30,6 +30,8 @@ frontend/
 │   │   │   ├── LimitationsSection.tsx # "What we can't control" always-visible section
 │   │   │   ├── SidePanel.tsx     # Sticky side panel with top actions, print, CTAs
 │   │   │   ├── CompetitorTable.tsx  # Competitor overview table with color coding, tooltips
+│   │   │   ├── StrengthsGaps.tsx   # Strengths, weaknesses & gap breakdown section
+│   │   │   ├── SEOActionPlan.tsx   # 30-day week-by-week action plan with collapsible weeks
 │   │   │   └── __tests__/
 │   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
 │   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
@@ -37,7 +39,9 @@ frontend/
 │   │   │       ├── checklist.test.tsx           # ChecklistSection tests (5 cases)
 │   │   │       ├── limitations.test.tsx         # LimitationsSection tests (3 cases)
 │   │   │       ├── side-panel.test.tsx          # SidePanel tests (6 cases)
-│   │   │       └── competitor-table.test.tsx    # CompetitorTable tests (7 cases)
+│   │   │       ├── competitor-table.test.tsx    # CompetitorTable tests (7 cases)
+│   │   │       ├── strengths-gaps.test.tsx      # StrengthsGaps tests (4 cases)
+│   │   │       └── action-plan.test.tsx         # SEOActionPlan tests (5 cases)
 │   │   ├── CompetitorForm.tsx     # Competitor input form (3 URL fields, validation, SEO submit)
 │   │   └── __tests__/
 │   │       ├── input-form.test.tsx  # InputForm tests (8 cases)
@@ -283,6 +287,32 @@ User Input (form)
 - Review posture as "N reviews (R★)" format
 - Responsive: horizontal scroll via `overflow-x-auto` container
 
+### src/components/report/StrengthsGaps.tsx
+- Default export: `StrengthsGaps` component
+- Props: `{ competitorAdvantages: StrengthItem[], userStrengths: StrengthItem[], gaps: GapItem[] }`
+- "What They're Doing Better" section (data-testid="competitor-advantages")
+  - Responsive card grid (3 cols desktop), red left border accent
+  - Each card: title, description, evidence list with arrow icons
+- "What You're Doing Better" section (data-testid="user-strengths")
+  - Responsive card grid (2 cols desktop), green left border accent
+  - Each card: title, description, evidence list with arrow icons
+- "Gap Breakdown by Category" section (data-testid="gap-breakdown")
+  - Semantic `<table>` with columns: Category, Your Value, Competitor Value, Significance
+  - Color-coded significance badges: High (red), Medium (yellow), Low (green)
+
+### src/components/report/SEOActionPlan.tsx
+- Default export: `SEOActionPlan` component
+- Props: `{ plan: WeekPlan[] }`
+- Disclaimer banner at top with `role="alert"`: "We do not guarantee rankings"
+- 4 collapsible week sections, each with:
+  - Header button with week number badge, "Week N", and theme name
+  - `aria-expanded` attribute for accessibility
+  - Chevron icon that rotates on expand/collapse
+- Week 1 expanded by default, others collapsed
+- Each action rendered as ActionCard with:
+  - action text (title), why, signal_strengthened (indigo badge), estimated_impact, verification_method
+  - Uses `<dl>` definition list for structured field display
+
 ### src/types/api.ts
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
 
@@ -301,3 +331,5 @@ User Input (form)
 - 2026-02-06 US-5.7: Sticky side panel. SidePanel with top 5 actions, print button, CTAs (Need help, Connect GA/GSC disabled, Compare competitors link). 2-column grid layout in ReportPage, @media print CSS. 6 tests.
 - 2026-02-07 US-6.2: Competitor input form UI. CompetitorForm component with 3 URL fields, validation, SEOReportRequest payload. 7 tests.
 - 2026-02-07 US-8.1: Competitor overview table. CompetitorTable with color-coded comparison, tooltips, responsive horizontal scroll. 7 tests.
+- 2026-02-07 US-8.2: Strengths, weaknesses & gap breakdown. StrengthsGaps component with competitor advantages, user strengths, gap breakdown table with color-coded significance. 4 tests.
+- 2026-02-07 US-8.3: 30-day SEO action plan. SEOActionPlan component with collapsible week sections, disclaimer banner, action cards with all required fields. 5 tests.

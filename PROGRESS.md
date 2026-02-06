@@ -80,6 +80,19 @@
   - Tooltips on all data cells with evidence details
   - Local signals displayed as count with tooltip listing signals
   - Responsive horizontal scroll on mobile
+- [x] US-8.2: Strengths, weaknesses & gap breakdown (2026-02-07) — 4 tests
+  - StrengthsGaps component: competitor advantages + user strengths + gap breakdown
+  - "What They're Doing Better" section with min 3 items (red accent cards)
+  - "What You're Doing Better" section with min 2 items (green accent cards)
+  - Each item: title, description, evidence list
+  - Gap breakdown table: Category, Your Value, Competitor Value, Significance
+  - Color-coded significance badges (High=red, Medium=yellow, Low=green)
+- [x] US-8.3: 30-day SEO action plan UI (2026-02-07) — 5 tests
+  - SEOActionPlan component: 4 collapsible week sections
+  - Disclaimer banner with role="alert": "We do not guarantee rankings"
+  - Week 1 expanded by default, others collapsed
+  - Each action: action text, why, signal_strengthened, estimated_impact, verification_method
+  - aria-expanded on collapsible sections, aria-hidden on decorative icons
 
 ## In Progress
 (none)
@@ -94,10 +107,8 @@
 | Phase 0 (Bootstrap) | COMPLETE | US-0.2 | 2 |
 | Phase 1 (Foundation) | COMPLETE | US-1.1 through US-1.3 | 20 |
 | Phase 2 (Core Engine) | COMPLETE | US-5.1 through US-5.7 | 35 |
-| Phase 3 (SEO Module) | IN PROGRESS | US-6.2, US-8.1 | 14 |
-| **Total** | | **12 stories** | **71 tests** |
+| Phase 3 (SEO Module) | IN PROGRESS | US-6.2, US-8.1, US-8.2, US-8.3 | 23 |
+| **Total** | | **14 stories** | **80 tests** |
 
 ## Up Next (Phase 3 — SEO Module)
-- US-8.2: Strengths and gaps sections
-- US-8.3: 30-day SEO plan UI
 - US-8.4: SEO tab integration
