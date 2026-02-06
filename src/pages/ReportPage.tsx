@@ -6,6 +6,7 @@ import ExecutiveSummary from '../components/report/ExecutiveSummary'
 import MetricsCards from '../components/report/MetricsCards'
 import IssuesList from '../components/report/IssuesList'
 import ChecklistSection from '../components/report/ChecklistSection'
+import LimitationsSection from '../components/report/LimitationsSection'
 import type { GovernanceReport } from '../types/api'
 
 function ReportContent({ report }: { report: GovernanceReport }) {
@@ -15,6 +16,7 @@ function ReportContent({ report }: { report: GovernanceReport }) {
       <MetricsCards metrics={report.metrics} />
       <IssuesList issues={report.issues} />
       <ChecklistSection items={report.checklist_30d} />
+      <LimitationsSection limitations={report.limitations} />
     </div>
   )
 }
