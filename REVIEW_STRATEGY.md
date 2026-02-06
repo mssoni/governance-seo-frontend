@@ -67,3 +67,8 @@ After all checks pass: merge feature branch to main with `--no-ff`
 
 ## Phase-Specific Checks
 (Added by review agent as patterns emerge)
+
+### Phase 2 additions:
+- [ ] Report components: verify tests use golden fixture data (not handcrafted mocks) wherever possible
+- [ ] Polling hooks: verify cleanup (clearInterval, active flag) to prevent state updates after unmount
+- [ ] Badge/Chip components: verify type-safe Record maps cover all enum values (no missing variants)

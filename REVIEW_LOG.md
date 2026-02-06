@@ -51,6 +51,56 @@
 2. React Router properly installed and configured — existing tests updated to wrap in MemoryRouter
 3. Error handling pattern (ApiError vs generic) is clean and reusable for future API calls
 
+---
+
+## Phase 2 Review — Batch 1 — 2026-02-06
+
+### Frontend PRs Reviewed
+
+#### US-5.1: Report page + polling
+- Status: **APPROVED**
+- Tests: 6/6 passing (progress bar polling, step labels, report rendering on completion, error state + retry, header info, stops polling on complete)
+- Quality gate: `make check` passed (35 tests total, eslint + tsc clean)
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (useJobPolling hook, ProgressBar, ReportHeader, ReportPage in file tree + component tree + routing table + data flow + interface contracts + change log)
+- Code quality:
+  - `useJobPolling`: Clean `useReducer` pattern with 4 actions (RESET, POLL_SUCCESS, POLL_ERROR, RETRY). Proper cleanup via `active` flag and `clearInterval` in effect cleanup. No stale closure issues.
+  - `ProgressBar`: Accessible with `role="progressbar"` + aria-valuenow/min/max. Pipeline step list is data-driven.
+  - `ReportHeader`: Clean SVG icons, proper external link handling (target="_blank" + rel="noopener noreferrer"), protocol-aware href.
+  - `ReportPage`: Clean 3-state rendering (loading/error/complete). Proper search param extraction.
+- UI quality: Accessible (progressbar role, aria attributes), loading states present, error state with retry button, responsive layout
+- No console.log in any production file ✓
+- All API calls have error handling (.catch via try/catch in poll function) ✓
+- Proper TypeScript types throughout (no `any`) ✓
+
+#### US-5.2: Executive summary section
+- Status: **APPROVED**
+- Tests: 7/7 passing (3+ positive findings, 3-5 risk items, observed badges, inferred badges, confidence chips high/medium, all confidence levels, descriptions)
+- Quality gate: `make check` passed (35 tests total)
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (ExecutiveSummary, Badge, SummaryCard in file tree + component tree + interface contracts + change log)
+- Code quality:
+  - `ExecutiveSummary`: Clean two-column layout with data-testid attributes for test targeting. Uses SummaryCard sub-component for per-item rendering.
+  - `Badge`: Reusable `DetectedAsBadge` and `ConfidenceChip` components with type-safe `Record<T, string>` style/label maps. Named exports (not default) — correct for utility components.
+  - Uses golden fixture data in tests ✓
+- UI quality: Good color semantics (green=positive, orange=attention), badge + chip pattern for metadata, responsive grid layout
+- Copy tone: No salesy language in component text ✓
+
+### Patterns Observed
+1. No `console.log` this phase — previous review feedback continues to be applied
+2. `useReducer` pattern for complex async state (polling) is well-suited and avoids race conditions
+3. Golden fixture (governance-report.json) is the single source of truth for test data — tests assert against real fixture content
+4. Badge/Chip pattern (Badge.tsx) is reusable for future report sections (issues list, checklist)
+5. Component separation is clean: hooks for logic, components for display, pages for composition
+
+### Phase 2 Summary (Frontend)
+
+| Story | Status | Tests |
+|-------|--------|-------|
+| US-5.1: Report page + polling | APPROVED | 6 |
+| US-5.2: Executive summary | APPROVED | 7 |
+| **Total** | **2/2 APPROVED** | **35 frontend tests total** |
+
 <!-- Format:
 
 ## Phase X Review - DATE
