@@ -12,12 +12,20 @@
   - Golden fixtures for governance + SEO reports
   - Makefile quality gate (`make check`)
   - All orientation documents created
+- [x] US-1.3: Form submission and navigation (2026-02-06) — 4 tests
+  - react-router-dom installed, BrowserRouter in App.tsx
+  - LandingPage: POST /api/report/governance, navigate to /report?job={id}
+  - API error handling with user-friendly messages
+  - Network error handling with retry button
+  - ReportPage placeholder (reads job param from URL)
 
 ## In Progress
 (none)
+
+
 
 ## Blocked
 (none)
 
 ## Up Next
-- US-1.3: Form submission and navigation
+- US-2.x: Report display with polling

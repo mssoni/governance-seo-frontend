@@ -21,9 +21,11 @@ frontend/
 │   │   └── __tests__/
 │   │       └── input-form.test.tsx  # InputForm tests (8 cases)
 │   ├── pages/
-│   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form section)
+│   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form + error UI)
+│   │   ├── ReportPage.tsx         # Report page placeholder (reads job_id from URL)
 │   │   └── __tests__/
-│   │       └── landing-page.test.tsx  # Landing page tests (8 cases)
+│   │       ├── landing-page.test.tsx     # Landing page tests (8 cases)
+│   │       └── form-submission.test.tsx  # Form submission + navigation tests (4 cases)
 │   ├── lib/                       # Utility functions (empty)
 │   ├── hooks/                     # Custom React hooks (empty)
 │   ├── types/
@@ -60,20 +62,22 @@ frontend/
 ## Component Tree
 
 ```
-App
-└── LandingPage
-    ├── Hero              # Headline, subheadline, CTA anchor to #report-form
-    ├── TrustIndicators   # 3 trust badges in responsive grid
-    └── <section #report-form>
-        └── InputForm     # URL, location, business type, intent fields + validation
+App (BrowserRouter + Routes)
+├── / → LandingPage
+│   ├── Hero              # Headline, subheadline, CTA anchor to #report-form
+│   ├── TrustIndicators   # 3 trust badges in responsive grid
+│   ├── <section #report-form>
+│   │   └── InputForm     # URL, location, business type, intent fields + validation
+│   └── Error display     # API/network error alert with optional retry button
+└── /report → ReportPage  # Placeholder; reads ?job= param
 ```
 
 ## Routing
 
 | Route | Component | Description |
 |-------|-----------|-------------|
-| `/` | LandingPage (TBD) | Landing page with input form |
-| `/report` | ReportPage (TBD) | Report display with polling |
+| `/` | LandingPage | Landing page with input form, API submission, error handling |
+| `/report` | ReportPage | Report display placeholder (reads `?job=` search param) |
 
 ## Data Flow
 
@@ -116,6 +120,15 @@ User Input (form)
 ### src/pages/LandingPage.tsx
 - Default export: `LandingPage` component (no props)
 - Composes Hero, TrustIndicators, and a form section with `id="report-form"`
+- Uses `useNavigate` from react-router-dom
+- `handleSubmit`: POSTs to `/api/report/governance`, navigates to `/report?job={job_id}` on success
+- Error handling: `ApiError` → user-friendly message; network error → message + retry button
+- State: `isLoading`, `error: { message, isNetworkError }`, `lastPayload` (for retry)
+
+### src/pages/ReportPage.tsx
+- Default export: `ReportPage` component (no props)
+- Reads `job` from URL search params via `useSearchParams`
+- Displays "Loading report for job {job_id}…" (placeholder for US-2.x)
 
 ### src/types/api.ts
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
@@ -125,3 +138,4 @@ User Input (form)
 - 2026-02-06 US-0.2: Initial scaffold. Vite + React + TS + Tailwind v4, Vitest + RTL, API client, TypeScript types, golden fixtures, Makefile.
 - 2026-02-06 US-1.1: Landing page layout and hero. Hero, TrustIndicators, LandingPage. 8 tests.
 - 2026-02-06 US-1.2: Input form with validation. InputForm component with all fields, client-side validation, loading state. 8 tests.
+- 2026-02-06 US-1.3: Form submission and navigation. react-router-dom, BrowserRouter in App, LandingPage POSTs to API and navigates on success, error handling with retry, ReportPage placeholder. 4 tests.
