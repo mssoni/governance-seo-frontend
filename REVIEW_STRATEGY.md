@@ -1,7 +1,23 @@
 # Review Strategy v1.0
 
+## Review Agent Role: Review + Fix + Merge
+
+The Review Agent is autonomous. It does NOT just flag issues -- it:
+1. **Fixes small issues directly** (formatting, missing logs, lint errors, missing doc entries)
+2. **Merges approved branches** to main after all checks pass
+3. **Rejects only architectural issues** back to dev agents via REVIEW_LOG.md
+
+Classification guide:
+- **Small fix (you fix it)**: lint/format, missing logging, missing ARCHITECTURE.md entry, missing test edge case, console.log left in code
+- **Reject (dev agent fixes)**: wrong approach, missing feature from AC, broken contract requiring design change
+
+After fixing, commit as: `fix(US-X.Y): [what was fixed per review]`
+After all checks pass: merge feature branch to main with `--no-ff`
+
 ## Quality Gate (Must Pass First)
 - [ ] `make check` passes (tests + types + lint in one command)
+- [ ] If it fails and fix is small: fix it yourself, re-run, continue
+- [ ] If it fails and fix is architectural: REJECT to REVIEW_LOG.md
 
 ## Always Check (Every PR)
 - [ ] Every new file has a corresponding test file
