@@ -162,6 +162,84 @@
 | US-5.4: Issues list | APPROVED | 4 |
 | **Total** | **4/4 APPROVED** | **43 frontend tests total** |
 
+## Phase 3 Review — Batch 1 — 2026-02-06
+
+### Frontend PRs Reviewed
+
+#### US-5.5: Checklist section
+- Status: **APPROVED**
+- Tests: 5/5 passing (grouped by category, all fields shown, checkbox toggle, effort badge colors, category collapse)
+- Quality gate: `make check` passed (57 tests total, eslint + tsc clean)
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (ChecklistSection, CategoryGroup in file tree + component tree + interface contracts + change log)
+- Schema match: ChecklistItem fields (action, category, frequency, owner, effort, why_it_matters) match CONTRACTS.md exactly ✓
+- Code quality:
+  - 139 lines — within 150-line component limit
+  - Clean sub-component decomposition: EffortBadge (utility), CategoryGroup (collapsible), ChecklistSection (main)
+  - `useMemo` for grouping by category — good performance optimization
+  - `useState<Set<string>>` for checkbox state — local only, correct per requirements
+  - Type-safe `Record<Effort, string>` for effort badge styles — all 3 Effort variants covered ✓
+  - data-testid on effort badges for test targeting
+  - No console.log ✓, no `any` types ✓
+- UI quality: Accessible checkboxes via `<label>` wrapping, focus ring, collapsible categories with chevron animation, responsive flexbox wrapping for tags
+- Copy tone: No salesy language ✓
+- Tests use golden fixture data ✓
+
+#### US-5.6: Limitations section
+- Status: **APPROVED**
+- Tests: 3/3 passing (all items with title+description, always visible no collapse, "What we can detect quickly" sub-section)
+- Quality gate: `make check` passed (57 tests total)
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (LimitationsSection in file tree + component tree + interface contracts + change log)
+- Schema match: LimitationItem fields (title, description) match CONTRACTS.md exactly ✓
+- Code quality:
+  - 38 lines — exceptionally clean and minimal
+  - Proper HTML entity escaping (`&apos;`)
+  - Semantic heading hierarchy (h2 > h3)
+  - No console.log ✓, no `any` types ✓
+- UI quality: Always visible (no collapse toggle — intentional per design), responsive layout, indigo accent for "What we can detect" callout
+- Copy tone: **PASSED** — Transparent language ("we can't control", "outside the scope"). "What we can detect quickly" sub-section provides honest, useful context about monitoring capabilities without promises.
+- Tests use golden fixture data ✓
+- Test quality: Tests verify visibility (`.toBeVisible()`) not just DOM presence, verifies no collapse button exists
+
+#### US-5.7: Side panel with CTAs
+- Status: **APPROVED**
+- Tests: 6/6 passing (top 5 actions, limits to 5, print button, CTA buttons, competitor link, no-print class)
+- Quality gate: `make check` passed (57 tests total)
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (SidePanel in file tree + component tree + interface contracts + change log)
+- Schema match: Uses Issue interface correctly (issue_id, title) ✓
+- Code quality:
+  - 66 lines — clean and minimal
+  - `issues.slice(0, 5)` for top actions — simple and correct
+  - `window.print()` for print button — appropriate browser API usage
+  - Disabled button with `title="Coming soon"` for Connect GA/GSC
+  - `no-print` class on root `<aside>` for print CSS hiding
+  - Sticky positioning via `sticky top-4`
+  - No console.log ✓, no `any` types ✓
+- UI quality: Numbered action list with indigo circles, accessible buttons with text content, clear visual hierarchy (primary CTA = indigo filled, secondary = outlined, disabled = gray), competitor link with correct href
+- Integration: ReportPage uses 2-column grid `grid-cols-[1fr_280px]` with SidePanel in right column, `hidden lg:block` for desktop-only display ✓
+- Tests use golden fixture data + custom 7-issue array for limit testing ✓
+- Test quality: Good edge case test (7 issues → only 5 shown), `vi.spyOn(window, 'print')` with proper `mockRestore` cleanup
+
+### Patterns Observed
+1. No console.log across all three components — previous review feedback continues to be applied ✓
+2. All three components are well under size limits (139, 38, 66 lines respectively) — good component decomposition
+3. Golden fixture continues to be the single source of truth for test data
+4. ChecklistSection and SidePanel both follow the established Record<T, string> pattern for type-safe style maps
+5. ReportPage composition is clean: 2-column grid with main content (5 report sections) + SidePanel, responsive via `hidden lg:block`
+6. All three components properly import types from `../../types/api` — no inline type definitions
+7. Copy tone is transparent throughout — LimitationsSection explicitly acknowledges what can't be controlled
+
+### Phase 3 Summary (Frontend)
+
+| Story | Status | Tests |
+|-------|--------|-------|
+| US-5.5: Checklist section | APPROVED | 5 |
+| US-5.6: Limitations section | APPROVED | 3 |
+| US-5.7: Side panel with CTAs | APPROVED | 6 |
+| **Total** | **3/3 APPROVED** | **57 frontend tests total** |
+
 <!-- Format:
 
 ## Phase X Review - DATE
