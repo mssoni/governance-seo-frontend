@@ -13,13 +13,19 @@ You are building the frontend for a Website Governance + Local Competitive SEO R
 
 ## Current Phase
 
-**Phase 1 -- Foundation**
+**Phase 2 -- Core Engine**
 
 Active stories:
-- US-0.2: Frontend scaffold (COMPLETE)
-- US-1.1: Landing page layout and hero
-- US-1.2: Input form with validation
-- US-1.3: Form submission and navigation
+- US-5.1: Report page layout and polling
+- US-5.2: Executive summary section
+- US-5.3: Metrics cards
+- US-5.4: Issues list with expandable evidence
+- US-5.5: 30-day checklist section
+- US-5.6: "What we can't control" section
+- US-5.7: Sticky side panel and CTAs
+
+Completed (Phase 1):
+- US-0.2, US-1.1, US-1.2, US-1.3
 
 ## Mock-First Development
 
