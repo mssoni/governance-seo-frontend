@@ -101,6 +101,67 @@
 | US-5.2: Executive summary | APPROVED | 7 |
 | **Total** | **2/2 APPROVED** | **35 frontend tests total** |
 
+---
+
+## Phase 2 Review — Batch 2 — 2026-02-06
+
+### Frontend PRs Reviewed
+
+#### US-5.3: Metrics cards + Evidence panel
+- Status: **APPROVED**
+- Tests: 4/4 passing (renders all metric cards, shows value+meaning, evidence expand/collapse, "Why it matters" text)
+- Quality gate: `make check` passed (43 tests total, eslint + tsc clean)
+- Issues found: None
+- ARCHITECTURE.md: Updated correctly (MetricsCards, EvidencePanel, MetricCardItem in file tree + component tree + interface contracts + change log)
+- Code quality:
+  - `MetricsCards.tsx` (38 lines): Clean component with responsive 2-col grid, proper TypeScript types. MetricCardItem sub-component is co-located — appropriate since it's tightly coupled.
+  - `EvidencePanel.tsx` (52 lines): Reusable component with toggle expand/collapse, customizable labels (show/hide), null return for empty evidence array. Chevron SVG rotation on expand. Clean props with sensible defaults (defaultOpen=false).
+  - No console.log ✓
+  - No `any` types ✓
+- Schema match: MetricCard fields (name, value, meaning, evidence, why_it_matters) and Evidence fields (description, raw_value) match CONTRACTS.md exactly ✓
+- Copy tone: No salesy language in component text ✓
+- UI quality: Responsive grid, accessible (evidence toggle button has text content), indigo color scheme for "Why it matters" callout box
+- Tests use golden fixture data ✓
+
+#### US-5.4: Issues list with expandable evidence
+- Status: **APPROVED**
+- Tests: 4/4 passing (severity sorting, expandable details with all fields, badges display, severity filter)
+- Quality gate: `make check` passed (43 tests total)
+- Issues found: None
+- Issues noted (non-blocking):
+  - `IssuesList.tsx` is 160 lines (slightly exceeds 150-line component guideline). Contains 3 sub-components (SeverityBadge, IssueCard, IssuesList) that are tightly coupled. Main export is 37 lines. Splitting would create artificial file separation for components that are only used together.
+- ARCHITECTURE.md: Updated correctly (IssuesList, IssueCard, SeverityBadge in file tree + component tree + interface contracts + change log)
+- Code quality:
+  - Type-safe `Record<Severity, T>` maps for severityOrder, severityStyles, severityLabels — all 3 Severity variants covered ✓
+  - Reuses `Badge.tsx` (DetectedAsBadge, ConfidenceChip) and `EvidencePanel` ✓
+  - Filter state management with `useState<FilterValue>` ✓
+  - Sorting by severity order ✓
+  - Expand button has `aria-label="Expand issue details"` ✓
+  - No console.log ✓
+  - No `any` types ✓
+- Schema match: All Issue fields (issue_id, title, severity, confidence, detected_as, evidence, why_it_matters, what_happens_if_ignored, what_to_do, expected_impact) accessed correctly and match CONTRACTS.md ✓
+- Copy tone: No salesy language ✓
+- UI quality: Severity filter buttons (all/high/medium/low), expandable cards with chevron animation, SeverityBadge color coding (red/orange/green), responsive layout
+- Tests use golden fixture data ✓
+
+### Patterns Observed
+1. No console.log this phase — previous review feedback continues to be applied ✓
+2. EvidencePanel reuse pattern is clean — used by both MetricsCards and IssuesList with different defaults
+3. Badge.tsx reuse pattern working well — DetectedAsBadge + ConfidenceChip used across ExecutiveSummary, MetricsCards, and IssuesList
+4. Component composition in ReportPage is clean: ExecutiveSummary → MetricsCards → IssuesList, each self-contained
+5. Golden fixture data continues to be the single source of truth for all test assertions
+6. Type-safe Record patterns (Record<Severity, string>) properly cover all enum values
+
+### Phase 2 Summary (Frontend) — Updated
+
+| Story | Status | Tests |
+|-------|--------|-------|
+| US-5.1: Report page + polling | APPROVED | 6 |
+| US-5.2: Executive summary | APPROVED | 7 |
+| US-5.3: Metrics cards | APPROVED | 4 |
+| US-5.4: Issues list | APPROVED | 4 |
+| **Total** | **4/4 APPROVED** | **43 frontend tests total** |
+
 <!-- Format:
 
 ## Phase X Review - DATE
