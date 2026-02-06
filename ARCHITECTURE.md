@@ -14,8 +14,13 @@ frontend/
 │   ├── App.test.tsx               # Smoke test (renders without crashing)
 │   ├── index.css                  # Tailwind CSS v4 import
 │   ├── test-setup.ts              # Vitest setup (jest-dom matchers)
-│   ├── components/                # Shared UI components (empty)
-│   ├── pages/                     # Page-level components (empty)
+│   ├── components/
+│   │   ├── Hero.tsx               # Hero section (headline, subheadline, CTA)
+│   │   └── TrustIndicators.tsx    # Trust badges (no-login, fast, transparent)
+│   ├── pages/
+│   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form section)
+│   │   └── __tests__/
+│   │       └── landing-page.test.tsx  # Landing page tests (8 cases)
 │   ├── lib/                       # Utility functions (empty)
 │   ├── hooks/                     # Custom React hooks (empty)
 │   ├── types/
@@ -53,7 +58,10 @@ frontend/
 
 ```
 App
-└── (placeholder -- to be expanded with pages and components)
+└── LandingPage
+    ├── Hero              # Headline, subheadline, CTA anchor to #report-form
+    ├── TrustIndicators   # 3 trust badges in responsive grid
+    └── <section #report-form>  # Form placeholder (US-1.2)
 ```
 
 ## Routing
@@ -85,9 +93,22 @@ User Input (form)
 - `apiClient.post<T>(path, body)` → `Promise<T>`
 - `ApiError` class with `status` and `body`
 
+### src/components/Hero.tsx
+- Default export: `Hero` component (no props)
+- Renders `<h1>`, `<p>`, and `<a href="#report-form">Generate Governance Report</a>`
+
+### src/components/TrustIndicators.tsx
+- Default export: `TrustIndicators` component (no props)
+- Renders three cards: "No login required", "Results in under 90 seconds", "100% transparent"
+
+### src/pages/LandingPage.tsx
+- Default export: `LandingPage` component (no props)
+- Composes Hero, TrustIndicators, and a form section with `id="report-form"`
+
 ### src/types/api.ts
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
 
 ## Change Log
 
 - 2026-02-06 US-0.2: Initial scaffold. Vite + React + TS + Tailwind v4, Vitest + RTL, API client, TypeScript types, golden fixtures, Makefile.
+- 2026-02-06 US-1.1: Landing page layout and hero. Hero, TrustIndicators, LandingPage. 8 tests.
