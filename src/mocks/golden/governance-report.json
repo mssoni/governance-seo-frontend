@@ -1,6 +1,7 @@
 {
   "pages_analyzed": 8,
   "summary": {
+    "executive_narrative": "Your website is performing well in several key areas, including SSL security and mobile responsiveness. However, there are a few important areas that need attention — particularly around page speed and search engine discoverability. These gaps can quietly reduce your visibility and visitor confidence over time. The good news: most of these improvements are straightforward and don't require a full site rebuild.",
     "whats_working": [
       {
         "title": "SSL/HTTPS enabled",
@@ -111,6 +112,7 @@
       "severity": "high",
       "confidence": "high",
       "detected_as": "observed",
+      "business_category": "Search Visibility",
       "evidence": [
         { "description": "No sitemap.xml at /sitemap.xml", "raw_value": "404" },
         { "description": "No Sitemap directive in robots.txt", "raw_value": null }
@@ -130,6 +132,7 @@
       "severity": "high",
       "confidence": "high",
       "detected_as": "observed",
+      "business_category": "User Experience",
       "evidence": [
         { "description": "LCP: 4.2 seconds (threshold: < 2.5s)", "raw_value": "4200" }
       ],
@@ -148,6 +151,7 @@
       "severity": "medium",
       "confidence": "medium",
       "detected_as": "observed",
+      "business_category": "User Experience",
       "evidence": [
         { "description": "5 images found without alt attributes across 3 pages", "raw_value": "5" }
       ],
@@ -226,6 +230,26 @@
     {
       "title": "Brand and word of mouth",
       "description": "Offline reputation significantly impacts online performance in ways we cannot measure."
+    }
+  ],
+  "top_improvements": [
+    {
+      "title": "Improve page loading speed",
+      "description": "Your main content takes too long to appear, which frustrates visitors and may hurt your search rankings.",
+      "effort": "M",
+      "category": "User Experience"
+    },
+    {
+      "title": "Help search engines find your pages",
+      "description": "Without a sitemap, search engines may miss important pages on your site.",
+      "effort": "S",
+      "category": "Search Visibility"
+    },
+    {
+      "title": "Make your site accessible to all visitors",
+      "description": "Some images lack descriptions, making them invisible to visitors using screen readers.",
+      "effort": "S",
+      "category": "User Experience"
     }
   ]
 }

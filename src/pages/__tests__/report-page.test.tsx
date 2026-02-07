@@ -140,9 +140,9 @@ describe('ReportPage (US-5.1)', () => {
       await vi.advanceTimersByTimeAsync(2500)
     })
 
-    // After completion, the report header should be visible
+    // After completion, the business overview content should be visible (default tab)
     await waitFor(() => {
-      expect(screen.getByText(/executive summary/i)).toBeInTheDocument()
+      expect(screen.getByText(/Your website is performing well/)).toBeInTheDocument()
     })
   })
 
@@ -252,5 +252,76 @@ describe('ReportPage (US-5.1)', () => {
       expect(ctaBanner).toHaveTextContent(/comprehensive full-site audit/i)
       expect(ctaBanner).toHaveTextContent(/reach out to us/i)
     })
+  })
+
+  it('defaults to Business Overview tab', async () => {
+    mockedGet.mockResolvedValue(completeResponse)
+
+    renderReportPage()
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100)
+    })
+
+    await waitFor(() => {
+      const businessTab = screen.getByRole('tab', { name: /business overview/i })
+      expect(businessTab).toHaveAttribute('aria-selected', 'true')
+    })
+
+    // Business content should be visible
+    expect(screen.getByText(/Your website is performing well/)).toBeInTheDocument()
+  })
+
+  it('shows technical details when Technical Details tab clicked', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockedGet.mockResolvedValue(completeResponse)
+
+    renderReportPage()
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('tab', { name: /technical details/i })).toBeInTheDocument()
+    })
+
+    // Click Technical Details tab
+    const techTab = screen.getByRole('tab', { name: /technical details/i })
+    await user.click(techTab)
+
+    // Technical tab should now show the executive summary (governance content)
+    await waitFor(() => {
+      expect(screen.getByText(/executive summary/i)).toBeInTheDocument()
+    })
+  })
+
+  it('existing governance content renders in technical tab', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockedGet.mockResolvedValue(completeResponse)
+
+    renderReportPage()
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('tab', { name: /technical details/i })).toBeInTheDocument()
+    })
+
+    // Click Technical Details tab
+    const techTab = screen.getByRole('tab', { name: /technical details/i })
+    await user.click(techTab)
+
+    // Should show governance content sections
+    await waitFor(() => {
+      expect(screen.getByText(/executive summary/i)).toBeInTheDocument()
+    })
+    // "SSL/HTTPS enabled" appears in the executive summary section
+    expect(screen.getByText('SSL/HTTPS enabled')).toBeInTheDocument()
+    // "No sitemap.xml found" appears in both IssuesList and SidePanel — verify at least one
+    const sitemapElements = screen.getAllByText('No sitemap.xml found')
+    expect(sitemapElements.length).toBeGreaterThanOrEqual(1)
   })
 })

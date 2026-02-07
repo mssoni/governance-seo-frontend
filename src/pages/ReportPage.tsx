@@ -13,10 +13,14 @@ import ChecklistSection from '../components/report/ChecklistSection'
 import LimitationsSection from '../components/report/LimitationsSection'
 import SidePanel from '../components/report/SidePanel'
 import ReportTabs from '../components/report/ReportTabs'
+import type { TabId } from '../components/report/ReportTabs'
 import CompetitorForm from '../components/CompetitorForm'
 import CompetitorTable from '../components/report/CompetitorTable'
 import StrengthsGaps from '../components/report/StrengthsGaps'
 import SEOActionPlan from '../components/report/SEOActionPlan'
+import ExecutiveStory from '../components/report/ExecutiveStory'
+import BusinessImpactCategories from '../components/report/BusinessImpactCategories'
+import TopImprovements from '../components/report/TopImprovements'
 import type {
   GovernanceReport,
   SEOReport,
@@ -37,6 +41,31 @@ function GovernanceContent({ report }: { report: GovernanceReport }) {
       <IssuesList issues={report.issues} />
       <ChecklistSection items={report.checklist_30d} />
       <LimitationsSection limitations={report.limitations} />
+    </>
+  )
+}
+
+// --- Business Overview Content ---
+
+function BusinessContent({
+  report,
+  onSwitchToTechnical,
+}: {
+  report: GovernanceReport
+  onSwitchToTechnical: () => void
+}) {
+  return (
+    <>
+      <ExecutiveStory
+        narrative={report.summary.executive_narrative}
+        whatsWorking={report.summary.whats_working}
+        needsAttention={report.summary.needs_attention}
+      />
+      <BusinessImpactCategories issues={report.issues} />
+      <TopImprovements
+        improvements={report.top_improvements}
+        onSwitchToTechnical={onSwitchToTechnical}
+      />
     </>
   )
 }
@@ -142,7 +171,7 @@ function ReportPageContent({
     useJobPolling(jobId)
 
   // --- SEO state ---
-  const [activeTab, setActiveTab] = useState<'governance' | 'seo'>('governance')
+  const [activeTab, setActiveTab] = useState<TabId>('business')
   const [seoJobId, setSeoJobId] = useState<string | null>(null)
   const [seoSubmitError, setSeoSubmitError] = useState<string | undefined>(undefined)
   const [seoSubmitting, setSeoSubmitting] = useState(false)
@@ -150,7 +179,7 @@ function ReportPageContent({
   const seoPolling = useSeoJobPolling(seoJobId)
 
   // Track tab switches
-  const handleTabChange = useCallback((tab: 'governance' | 'seo') => {
+  const handleTabChange = useCallback((tab: TabId) => {
     track('tab_switch', { tab })
     setActiveTab(tab)
   }, [])
@@ -261,7 +290,14 @@ function ReportPageContent({
           >
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_280px]">
               <div className="min-w-0">
-                {activeTab === 'governance' && (
+                {activeTab === 'business' && (
+                  <BusinessContent
+                    report={report}
+                    onSwitchToTechnical={() => setActiveTab('technical')}
+                  />
+                )}
+
+                {activeTab === 'technical' && (
                   <>
                     <GovernanceContent report={report} />
 
@@ -305,7 +341,11 @@ function ReportPageContent({
               </div>
 
               <div className="hidden lg:block">
-                <SidePanel issues={report.issues} />
+                <SidePanel
+                  issues={report.issues}
+                  topImprovements={report.top_improvements}
+                  activeTab={activeTab}
+                />
               </div>
             </div>
           </ReportTabs>

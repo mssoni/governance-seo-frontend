@@ -1,28 +1,50 @@
-import type { Issue } from '../../types/api'
+import type { Issue, TopImprovement } from '../../types/api'
+import type { TabId } from './ReportTabs'
 import { track } from '../../analytics/tracker'
 
 interface SidePanelProps {
   issues: Issue[]
+  topImprovements?: TopImprovement[]
+  activeTab?: TabId
 }
 
-export default function SidePanel({ issues }: SidePanelProps) {
+export default function SidePanel({ issues, topImprovements, activeTab }: SidePanelProps) {
+  const isBusiness = activeTab === 'business'
   const topActions = issues.slice(0, 5)
 
   return (
     <aside className="no-print sticky top-4 space-y-4">
-      {/* Top Actions */}
+      {/* Top Actions / Improvements */}
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-        <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-900">Top Actions</h3>
-        <ol className="space-y-2">
-          {topActions.map((issue, i) => (
-            <li key={issue.issue_id} className="flex items-start gap-2">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
-                {i + 1}
-              </span>
-              <span className="text-sm text-gray-700">{issue.title}</span>
-            </li>
-          ))}
-        </ol>
+        {isBusiness && topImprovements && topImprovements.length > 0 ? (
+          <>
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-900">Top Improvements</h3>
+            <ol className="space-y-2">
+              {topImprovements.slice(0, 3).map((item, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm text-gray-700">{item.title}</span>
+                </li>
+              ))}
+            </ol>
+          </>
+        ) : (
+          <>
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-900">Top Actions</h3>
+            <ol className="space-y-2">
+              {topActions.map((issue, i) => (
+                <li key={issue.issue_id} className="flex items-start gap-2">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm text-gray-700">{issue.title}</span>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
       </div>
 
       {/* Action Buttons */}
@@ -46,24 +68,28 @@ export default function SidePanel({ issues }: SidePanelProps) {
           Need help?
         </button>
 
-        <button
-          type="button"
-          disabled
-          onClick={() => track('cta_click', { cta: 'connect_ga_gsc' })}
-          className="w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-400 shadow-sm"
-          title="Coming soon"
-        >
-          Connect GA/GSC
-          <span className="ml-1 text-xs">(Coming soon)</span>
-        </button>
+        {!isBusiness && (
+          <>
+            <button
+              type="button"
+              disabled
+              onClick={() => track('cta_click', { cta: 'connect_ga_gsc' })}
+              className="w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-400 shadow-sm"
+              title="Coming soon"
+            >
+              Connect GA/GSC
+              <span className="ml-1 text-xs">(Coming soon)</span>
+            </button>
 
-        <a
-          href="#competitors"
-          onClick={() => track('cta_click', { cta: 'compare_competitors' })}
-          className="block w-full rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-center text-sm font-medium text-indigo-700 shadow-sm hover:bg-indigo-100"
-        >
-          Compare against competitors
-        </a>
+            <a
+              href="#competitors"
+              onClick={() => track('cta_click', { cta: 'compare_competitors' })}
+              className="block w-full rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-center text-sm font-medium text-indigo-700 shadow-sm hover:bg-indigo-100"
+            >
+              Compare against competitors
+            </a>
+          </>
+        )}
       </div>
     </aside>
   )
