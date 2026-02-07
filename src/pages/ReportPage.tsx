@@ -237,12 +237,13 @@ function ReportPageContent({
   const intentValue = (intent || 'both') as Intent
 
   // Competitor suggestions (fetched at page level, passed as props to CompetitorForm)
-  const { suggestions: competitorSuggestions, loading: suggestionsLoading } =
+  const { suggestions: competitorSuggestions, userPlace, loading: suggestionsLoading } =
     useCompetitorSuggestions({
       businessType,
       city: parsedLocation.city,
       region: parsedLocation.region,
       country: parsedLocation.country,
+      websiteUrl,
     })
 
   // --- Error state (governance) ---
@@ -350,6 +351,7 @@ function ReportPageContent({
                         error={seoSubmitError}
                         suggestions={competitorSuggestions}
                         suggestionsLoading={suggestionsLoading}
+                        userPlace={userPlace}
                       />
                     )}
                   </>

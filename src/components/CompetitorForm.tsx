@@ -38,6 +38,7 @@ interface CompetitorFormProps {
   error?: string
   suggestions?: CompetitorSuggestion[]
   suggestionsLoading?: boolean
+  userPlace?: CompetitorSuggestion | null
 }
 
 // --- Component ---
@@ -52,6 +53,7 @@ export default function CompetitorForm({
   error,
   suggestions = [],
   suggestionsLoading = false,
+  userPlace,
 }: CompetitorFormProps) {
   const [competitors, setCompetitors] = useState<[string, string, string]>(['', '', ''])
   const [errors, setErrors] = useState<[string?, string?, string?]>([])
@@ -185,6 +187,30 @@ export default function CompetitorForm({
       <p className="mb-6 text-sm text-gray-600">
         Enter competitor URLs to generate a Local Competitive SEO Report. At least 2 competitors are required.
       </p>
+
+      {/* --- Your Google Review Card --- */}
+      {userPlace && (
+        <div
+          data-testid="user-review-card"
+          className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4"
+        >
+          <p className="mb-1 text-xs font-medium uppercase tracking-wide text-green-700">
+            Your Google Business Profile
+          </p>
+          <p className="text-lg font-bold text-gray-900">{userPlace.name}</p>
+          <p className="mt-1 text-sm text-gray-600">{userPlace.address}</p>
+          {userPlace.rating != null && userPlace.review_count != null && (
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-lg font-semibold text-amber-600">
+                {userPlace.rating} ★
+              </span>
+              <span className="text-sm text-gray-500">
+                ({userPlace.review_count.toLocaleString()} reviews)
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* --- Competitor Suggestions Section --- */}
       {suggestionsLoading && (

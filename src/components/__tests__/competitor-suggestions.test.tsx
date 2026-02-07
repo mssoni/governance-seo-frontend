@@ -36,6 +36,14 @@ const mockSuggestions: CompetitorSuggestion[] = [
   },
 ]
 
+const mockUserPlace: CompetitorSuggestion = {
+  name: 'SkinSure Clinic',
+  address: 'Baner Road, Pune, Maharashtra 411007, India',
+  rating: 4.7,
+  review_count: 250,
+  website_url: 'https://skinsureclinic.com/',
+}
+
 function renderForm(overrides: Record<string, unknown> = {}) {
   const props = { ...defaultProps, onSubmit: vi.fn(defaultProps.onSubmit), ...overrides }
   return render(<CompetitorForm {...props} />)
@@ -89,5 +97,52 @@ describe('Competitor Suggestions (CHG-008)', () => {
     expect(screen.queryByText(/nearby competitors in your area/i)).not.toBeInTheDocument()
     // Form should still work
     expect(screen.getByLabelText(/competitor 1 url/i)).toBeInTheDocument()
+  })
+})
+
+describe('User Review Card (CHG-011)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('renders user review card when userPlace is provided', () => {
+    renderForm({ userPlace: mockUserPlace })
+
+    const card = screen.getByTestId('user-review-card')
+    expect(card).toBeInTheDocument()
+
+    expect(screen.getByText('SkinSure Clinic')).toBeInTheDocument()
+    expect(screen.getByText('Baner Road, Pune, Maharashtra 411007, India')).toBeInTheDocument()
+    expect(screen.getByText(/4\.7/)).toBeInTheDocument()
+    expect(screen.getByText(/250 reviews/)).toBeInTheDocument()
+    expect(screen.getByText(/your google business profile/i)).toBeInTheDocument()
+  })
+
+  it('does not render review card when userPlace is null', () => {
+    renderForm({ userPlace: null })
+
+    expect(screen.queryByTestId('user-review-card')).not.toBeInTheDocument()
+  })
+
+  it('does not render review card when userPlace is undefined', () => {
+    renderForm()
+
+    expect(screen.queryByTestId('user-review-card')).not.toBeInTheDocument()
+  })
+
+  it('renders review card alongside competitor suggestions', () => {
+    renderForm({
+      userPlace: mockUserPlace,
+      suggestions: mockSuggestions,
+      suggestionsLoading: false,
+    })
+
+    // User review card
+    expect(screen.getByTestId('user-review-card')).toBeInTheDocument()
+    expect(screen.getByText('SkinSure Clinic')).toBeInTheDocument()
+
+    // Competitor suggestions
+    expect(screen.getByText('Smile Dental Clinic')).toBeInTheDocument()
+    expect(screen.getByText('Bright Teeth Dentistry')).toBeInTheDocument()
   })
 })

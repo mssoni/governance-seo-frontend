@@ -218,6 +218,7 @@ export interface CompetitorSuggestion {
 
 export interface SuggestCompetitorsResponse {
   suggestions: CompetitorSuggestion[]
+  user_place: CompetitorSuggestion | null
 }
 
 // --- Transparency ---

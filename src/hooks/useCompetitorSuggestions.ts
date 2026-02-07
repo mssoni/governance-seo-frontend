@@ -7,10 +7,12 @@ interface UseCompetitorSuggestionsParams {
   city: string
   region: string
   country: string
+  websiteUrl?: string
 }
 
 interface UseCompetitorSuggestionsResult {
   suggestions: CompetitorSuggestion[]
+  userPlace: CompetitorSuggestion | null
   loading: boolean
 }
 
@@ -19,8 +21,10 @@ export function useCompetitorSuggestions({
   city,
   region,
   country,
+  websiteUrl,
 }: UseCompetitorSuggestionsParams): UseCompetitorSuggestionsResult {
   const [suggestions, setSuggestions] = useState<CompetitorSuggestion[]>([])
+  const [userPlace, setUserPlace] = useState<CompetitorSuggestion | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -31,16 +35,19 @@ export function useCompetitorSuggestions({
       city,
       region,
       country,
+      website_url: websiteUrl,
     })
       .then((response) => {
         if (!cancelled) {
           setSuggestions(response.suggestions)
+          setUserPlace(response.user_place)
           setLoading(false)
         }
       })
       .catch(() => {
         if (!cancelled) {
           setSuggestions([])
+          setUserPlace(null)
           setLoading(false)
         }
       })
@@ -48,7 +55,7 @@ export function useCompetitorSuggestions({
     return () => {
       cancelled = true
     }
-  }, [businessType, city, region, country])
+  }, [businessType, city, region, country, websiteUrl])
 
-  return { suggestions, loading }
+  return { suggestions, userPlace, loading }
 }

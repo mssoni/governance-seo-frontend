@@ -192,11 +192,11 @@ User Input (form)
 
 ## Interface Contracts
 
-### src/services/api-client.ts [Updated in CHG-008]
+### src/services/api-client.ts [Updated in CHG-008, CHG-011]
 - `apiClient.get<T>(path)` → `Promise<T>`
 - `apiClient.post<T>(path, body)` → `Promise<T>`
 - `ApiError` class with `status` and `body`
-- `fetchCompetitorSuggestions(params: SuggestCompetitorsParams)` → `Promise<SuggestCompetitorsResponse>` — calls `GET /api/report/suggest-competitors` [Added in CHG-008]
+- `fetchCompetitorSuggestions(params: SuggestCompetitorsParams)` → `Promise<SuggestCompetitorsResponse>` — calls `GET /api/report/suggest-competitors` [Added in CHG-008, Updated in CHG-011 to pass website_url]
 
 ### src/hooks/useJobPolling.ts
 - `useJobPolling(jobId: string)` → `{ status, progress, currentStep, stepsCompleted, report, error, retry }`
@@ -339,10 +339,11 @@ User Input (form)
 - "We can help with this" CTA link per card
 - "View full 30-day checklist in Technical Details" button at bottom
 
-### src/components/CompetitorForm.tsx [Updated in CHG-008]
+### src/components/CompetitorForm.tsx [Updated in CHG-008, CHG-011]
 - Default export: `CompetitorForm` component
-- Props: `{ websiteUrl: string, location: Location, businessType: BusinessType, intent: Intent, onSubmit: (data: SEOReportRequest) => Promise<void>, isLoading: boolean, error?: string, suggestions?: CompetitorSuggestion[], suggestionsLoading?: boolean }`
-- `suggestions` and `suggestionsLoading` received as props from page layer (not fetched internally) — IO layering compliant
+- Props: `{ websiteUrl: string, location: Location, businessType: BusinessType, intent: Intent, onSubmit: (data: SEOReportRequest) => Promise<void>, isLoading: boolean, error?: string, suggestions?: CompetitorSuggestion[], suggestionsLoading?: boolean, userPlace?: CompetitorSuggestion | null }`
+- `suggestions`, `suggestionsLoading`, and `userPlace` received as props from page layer (not fetched internally) — IO layering compliant
+- When `userPlace` is provided, renders a Google Business Profile review card (data-testid="user-review-card") showing name, address, rating, review count
 - 3 competitor URL fields (competitor 1 & 2 required, competitor 3 optional)
 - URL validation matching InputForm pattern (same `isValidUrl` function)
 - Submit disabled until at least 2 valid competitor URLs entered
@@ -401,11 +402,11 @@ User Input (form)
 - SEO tab disabled with lock icon + "Add competitors to unlock" tooltip when `seoEnabled=false`
 - Tab IDs: `tab-business`, `tab-technical`, `tab-seo`; Panel IDs: `tabpanel-business`, `tabpanel-technical`, `tabpanel-seo`
 
-### src/hooks/useCompetitorSuggestions.ts [Added in CHG-008]
-- `useCompetitorSuggestions({ businessType, city, region, country })` → `{ suggestions: CompetitorSuggestion[], loading: boolean }`
-- Calls `fetchCompetitorSuggestions()` from api-client when businessType and city are provided
-- Manages `suggestions` and `loading` state via `useState`
-- Returns empty suggestions on error (graceful degradation)
+### src/hooks/useCompetitorSuggestions.ts [Added in CHG-008, Updated in CHG-011]
+- `useCompetitorSuggestions({ businessType, city, region, country, websiteUrl? })` → `{ suggestions: CompetitorSuggestion[], userPlace: CompetitorSuggestion | null, loading: boolean }`
+- Calls `fetchCompetitorSuggestions()` from api-client, passes websiteUrl for two-step search
+- Manages `suggestions`, `userPlace`, and `loading` state via `useState`
+- Returns empty suggestions and null userPlace on error (graceful degradation)
 - Used at page level (ReportPage) — not imported by components directly (IO layering)
 
 ### src/hooks/useSeoJobPolling.ts
@@ -417,10 +418,10 @@ User Input (form)
 - Proper cleanup: `active` flag prevents state updates after unmount, `clearInterval` in effect cleanup
 - `retry()` increments `retryCount` to re-trigger the polling effect
 
-### src/types/api.ts [Updated in CHG-008]
+### src/types/api.ts [Updated in CHG-008, CHG-011]
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
 - `CompetitorSuggestion` interface: name, address, rating, review_count, website_url — added in CHG-008
-- `SuggestCompetitorsResponse` interface: suggestions — added in CHG-008
+- `SuggestCompetitorsResponse` interface: suggestions, user_place — added in CHG-008, updated in CHG-011
 
 ### src/analytics/tracker.ts
 - `track(event: EventName, properties?: Record<string, unknown>)` — logs analytics event
@@ -464,5 +465,6 @@ User Input (form)
 - 2026-02-07 US-9.3: Print-friendly styling. Comprehensive @media print CSS in index.css: hides .no-print, tablist, #competitors; expands all evidence panels (evidence-list always visible); page breaks between major sections; print color adjust; URL printing on links; removes shadows; full-width layout. EvidencePanel updated to always render evidence in DOM (hidden attribute when collapsed) for print CSS override.
 - 2026-02-07 Story 4: Wire frontend to real backend API. API client already uses VITE_API_BASE_URL with http://localhost:8000 default. Created .env file. Expanded api-client tests: verifies base URL config, Content-Type headers on GET/POST, error handling, URL construction. 7 tests (up from 1).
 - 2026-02-07 CHG-001: Pages analyzed display + full report CTA. Added `pages_analyzed: number` field to GovernanceReport type and golden fixture. ReportPage shows "Based on analysis of {N} most important pages" text and a subtle blue CTA banner ("For a comprehensive full-site audit, reach out to us."). Contract version bumped to 1.1.0. 2 tests.
+- 2026-02-07 CHG-011: Improve competitor suggestions. Updated SuggestCompetitorsResponse type with user_place field. Updated api-client.ts to pass website_url param. Updated useCompetitorSuggestions hook to accept websiteUrl and return userPlace. Updated ReportPage to pass websiteUrl to hook and userPlace to CompetitorForm. Added Google Business Profile review card to CompetitorForm (data-testid="user-review-card"). 8 tests (4 new for review card). Contract 1.3.0→1.4.0.
 - 2026-02-07 CHG-008: Suggest Competitors via Google Places API. Added CompetitorSuggestion and SuggestCompetitorsResponse types to api.ts. Added fetchCompetitorSuggestions() to api-client.ts. Added useCompetitorSuggestions hook (hooks/useCompetitorSuggestions.ts). Updated CompetitorForm to accept suggestions/suggestionsLoading as props (IO layering fix — hook called at page level in ReportPage, not in component). Updated ReportPage to fetch suggestions and pass as props. 4 tests (competitor-suggestions.test.tsx). Contract 1.2.0→1.3.0.
 - 2026-02-07 CHG-005: Two-View Report — Business Overview + Technical Details. Added 3 new components: ExecutiveStory (narrative + pills), BusinessImpactCategories (4 category cards), TopImprovements (top 3 with effort/category). ReportTabs updated to 3 tabs (Business Overview default, Technical Details, SEO). SidePanel updated with topImprovements + activeTab props. ReportPage updated with BusinessContent + tab routing. Types updated: executive_narrative on ExecutiveSummary, business_category on Issue, TopImprovement interface, top_improvements on GovernanceReport. Golden fixture updated. Contract 1.1.0→1.2.0. 17 new tests (4 ExecutiveStory + 5 BusinessImpactCategories + 5 TopImprovements + 3 ReportPage).

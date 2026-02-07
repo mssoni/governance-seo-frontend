@@ -70,12 +70,22 @@ export interface SuggestCompetitorsParams {
   city: string
   region: string
   country: string
+  website_url?: string
 }
 
 export async function fetchCompetitorSuggestions(
   params: SuggestCompetitorsParams,
 ): Promise<SuggestCompetitorsResponse> {
-  const query = new URLSearchParams(params).toString()
+  const searchParams: Record<string, string> = {
+    business_type: params.business_type,
+    city: params.city,
+    region: params.region,
+    country: params.country,
+  }
+  if (params.website_url) {
+    searchParams.website_url = params.website_url
+  }
+  const query = new URLSearchParams(searchParams).toString()
   return apiClient.get<SuggestCompetitorsResponse>(
     `/api/report/suggest-competitors?${query}`,
   )

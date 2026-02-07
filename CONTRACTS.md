@@ -5,7 +5,7 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
-**Contract Version: 1.3.0**
+**Contract Version: 1.4.0**
 
 ## Rules
 
@@ -22,6 +22,7 @@
 |---------|------|--------|-----------|
 | 1.0.0 | 2026-02-07 | V1 baseline — all endpoints stable | — |
 | 1.1.0 | 2026-02-07 | Additive: `pages_analyzed` field added to GovernanceReport | CHG-001 |
+| 1.4.0 | 2026-02-07 | Additive: `user_place` on `SuggestCompetitorsResponse`, two-step search, `websiteUri` extraction | CHG-011 |
 | 1.3.0 | 2026-02-07 | Additive: `GET /api/report/suggest-competitors` endpoint, `CompetitorSuggestion` model, `SuggestCompetitorsResponse` model | CHG-008 |
 | 1.2.0 | 2026-02-07 | Additive: `executive_narrative` on ExecutiveSummary, `business_category` on Issue, `TopImprovement` model, `top_improvements` on GovernanceReport | CHG-005 |
 
@@ -113,11 +114,20 @@
       "address": "123 Main St, Austin, TX",
       "rating": 4.5,
       "review_count": 120,
-      "website_url": null
+      "website_url": "https://smiledental.com"
     }
-  ]
+  ],
+  "user_place": {
+    "name": "SkinSure Clinic",
+    "address": "Baner Road, Pune, Maharashtra 411007, India",
+    "rating": 4.7,
+    "review_count": 250,
+    "website_url": "https://skinsureclinic.com/"
+  }
 }
 ```
+
+When `website_url` is provided, uses a two-step search: (1) finds user's business on Google Places to get specific types + area, (2) searches for competitors using those specific types. `user_place` contains the user's own Google Business Profile data (null if not found or website_url not provided).
 
 Returns empty `suggestions` list if Places API key is not configured (graceful degradation).
 
@@ -162,6 +172,7 @@ Returns empty `suggestions` list if Places API key is not configured (graceful d
 | Field | Type | Required |
 |-------|------|----------|
 | suggestions | CompetitorSuggestion[] | yes |
+| user_place | CompetitorSuggestion \| null | no (default null, added in 1.4.0 CHG-011) |
 
 ### Location
 | Field | Type | Required |
