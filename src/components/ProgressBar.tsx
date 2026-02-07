@@ -17,16 +17,19 @@ interface ProgressBarProps {
 }
 
 export default function ProgressBar({ progress, currentStep, stepsCompleted }: ProgressBarProps) {
+  // Backend sends progress as 0.0–1.0; convert to 0–100 for display
+  const pct = Math.round(progress * 100)
+
   return (
     <div className="mx-auto w-full max-w-xl">
       {/* Progress bar */}
       <div className="mb-2 flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700">Generating report…</span>
-        <span className="text-sm font-semibold text-indigo-600">{progress}%</span>
+        <span className="text-sm font-semibold text-indigo-600">{pct}%</span>
       </div>
       <div
         role="progressbar"
-        aria-valuenow={progress}
+        aria-valuenow={pct}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label="Report generation progress"
@@ -34,7 +37,7 @@ export default function ProgressBar({ progress, currentStep, stepsCompleted }: P
       >
         <div
           className="h-full rounded-full bg-indigo-600 transition-all duration-500 ease-out"
-          style={{ width: `${progress}%` }}
+          style={{ width: `${pct}%` }}
         />
       </div>
 
