@@ -940,3 +940,54 @@ The integration fix correctly passes form data via URLSearchParams to enable Com
 - Added: "..." to [section]
 
 -->
+
+---
+
+## CHG-005: Two-View Report — Business Overview + Technical Details (Frontend)
+
+**Date:** 2026-02-07
+**Branch:** change/CHG-005-two-view-report
+**Reviewer:** Review Agent
+**Verdict:** APPROVED
+
+### Phase 1: Automated Gates
+- `make check`: PASS (145 tests, eslint, tsc all green)
+- `make dod`: PASS (all 6 checks, contract version sync v1.2.0)
+
+### Phase 2: Auto-Reject Trigger Checks (11/11)
+
+| # | Trigger | Status |
+|---|---------|--------|
+| 1 | Contract changed without version bump + fixtures | PASS (fixed: bumped 1.1.0→1.2.0, fixtures updated) |
+| 2 | New dependency without ARCHITECTURE.md | PASS (no new dependencies) |
+| 3 | New component without tests | PASS (3 new components, all have test files) |
+| 4 | Scope drift beyond allowed paths | PASS (all changes related to CHG-005) |
+| 5 | Live network calls in tests | PASS (all mocked) |
+| 6 | HTTP/Playwright import in non-IO module | PASS |
+| 7 | Layering violation | PASS (components don't import services) |
+| 8 | `make check` after fixes | PASS |
+| 9 | `make dod` after fixes | PASS |
+| 10 | CHANGE_LOG.md entry missing | PASS |
+| 11 | Lifecycle step skipped | PASS (all 8 steps followed) |
+
+### Phase 3: Review Fixes Applied
+1. **CONTRACTS.md**: Bumped version 1.1.0→1.2.0, documented new fields and TopImprovement model
+2. **ARCHITECTURE.md**: Added 3 new components + 3 test files to file tree, updated ReportTabs/SidePanel descriptions, updated component tree, added CHG-005 change log entry
+3. **PROGRESS.md**: Added CHG-005 entry with test count (127→145)
+4. **CURRENT_TASKS.md**: Added CHG-005 completed entry
+
+### CHG-005 Specific Checks
+- ✅ Frontend components don't use technical jargon in Business Overview (verified: no DetectedAs badges, no Confidence chips)
+- ✅ Existing `GovernanceContent` is unchanged (now rendered under Technical Details tab)
+- ✅ Default tab is "Business Overview" (`useState<TabId>('business')`)
+- ✅ Golden fixture updated with all new fields
+- ✅ TypeScript types match backend schema (executive_narrative, business_category, TopImprovement, top_improvements)
+- ✅ Existing tests still pass (127 pre-existing → 145 total including modified tests)
+- ✅ New components are pure (receive data via props, no service imports)
+- ✅ Accessibility: proper ARIA attributes on 3-tab navigation
+
+### Test Count
+- Before CHG-005: 127 tests
+- After CHG-005: 145 tests (+18)
+- New test files: executive-story.test.tsx (4), business-impact-categories.test.tsx (5), top-improvements.test.tsx (5)
+- Modified: report-tabs.test.tsx (updated for 3 tabs), report-page.test.tsx (+3 integration tests)
