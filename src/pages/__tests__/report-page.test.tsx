@@ -26,6 +26,11 @@ vi.mock('../../services/api-client', () => ({
   },
 }))
 
+// Mock the competitor suggestions hook used by CompetitorForm
+vi.mock('../../hooks/useCompetitorSuggestions', () => ({
+  useCompetitorSuggestions: vi.fn().mockReturnValue({ suggestions: [], loading: false }),
+}))
+
 const mockedGet = vi.mocked(apiClient.get)
 
 function renderReportPage(jobId = 'test-123') {

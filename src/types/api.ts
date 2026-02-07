@@ -206,6 +206,20 @@ export interface JobStatusResponse {
   seo_report: SEOReport | null
 }
 
+// --- Competitor Suggestions (Google Places) ---
+
+export interface CompetitorSuggestion {
+  name: string
+  address: string
+  rating: number | null
+  review_count: number | null
+  website_url: string | null
+}
+
+export interface SuggestCompetitorsResponse {
+  suggestions: CompetitorSuggestion[]
+}
+
 // --- Transparency ---
 
 export interface InferenceNote {

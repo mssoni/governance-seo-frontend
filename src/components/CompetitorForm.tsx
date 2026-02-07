@@ -6,6 +6,7 @@ import type {
   BusinessType,
   Intent,
 } from '../types/api'
+import { useCompetitorSuggestions } from '../hooks/useCompetitorSuggestions'
 
 // --- Validation (same as InputForm) ---
 
@@ -51,6 +52,14 @@ export default function CompetitorForm({
   const [competitors, setCompetitors] = useState<[string, string, string]>(['', '', ''])
   const [errors, setErrors] = useState<[string?, string?, string?]>([])
   const [touched, setTouched] = useState<[boolean, boolean, boolean]>([false, false, false])
+
+  // --- Competitor Suggestions ---
+  const { suggestions, loading: suggestionsLoading } = useCompetitorSuggestions({
+    businessType,
+    city: location.city,
+    region: location.region,
+    country: location.country,
+  })
 
   const validateCompetitor = useCallback(
     (index: number, value: string): string | undefined => {
@@ -180,6 +189,37 @@ export default function CompetitorForm({
       <p className="mb-6 text-sm text-gray-600">
         Enter competitor URLs to generate a Local Competitive SEO Report. At least 2 competitors are required.
       </p>
+
+      {/* --- Competitor Suggestions Section --- */}
+      {suggestionsLoading && (
+        <p className="mb-4 text-sm text-gray-500 italic">
+          Finding nearby competitors...
+        </p>
+      )}
+
+      {!suggestionsLoading && suggestions.length > 0 && (
+        <div className="mb-6">
+          <p className="mb-3 text-sm font-medium text-gray-600">
+            Nearby competitors in your area (optional — helps you compare)
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {suggestions.map((suggestion) => (
+              <div
+                key={`${suggestion.name}-${suggestion.address}`}
+                className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm"
+              >
+                <p className="font-semibold text-gray-900">{suggestion.name}</p>
+                <p className="mt-1 text-xs text-gray-500">{suggestion.address}</p>
+                {suggestion.rating != null && suggestion.review_count != null && (
+                  <p className="mt-1 text-xs text-amber-600">
+                    {suggestion.rating} ★ ({suggestion.review_count} reviews)
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {error && (
         <div
