@@ -1,16 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import CompetitorForm from '../CompetitorForm'
 import type { CompetitorSuggestion } from '../../types/api'
-
-// Mock the hook module (hooks are the bridge between components and services)
-vi.mock('../../hooks/useCompetitorSuggestions', () => ({
-  useCompetitorSuggestions: vi.fn(),
-}))
-
-import { useCompetitorSuggestions } from '../../hooks/useCompetitorSuggestions'
-
-const mockUseCompetitorSuggestions = vi.mocked(useCompetitorSuggestions)
 
 const defaultProps = {
   websiteUrl: 'https://example.com',
@@ -45,7 +36,7 @@ const mockSuggestions: CompetitorSuggestion[] = [
   },
 ]
 
-function renderForm(overrides: Partial<typeof defaultProps> = {}) {
+function renderForm(overrides: Record<string, unknown> = {}) {
   const props = { ...defaultProps, onSubmit: vi.fn(defaultProps.onSubmit), ...overrides }
   return render(<CompetitorForm {...props} />)
 }
@@ -55,13 +46,8 @@ describe('Competitor Suggestions (CHG-008)', () => {
     vi.clearAllMocks()
   })
 
-  it('renders suggestion cards when API returns results', () => {
-    mockUseCompetitorSuggestions.mockReturnValue({
-      suggestions: mockSuggestions,
-      loading: false,
-    })
-
-    renderForm()
+  it('renders suggestion cards when suggestions are provided via props', () => {
+    renderForm({ suggestions: mockSuggestions, suggestionsLoading: false })
 
     // Verify suggestion cards
     expect(screen.getByText('Smile Dental Clinic')).toBeInTheDocument()
@@ -77,34 +63,16 @@ describe('Competitor Suggestions (CHG-008)', () => {
     expect(screen.getByText(/120 reviews/)).toBeInTheDocument()
     expect(screen.getByText(/4\.2/)).toBeInTheDocument()
     expect(screen.getByText(/89 reviews/)).toBeInTheDocument()
-
-    // Verify hook was called with correct params
-    expect(mockUseCompetitorSuggestions).toHaveBeenCalledWith({
-      businessType: 'dental',
-      city: 'Miami',
-      region: 'FL',
-      country: 'US',
-    })
   })
 
   it('shows loading state while fetching suggestions', () => {
-    mockUseCompetitorSuggestions.mockReturnValue({
-      suggestions: [],
-      loading: true,
-    })
-
-    renderForm()
+    renderForm({ suggestions: [], suggestionsLoading: true })
 
     expect(screen.getByText(/finding nearby competitors/i)).toBeInTheDocument()
   })
 
   it('handles empty suggestions gracefully', () => {
-    mockUseCompetitorSuggestions.mockReturnValue({
-      suggestions: [],
-      loading: false,
-    })
-
-    renderForm()
+    renderForm({ suggestions: [], suggestionsLoading: false })
 
     // Should not show the suggestions section header
     expect(screen.queryByText(/nearby competitors in your area/i)).not.toBeInTheDocument()
@@ -114,23 +82,11 @@ describe('Competitor Suggestions (CHG-008)', () => {
     expect(screen.getByLabelText(/competitor 1 url/i)).toBeInTheDocument()
   })
 
-  it('handles API error gracefully', async () => {
-    // When the hook catches an error, it returns empty suggestions and loading=false
-    mockUseCompetitorSuggestions.mockReturnValue({
-      suggestions: [],
-      loading: false,
-    })
-
+  it('handles missing suggestions prop gracefully (defaults to empty)', () => {
     renderForm()
 
-    await waitFor(() => {
-      expect(mockUseCompetitorSuggestions).toHaveBeenCalled()
-    })
-
-    // Should not show the suggestions section header
+    // Should not show the suggestions section header (defaults to empty array)
     expect(screen.queryByText(/nearby competitors in your area/i)).not.toBeInTheDocument()
-    // Should not show any error message about suggestions
-    expect(screen.queryByText(/error/i)).not.toBeInTheDocument()
     // Form should still work
     expect(screen.getByLabelText(/competitor 1 url/i)).toBeInTheDocument()
   })

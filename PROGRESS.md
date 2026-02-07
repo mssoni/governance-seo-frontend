@@ -1,6 +1,14 @@
 # Progress
 
 ## Completed
+- [x] CHG-008: Suggest Competitors via Google Places API (2026-02-07) — 4 tests
+  - `src/types/api.ts`: CompetitorSuggestion and SuggestCompetitorsResponse types
+  - `src/services/api-client.ts`: fetchCompetitorSuggestions() function
+  - `src/hooks/useCompetitorSuggestions.ts`: Custom hook for fetching suggestions
+  - `src/components/CompetitorForm.tsx`: Updated to accept suggestions/suggestionsLoading as props (IO layering fix)
+  - `src/pages/ReportPage.tsx`: Fetches suggestions at page level, passes as props
+  - `src/components/__tests__/competitor-suggestions.test.tsx`: 4 test cases
+  - Contract 1.2.0→1.3.0
 - [x] US-0.2: Frontend scaffold (Phase 0 bootstrap, 2026-02-06)
 - [x] US-1.1: Landing page layout and hero (2026-02-06) — 8 tests
 - [x] US-1.2: Input form with validation (2026-02-06) — 8 tests
@@ -169,7 +177,8 @@
 | CHG-004 (Fix Progress %) | COMPLETE | 1 story | 5 |
 | CHG-005 (Two-View Report) | COMPLETE | 3 stories | 17 |
 | CHG-007 (Move Competitor Form) | COMPLETE | 1 story | 1 |
-| **Total** | **COMPLETE** | **19 stories + 4 changes** | **146 tests** |
+| CHG-008 (Suggest Competitors) | COMPLETE | 1 story | 4 |
+| **Total** | **COMPLETE** | **20 stories + 5 changes** | **150 tests** |
 
 ## Up Next
 (none pending)

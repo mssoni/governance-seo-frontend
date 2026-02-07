@@ -5,8 +5,8 @@ import type {
   Location,
   BusinessType,
   Intent,
+  CompetitorSuggestion,
 } from '../types/api'
-import { useCompetitorSuggestions } from '../hooks/useCompetitorSuggestions'
 
 // --- Validation (same as InputForm) ---
 
@@ -36,6 +36,8 @@ interface CompetitorFormProps {
   onSubmit: (data: SEOReportRequest) => Promise<void>
   isLoading: boolean
   error?: string
+  suggestions?: CompetitorSuggestion[]
+  suggestionsLoading?: boolean
 }
 
 // --- Component ---
@@ -48,18 +50,12 @@ export default function CompetitorForm({
   onSubmit,
   isLoading,
   error,
+  suggestions = [],
+  suggestionsLoading = false,
 }: CompetitorFormProps) {
   const [competitors, setCompetitors] = useState<[string, string, string]>(['', '', ''])
   const [errors, setErrors] = useState<[string?, string?, string?]>([])
   const [touched, setTouched] = useState<[boolean, boolean, boolean]>([false, false, false])
-
-  // --- Competitor Suggestions ---
-  const { suggestions, loading: suggestionsLoading } = useCompetitorSuggestions({
-    businessType,
-    city: location.city,
-    region: location.region,
-    country: location.country,
-  })
 
   const validateCompetitor = useCallback(
     (index: number, value: string): string | undefined => {
