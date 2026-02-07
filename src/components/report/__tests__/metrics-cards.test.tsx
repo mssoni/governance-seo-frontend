@@ -42,8 +42,8 @@ describe('MetricsCards (US-5.3)', () => {
     const showButtons = screen.getAllByText('Show evidence')
     expect(showButtons.length).toBe(6)
 
-    // Evidence content should not be visible initially
-    expect(screen.queryByText('PageSpeed Insights mobile score: 42')).not.toBeInTheDocument()
+    // Evidence content should not be visible initially (hidden in DOM for print support)
+    expect(screen.queryByText('PageSpeed Insights mobile score: 42')).not.toBeVisible()
 
     // Click "Show evidence" on the first card (Performance)
     await user.click(showButtons[0])

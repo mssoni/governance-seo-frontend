@@ -13,14 +13,17 @@ You are building the frontend for a Website Governance + Local Competitive SEO R
 
 ## Current Phase
 
-**Phase 3 -- SEO Module** (awaiting kickoff)
+**Phase 4 -- Integration & Polish** (awaiting kickoff)
 
 Active stories: (to be assigned)
-- US-6.3: Competitor input form UI
-- US-8.1: Competitor overview table
-- US-8.2: Strengths and gaps sections
-- US-8.3: 30-day SEO plan UI
-- US-8.4: SEO tab integration
+- US-9.1: Analytics instrumentation
+- US-9.2: Error handling & edge cases
+- US-9.3: Print-friendly styling
+- Integration: Wire real API to frontend, fix mismatches
+- E2E: End-to-end testing with browser MCP
+
+Completed (Phase 3 — SEO Module):
+- US-6.2, US-8.1, US-8.2, US-8.3, US-8.4
 
 Completed (Phase 2 — Core Engine):
 - US-5.1, US-5.2, US-5.3, US-5.4, US-5.5, US-5.6, US-5.7

@@ -29,12 +29,12 @@ function getSpeedRank(band: string): number {
   return 1 // default to average
 }
 
-/** Content coverage ranked from best to worst */
+/** Content coverage ranked from best to worst (matches backend values) */
 const COVERAGE_RANK: Record<string, number> = {
   comprehensive: 3,
-  good: 2,
+  moderate: 2,
   basic: 1,
-  none: 0,
+  minimal: 0,
 }
 
 function getCoverageRank(coverage: string): number {

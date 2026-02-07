@@ -93,7 +93,7 @@
   - Week 1 expanded by default, others collapsed
   - Each action: action text, why, signal_strengthened, estimated_impact, verification_method
   - aria-expanded on collapsible sections, aria-hidden on decorative icons
-- [x] US-8.4: Tab navigation between reports (2026-02-07) — 12 tests
+- [x] US-8.4: Tab navigation between reports (2026-02-07) — 18 tests (11 ReportTabs + 7 useSeoJobPolling)
   - ReportTabs component: role="tablist" with Governance and SEO tabs
   - SEO tab disabled with lock icon + "Add competitors to unlock" tooltip when seoEnabled=false
   - Active tab has aria-selected=true, inactive has aria-selected=false
@@ -105,6 +105,29 @@
   - Auto-switch to SEO tab when SEO report completes
   - SEO tab content: CompetitorTable, StrengthsGaps, SEOActionPlan
   - SEO polling progress indicator shown below governance report during generation
+
+- [x] US-9.1: Analytics instrumentation (2026-02-07) — 7 tests
+  - Created src/analytics/tracker.ts: track(), setHandler(), resetHandler()
+  - Default console.info handler, extensible to GA/Mixpanel
+  - EventName union type: 8 tracked events
+  - Integrated into Hero, LandingPage, ReportPage, SidePanel, EvidencePanel
+  - All events include timestamp in properties
+- [x] US-9.2: Error handling & edge cases (2026-02-07) — 8 tests (4 + 4)
+  - ErrorBoundary class component: catches rendering errors, shows fallback with role="alert", retry button
+  - NotFoundPage: 404 page with accessible heading, descriptive text, home link
+  - App.tsx: wrapped with ErrorBoundary, added catch-all `*` route
+- [x] US-9.3: Print-friendly styling (2026-02-07) — 0 tests (CSS-only)
+  - Comprehensive @media print styles in index.css
+  - Hides: .no-print, tablist, #competitors section
+  - Expands: all evidence panels (evidence-list visible via CSS override)
+  - Page breaks between major sections (section > h2)
+  - Print color adjust, shadow removal, URL display on links
+  - Full-width layout (no 2-column grid)
+  - EvidencePanel refactored: always renders evidence in DOM with hidden attribute
+- [x] Story 4: Wire frontend to real backend API (2026-02-07) — 6 new tests (7 total)
+  - API client already uses VITE_API_BASE_URL with http://localhost:8000 default
+  - Created .env file with VITE_API_BASE_URL=http://localhost:8000
+  - Expanded test coverage: base URL, headers, error handling, URL construction
 
 ## In Progress
 (none)
@@ -119,8 +142,9 @@
 | Phase 0 (Bootstrap) | COMPLETE | US-0.2 | 2 |
 | Phase 1 (Foundation) | COMPLETE | US-1.1 through US-1.3 | 20 |
 | Phase 2 (Core Engine) | COMPLETE | US-5.1 through US-5.7 | 35 |
-| Phase 3 (SEO Module) | IN PROGRESS | US-6.2, US-8.1, US-8.2, US-8.3, US-8.4 | 35 |
-| **Total** | | **15 stories** | **92 tests** |
+| Phase 3 (SEO Module) | COMPLETE | US-6.2, US-8.1, US-8.2, US-8.3, US-8.4 | 42 |
+| Phase 4 (Integration & Polish) | COMPLETE | US-9.1, US-9.2, US-9.3, API wiring | 21 |
+| **Total** | | **19 stories** | **120 tests** |
 
-## Up Next (Phase 3 — SEO Module)
-(none pending)
+## Up Next
+(none pending — Phase 4 complete)

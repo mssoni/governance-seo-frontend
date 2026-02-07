@@ -87,7 +87,7 @@ export default function ReportTabs({
             type="button"
             id={TAB_IDS.governance}
             aria-selected={activeTab === 'governance'}
-            aria-controls={PANEL_IDS[activeTab]}
+            aria-controls={PANEL_IDS.governance}
             tabIndex={activeTab === 'governance' ? 0 : -1}
             onClick={() => onTabChange('governance')}
             className={`inline-flex items-center gap-2 border-b-2 px-1 py-3 text-sm transition-colors ${
@@ -117,7 +117,7 @@ export default function ReportTabs({
             type="button"
             id={TAB_IDS.seo}
             aria-selected={activeTab === 'seo'}
-            aria-controls={PANEL_IDS[activeTab]}
+            aria-controls={PANEL_IDS.seo}
             aria-disabled={!seoEnabled || undefined}
             disabled={!seoEnabled}
             tabIndex={activeTab === 'seo' ? 0 : -1}

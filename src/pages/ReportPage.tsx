@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useJobPolling } from '../hooks/useJobPolling'
 import { useSeoJobPolling } from '../hooks/useSeoJobPolling'
 import { apiClient } from '../services/api-client'
+import { track } from '../analytics/tracker'
 import ProgressBar from '../components/ProgressBar'
 import ReportHeader from '../components/ReportHeader'
 import ExecutiveSummary from '../components/report/ExecutiveSummary'
@@ -148,10 +149,34 @@ function ReportPageContent({
 
   const seoPolling = useSeoJobPolling(seoJobId)
 
+  // Track tab switches
+  const handleTabChange = useCallback((tab: 'governance' | 'seo') => {
+    track('tab_switch', { tab })
+    setActiveTab(tab)
+  }, [])
+
+  // --- Track governance report lifecycle ---
+  const reportStartTime = useRef<number>(Date.now())
+  const prevStatus = useRef(status)
+
+  useEffect(() => {
+    if (prevStatus.current !== status) {
+      if (status === 'complete' && report) {
+        track('report_generation_complete', {
+          duration_ms: Date.now() - reportStartTime.current,
+        })
+      } else if (status === 'failed' || error) {
+        track('report_generation_failed', { error_type: 'polling_error' })
+      }
+      prevStatus.current = status
+    }
+  }, [status, report, error])
+
   // Auto-switch to SEO tab when SEO report completes
   const prevSeoStatus = useRef(seoPolling.status)
   useEffect(() => {
     if (prevSeoStatus.current !== 'complete' && seoPolling.status === 'complete' && seoPolling.seoReport) {
+      track('seo_report_complete')
       setActiveTab('seo')
     }
     prevSeoStatus.current = seoPolling.status
@@ -162,6 +187,7 @@ function ReportPageContent({
     async (data: SEOReportRequest) => {
       setSeoSubmitError(undefined)
       setSeoSubmitting(true)
+      track('seo_report_start', { competitors: data.competitors.length })
       try {
         const response = await apiClient.post<JobCreateResponse>('/api/report/seo', data)
         setSeoJobId(response.job_id)
@@ -211,7 +237,7 @@ function ReportPageContent({
 
           <ReportTabs
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={handleTabChange}
             seoEnabled={seoEnabled}
           >
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_280px]">

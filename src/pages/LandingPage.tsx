@@ -4,6 +4,7 @@ import Hero from '../components/Hero'
 import TrustIndicators from '../components/TrustIndicators'
 import InputForm from '../components/InputForm'
 import { apiClient, ApiError } from '../services/api-client'
+import { track } from '../analytics/tracker'
 import type { GovernanceReportRequest, JobCreateResponse } from '../types/api'
 
 interface SubmissionError {
@@ -22,6 +23,8 @@ export default function LandingPage() {
     setError(null)
     setLastPayload(data)
 
+    track('report_generation_start', { url: data.website_url })
+
     try {
       const response = await apiClient.post<JobCreateResponse>(
         '/api/report/governance',
@@ -30,11 +33,13 @@ export default function LandingPage() {
       navigate(`/report?job=${response.job_id}`)
     } catch (err) {
       if (err instanceof ApiError) {
+        track('report_generation_failed', { error_type: 'api_error', status: err.status })
         setError({
           message: err.body || `Request failed (${err.status})`,
           isNetworkError: false,
         })
       } else {
+        track('report_generation_failed', { error_type: 'network_error' })
         setError({
           message: 'Network error. Please check your connection and try again.',
           isNetworkError: true,

@@ -210,9 +210,11 @@ export default function CompetitorForm({
               onBlur={handleBlur(index)}
               className={inputClasses(index)}
               aria-label={`Competitor ${index + 1} URL`}
+              aria-invalid={!!(errors[index] && touched[index])}
+              aria-describedby={errors[index] && touched[index] ? `competitor_${index + 1}_error` : undefined}
             />
             {errors[index] && touched[index] && (
-              <p className="mt-1 text-sm text-red-600">{errors[index]}</p>
+              <p id={`competitor_${index + 1}_error`} className="mt-1 text-sm text-red-600" role="alert">{errors[index]}</p>
             )}
           </div>
         ))}

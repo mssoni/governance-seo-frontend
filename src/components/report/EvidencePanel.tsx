@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Evidence } from '../../types/api'
+import { track } from '../../analytics/tracker'
 
 interface EvidencePanelProps {
   evidence: Evidence[]
@@ -19,7 +20,7 @@ export default function EvidencePanel({ evidence, label, defaultOpen = false }: 
     <div className="mt-2">
       <button
         type="button"
-        onClick={() => setOpen(!open)}
+        onClick={() => { if (!open) track('evidence_expand', { label: showLabel }); setOpen(!open) }}
         aria-expanded={open}
         className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-800"
       >
@@ -35,20 +36,18 @@ export default function EvidencePanel({ evidence, label, defaultOpen = false }: 
         </svg>
         {open ? hideLabel : showLabel}
       </button>
-      {open && (
-        <ul className="mt-2 space-y-1.5 pl-5">
-          {evidence.map((item, i) => (
-            <li key={i} className="text-sm text-gray-600">
-              <span>{item.description}</span>
-              {item.raw_value != null && (
-                <span className="ml-2 rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-500">
-                  {item.raw_value}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="mt-2 space-y-1.5 pl-5 evidence-list" hidden={!open}>
+        {evidence.map((item, i) => (
+          <li key={i} className="text-sm text-gray-600">
+            <span>{item.description}</span>
+            {item.raw_value != null && (
+              <span className="ml-2 rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-500">
+                {item.raw_value}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

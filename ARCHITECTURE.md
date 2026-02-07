@@ -9,11 +9,15 @@
 frontend/
 ├── src/
 │   ├── main.tsx                   # React entry point
-│   ├── App.tsx                    # Root component (placeholder)
+│   ├── App.tsx                    # Root component with ErrorBoundary + routing
 │   ├── App.css                    # App-specific styles
 │   ├── App.test.tsx               # Smoke test (renders without crashing)
-│   ├── index.css                  # Tailwind CSS v4 import
+│   ├── index.css                  # Tailwind CSS v4 import + comprehensive print styles
 │   ├── test-setup.ts              # Vitest setup (jest-dom matchers)
+│   ├── analytics/
+│   │   ├── tracker.ts             # Analytics event tracker (console.info default, extensible) [Added in US-9.1]
+│   │   └── __tests__/
+│   │       └── tracker.test.ts    # Analytics tracker tests (7 cases) [Added in US-9.1]
 │   ├── components/
 │   │   ├── Hero.tsx               # Hero section (headline, subheadline, CTA)
 │   │   ├── TrustIndicators.tsx    # Trust badges (no-login, fast, transparent)
@@ -32,6 +36,7 @@ frontend/
 │   │   │   ├── CompetitorTable.tsx  # Competitor overview table with color coding, tooltips
 │   │   │   ├── StrengthsGaps.tsx   # Strengths, weaknesses & gap breakdown section
 │   │   │   ├── SEOActionPlan.tsx   # 30-day week-by-week action plan with collapsible weeks
+│   │   │   ├── ReportTabs.tsx     # WCAG-compliant tab navigation (Governance/SEO) [Added in US-8.4]
 │   │   │   └── __tests__/
 │   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
 │   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
@@ -41,20 +46,28 @@ frontend/
 │   │   │       ├── side-panel.test.tsx          # SidePanel tests (6 cases)
 │   │   │       ├── competitor-table.test.tsx    # CompetitorTable tests (7 cases)
 │   │   │       ├── strengths-gaps.test.tsx      # StrengthsGaps tests (4 cases)
-│   │   │       └── action-plan.test.tsx         # SEOActionPlan tests (5 cases)
+│   │   │       ├── action-plan.test.tsx         # SEOActionPlan tests (5 cases)
+│   │   │       └── report-tabs.test.tsx        # ReportTabs tests (11 cases) [Added in US-8.4]
 │   │   ├── CompetitorForm.tsx     # Competitor input form (3 URL fields, validation, SEO submit)
+│   │   ├── ErrorBoundary.tsx      # React error boundary with retry (role="alert") [Added in US-9.2]
 │   │   └── __tests__/
 │   │       ├── input-form.test.tsx  # InputForm tests (8 cases)
-│   │       └── competitor-form.test.tsx  # CompetitorForm tests (7 cases)
+│   │       ├── competitor-form.test.tsx  # CompetitorForm tests (7 cases)
+│   │       └── error-boundary.test.tsx  # ErrorBoundary tests (4 cases) [Added in US-9.2]
 │   ├── hooks/
-│   │   └── useJobPolling.ts       # Custom hook: polls job status, returns state + retry
+│   │   ├── useJobPolling.ts       # Custom hook: polls job status, returns state + retry
+│   │   ├── useSeoJobPolling.ts    # Custom hook: polls SEO job status, conditional activation [Added in US-8.4]
+│   │   └── __tests__/
+│   │       └── useSeoJobPolling.test.ts  # SEO polling hook tests (7 cases) [Added in US-8.4]
 │   ├── pages/
 │   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form + error UI)
 │   │   ├── ReportPage.tsx         # Report page with polling, progress, header, report content
+│   │   ├── NotFoundPage.tsx       # 404 page with accessible heading + home link [Added in US-9.2]
 │   │   └── __tests__/
 │   │       ├── landing-page.test.tsx     # Landing page tests (8 cases)
 │   │       ├── form-submission.test.tsx  # Form submission + navigation tests (4 cases)
-│   │       └── report-page.test.tsx     # Report page polling + display tests (6 cases)
+│   │       ├── report-page.test.tsx     # Report page polling + display tests (6 cases)
+│   │       └── not-found.test.tsx       # NotFoundPage tests (4 cases) [Added in US-9.2]
 │   ├── lib/                       # Utility functions (empty)
 │   ├── types/
 │   │   └── api.ts                 # TypeScript types matching backend Pydantic models
@@ -80,6 +93,7 @@ frontend/
 ├── CONTRACTS.md                   # Shared API schemas
 ├── PROGRESS.md
 ├── CURRENT_TASKS.md
+├── .env                           # Environment variables (VITE_API_BASE_URL) [Added in Story 4]
 ├── BLOCKERS.md
 ├── MOCK_DATA.md
 ├── TEST_GUIDE.md
@@ -90,34 +104,47 @@ frontend/
 ## Component Tree
 
 ```
-App (BrowserRouter + Routes)
+App
+├── ErrorBoundary (catches rendering errors, shows fallback with retry)
+├── BrowserRouter + Routes
 ├── / → LandingPage
 │   ├── Hero              # Headline, subheadline, CTA anchor to #report-form
 │   ├── TrustIndicators   # 3 trust badges in responsive grid
 │   ├── <section #report-form>
 │   │   └── InputForm     # URL, location, business type, intent fields + validation
 │   └── Error display     # API/network error alert with optional retry button
-└── /report → ReportPage  # Reads ?job= param, polls for status
+├── /report → ReportPage  # Reads ?job= param, polls for status
     ├── [loading] ProgressBar      # Progress bar + step labels
     ├── [error] Error display      # Error message + "Try again" button
     └── [complete]
         ├── ReportHeader           # Website URL, location, intent badge
-        └── ReportContent
-            ├── ExecutiveSummary   # Working items (green) + attention items (orange)
-            │   └── SummaryCard    # Per-item card with Badge + ConfidenceChip
-            ├── MetricsCards       # 2-col responsive grid of metric cards
-            │   └── MetricCardItem # Name, value, meaning, why_it_matters, EvidencePanel
-            ├── IssuesList         # Severity-filtered list of expandable issue cards
-            │   └── IssueCard      # Title, badges, expandable details with EvidencePanel
-            ├── ChecklistSection   # 30-day checklist grouped by category
-            │   └── CategoryGroup  # Collapsible category with checkbox items
-            └── LimitationsSection # Always-visible limitations list
-        └── SidePanel (right col, sticky, desktop only, hidden on print)
-            ├── Top Actions (first 5 issues)
-            ├── Print Report button
-            ├── Need help? CTA
-            ├── Connect GA/GSC (disabled, Coming soon)
-            └── Compare against competitors (link)
+        └── ReportTabs             # WCAG tab navigation (Governance / SEO)
+            ├── [governance tab]
+            │   ├── GovernanceContent
+            │   │   ├── ExecutiveSummary   # Working items (green) + attention items (orange)
+            │   │   │   └── SummaryCard    # Per-item card with Badge + ConfidenceChip
+            │   │   ├── MetricsCards       # 2-col responsive grid of metric cards
+            │   │   │   └── MetricCardItem # Name, value, meaning, why_it_matters, EvidencePanel
+            │   │   ├── IssuesList         # Severity-filtered list of expandable issue cards
+            │   │   │   └── IssueCard      # Title, badges, expandable details with EvidencePanel
+            │   │   ├── ChecklistSection   # 30-day checklist grouped by category
+            │   │   │   └── CategoryGroup  # Collapsible category with checkbox items
+            │   │   └── LimitationsSection # Always-visible limitations list
+            │   ├── [if SEO polling] SEOPollingProgress  # Progress indicator during SEO generation
+            │   ├── [if SEO error] Error alert
+            │   └── [if no SEO job] CompetitorForm  # CTA to start SEO analysis
+            ├── [seo tab — enabled when SEO report ready]
+            │   └── SEOContent
+            │       ├── CompetitorTable     # Color-coded comparison table
+            │       ├── StrengthsGaps       # Advantages, strengths, gap breakdown
+            │       └── SEOActionPlan       # 4-week plan with disclaimer
+            └── SidePanel (right col, sticky, desktop only, hidden on print)
+                ├── Top Actions (first 5 issues)
+                ├── Print Report button (tracks cta_click)
+                ├── Need help? CTA (tracks cta_click)
+                ├── Connect GA/GSC (disabled, Coming soon)
+                └── Compare against competitors (link, tracks cta_click)
+└── * → NotFoundPage  # 404 catch-all with home link
 ```
 
 ## Routing
@@ -126,6 +153,7 @@ App (BrowserRouter + Routes)
 |-------|-----------|-------------|
 | `/` | LandingPage | Landing page with input form, API submission, error handling |
 | `/report` | ReportPage | Report display with job polling, progress, error, report rendering |
+| `*` | NotFoundPage | 404 catch-all with accessible heading and home link |
 
 ## Data Flow
 
@@ -138,11 +166,13 @@ User Input (form)
   → useJobPolling hook polls GET /api/report/status/{job_id}
   → Show ProgressBar while processing
   → On error: show error + "Try again" button (retry resets polling)
-  → On complete: render ReportHeader + ReportContent
-  → User submits competitors
-  → POST /api/report/seo
-  → Poll for SEO report
-  → Render SEOReport in second tab
+  → On complete: render ReportHeader + ReportTabs (Governance tab active)
+  → Governance tab shows: GovernanceContent + CompetitorForm CTA
+  → User submits competitors via CompetitorForm
+  → POST /api/report/seo → receive seo_job_id
+  → useSeoJobPolling(seo_job_id) starts polling
+  → SEO progress indicator shown below governance content
+  → On SEO complete: auto-switch to SEO tab, render SEOContent
 ```
 
 ## Interface Contracts
@@ -230,10 +260,16 @@ User Input (form)
 
 ### src/pages/ReportPage.tsx
 - Default export: `ReportPage` component (no props)
-- Reads `job`, `url`, `location`, `intent` from URL search params
-- Uses `useJobPolling(jobId)` for polling logic
-- Three states: loading (ProgressBar), error (message + Try again), complete (ReportHeader + ReportContent)
-- Complete state uses 2-column grid: main content (left, wider) + SidePanel (right, 280px, sticky, desktop only)
+- Reads `job`, `url`, `location`, `intent`, `business_type` from URL search params
+- Uses `useJobPolling(jobId)` for governance polling
+- Uses `useSeoJobPolling(seoJobId)` for SEO polling (conditional, only when seoJobId set)
+- Three states: loading (ProgressBar), error (message + Try again), complete (ReportHeader + ReportTabs)
+- Complete state: ReportTabs wrapping GovernanceContent + SEOContent
+  - Governance tab: GovernanceContent + CompetitorForm CTA (when no SEO job) + SEO polling progress
+  - SEO tab: SEOContent (CompetitorTable, StrengthsGaps, SEOActionPlan) — enabled when SEO report ready
+  - Auto-switch to SEO tab when SEO report completes (via useEffect + useRef tracking)
+- `handleCompetitorSubmit`: POST /api/report/seo, sets seoJobId on success
+- 2-column grid: main content (left, wider) + SidePanel (right, 280px, sticky, desktop only)
 - Container max-w-6xl for 2-column layout
 
 ### src/components/report/ChecklistSection.tsx
@@ -313,8 +349,46 @@ User Input (form)
   - action text (title), why, signal_strengthened (indigo badge), estimated_impact, verification_method
   - Uses `<dl>` definition list for structured field display
 
+### src/components/report/ReportTabs.tsx
+- Default export: `ReportTabs` component
+- Props: `{ activeTab: 'governance' | 'seo', onTabChange: (tab) => void, seoEnabled: boolean, children: React.ReactNode }`
+- WCAG-compliant tab pattern: `role="tablist"`, `role="tab"`, `role="tabpanel"`
+- `aria-selected`, `aria-controls`, `aria-disabled` attributes
+- `tabIndex={0}` for active tab, `tabIndex={-1}` for inactive
+- Keyboard navigation: ArrowLeft/ArrowRight to switch tabs
+- SEO tab disabled with lock icon + "Add competitors to unlock" tooltip when `seoEnabled=false`
+- Tab IDs: `tab-governance`, `tab-seo`; Panel IDs: `tabpanel-governance`, `tabpanel-seo`
+
+### src/hooks/useSeoJobPolling.ts
+- `useSeoJobPolling(jobId: string | null)` → `{ status, progress, currentStep, stepsCompleted, seoReport, error, retry }`
+- Polls `GET /api/report/status/{jobId}` every 2.5 seconds
+- Only active when `jobId` is non-null
+- Uses `useReducer` for state management (RESET, POLL_SUCCESS, POLL_ERROR, RETRY actions)
+- Stops polling on `complete` or `failed` status, or on network error
+- Proper cleanup: `active` flag prevents state updates after unmount, `clearInterval` in effect cleanup
+- `retry()` increments `retryCount` to re-trigger the polling effect
+
 ### src/types/api.ts
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
+
+### src/analytics/tracker.ts
+- `track(event: EventName, properties?: Record<string, unknown>)` — logs analytics event
+- `setHandler(handler: AnalyticsHandler)` — register custom handler (e.g. GA)
+- `resetHandler()` — revert to default console.info handler
+- EventName: `report_generation_start` | `report_generation_complete` | `report_generation_failed` | `cta_click` | `tab_switch` | `evidence_expand` | `seo_report_start` | `seo_report_complete`
+- Default: `console.info('[analytics]', event, { ...properties, timestamp })` 
+
+### src/components/ErrorBoundary.tsx
+- Default export: `ErrorBoundary` (class component)
+- Props: `{ children: ReactNode }`
+- Catches React rendering errors, shows fallback with `role="alert"`
+- Fallback: heading "Something went wrong", retry button that resets error state
+- Logs errors via `console.warn('[ErrorBoundary]', ...)`
+
+### src/pages/NotFoundPage.tsx
+- Default export: `NotFoundPage` component (no props)
+- Shows 404 text, "Page not found" heading, descriptive text, "Go back home" link to `/`
+- Uses `<Link>` from react-router-dom
 
 ## Change Log
 
@@ -333,3 +407,8 @@ User Input (form)
 - 2026-02-07 US-8.1: Competitor overview table. CompetitorTable with color-coded comparison, tooltips, responsive horizontal scroll. 7 tests.
 - 2026-02-07 US-8.2: Strengths, weaknesses & gap breakdown. StrengthsGaps component with competitor advantages, user strengths, gap breakdown table with color-coded significance. 4 tests.
 - 2026-02-07 US-8.3: 30-day SEO action plan. SEOActionPlan component with collapsible week sections, disclaimer banner, action cards with all required fields. 5 tests.
+- 2026-02-07 US-8.4: Tab navigation + SEO polling integration. ReportTabs component with WCAG-compliant tab pattern (role="tablist"/"tab"/"tabpanel", aria-selected, aria-controls, keyboard navigation). SEO tab disabled with lock icon + tooltip when no SEO report. useSeoJobPolling hook: conditional polling with useReducer state, proper cleanup (active flag, clearInterval). ReportPage updated: CompetitorForm CTA, SEO polling progress, auto-switch to SEO tab on completion. 18 tests (11 ReportTabs + 7 useSeoJobPolling).
+- 2026-02-07 US-9.1: Analytics instrumentation. Created src/analytics/tracker.ts with track(), setHandler(), resetHandler(). Default console.info handler, extensible to GA. Integrated tracking into Hero (cta_click), LandingPage (report_generation_start/failed), ReportPage (report_generation_complete/failed, tab_switch, seo_report_start/complete), SidePanel (cta_click for Print/Need help/GA/GSC/Compare), EvidencePanel (evidence_expand). 7 tests.
+- 2026-02-07 US-9.2: Error handling & edge cases. ErrorBoundary class component wrapping App (catches rendering errors, shows fallback UI with role="alert" and retry button). NotFoundPage for 404 catch-all route. App.tsx updated with ErrorBoundary wrapper and `*` route. 8 tests (4 ErrorBoundary + 4 NotFoundPage).
+- 2026-02-07 US-9.3: Print-friendly styling. Comprehensive @media print CSS in index.css: hides .no-print, tablist, #competitors; expands all evidence panels (evidence-list always visible); page breaks between major sections; print color adjust; URL printing on links; removes shadows; full-width layout. EvidencePanel updated to always render evidence in DOM (hidden attribute when collapsed) for print CSS override.
+- 2026-02-07 Story 4: Wire frontend to real backend API. API client already uses VITE_API_BASE_URL with http://localhost:8000 default. Created .env file. Expanded api-client tests: verifies base URL config, Content-Type headers on GET/POST, error handling, URL construction. 7 tests (up from 1).

@@ -8,7 +8,7 @@ const userRow: CompetitorRow = {
   name: 'Your Business',
   url: 'https://example.com',
   speed_band: 'Fast',
-  content_coverage: 'Good',
+  content_coverage: 'Moderate',
   service_breadth: 12,
   local_signals: ['location_page', 'schema_markup', 'nap_consistent'],
   review_count: 45,
@@ -30,7 +30,7 @@ const competitors: CompetitorRow[] = [
     name: 'Competitor B',
     url: 'https://competitor-b.com',
     speed_band: 'Average',
-    content_coverage: 'Good',
+    content_coverage: 'Moderate',
     service_breadth: 8,
     local_signals: ['location_page', 'nap_consistent'],
     review_count: 30,
@@ -76,7 +76,7 @@ describe('CompetitorTable (US-8.1)', () => {
     const rows = within(table).getAllByRole('row')
     const userDataRow = rows[1]
     expect(within(userDataRow).getByText('Fast')).toBeInTheDocument()
-    expect(within(userDataRow).getByText('Good')).toBeInTheDocument()
+    expect(within(userDataRow).getByText('Moderate')).toBeInTheDocument()
     expect(within(userDataRow).getByText('12')).toBeInTheDocument()
 
     // Check competitor A values (row index 2)

@@ -1,5 +1,122 @@
 @import "tailwindcss";
 
+/* ============================================
+   Print Styles
+   ============================================ */
 @media print {
+  /* --- Hide non-print elements --- */
   .no-print { display: none !important; }
+
+  /* --- Hide: navigation, side panel, competitor form, tab bar, filter buttons --- */
+  [role="tablist"] { display: none !important; }
+  #competitors { display: none !important; }
+
+  /* --- Page setup --- */
+  @page {
+    margin: 1.5cm 2cm;
+    size: A4;
+  }
+
+  /* --- Print header with URL and date --- */
+  body::before {
+    content: "Report printed on " attr(data-print-date);
+    display: block;
+    text-align: right;
+    font-size: 10px;
+    color: #6b7280;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 8px;
+  }
+
+  /* --- Expand all evidence panels --- */
+  .evidence-list {
+    display: block !important;
+  }
+
+  /* Hide evidence toggle buttons in print */
+  [aria-expanded] {
+    display: none !important;
+  }
+
+  /* But keep collapsible category sections visible (checklist) */
+  section [aria-expanded] + div {
+    display: block !important;
+  }
+
+  /* --- Clean page breaks between major sections --- */
+  section {
+    break-inside: avoid;
+  }
+
+  /* Page break before major sections */
+  section > h2 {
+    break-before: page;
+    break-after: avoid;
+    padding-top: 0;
+  }
+
+  /* First section should not have page break before */
+  section:first-of-type > h2 {
+    break-before: auto;
+  }
+
+  /* --- Ensure readable styling --- */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #111827;
+    background: white !important;
+  }
+
+  /* Remove shadows and unnecessary decorations */
+  .shadow-sm,
+  .shadow-md {
+    box-shadow: none !important;
+  }
+
+  /* Ensure borders are visible */
+  .border {
+    border-color: #d1d5db !important;
+  }
+
+  /* Make links show their URL */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #6b7280;
+    word-break: break-all;
+  }
+
+  /* Don't break cards */
+  [data-testid="issue-card"],
+  [data-testid="user-row"] {
+    break-inside: avoid;
+  }
+
+  /* Rounded cards should not break */
+  .rounded-lg {
+    break-inside: avoid;
+  }
+
+  /* Remove sticky positioning */
+  .sticky {
+    position: static !important;
+  }
+
+  /* Full width for main content (no 2-column grid) */
+  .lg\:grid-cols-\[1fr_280px\] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hide the desktop-only side panel column */
+  .hidden.lg\:block {
+    display: none !important;
+  }
+
+  /* Ensure backgrounds print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
