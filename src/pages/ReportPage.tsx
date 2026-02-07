@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useJobPolling } from '../hooks/useJobPolling'
 import { useSeoJobPolling } from '../hooks/useSeoJobPolling'
+import { useCompetitorSuggestions } from '../hooks/useCompetitorSuggestions'
 import { apiClient } from '../services/api-client'
 import { track } from '../analytics/tracker'
 import ProgressBar from '../components/ProgressBar'
@@ -235,6 +236,15 @@ function ReportPageContent({
   const parsedLocation = parseLocation(location)
   const intentValue = (intent || 'both') as Intent
 
+  // Competitor suggestions (fetched at page level, passed as props to CompetitorForm)
+  const { suggestions: competitorSuggestions, loading: suggestionsLoading } =
+    useCompetitorSuggestions({
+      businessType,
+      city: parsedLocation.city,
+      region: parsedLocation.region,
+      country: parsedLocation.country,
+    })
+
   // --- Error state (governance) ---
   if (error) {
     return (
@@ -338,6 +348,8 @@ function ReportPageContent({
                         onSubmit={handleCompetitorSubmit}
                         isLoading={seoSubmitting}
                         error={seoSubmitError}
+                        suggestions={competitorSuggestions}
+                        suggestionsLoading={suggestionsLoading}
                       />
                     )}
                   </>

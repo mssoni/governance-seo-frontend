@@ -5,7 +5,7 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
-**Contract Version: 1.2.0**
+**Contract Version: 1.3.0**
 
 ## Rules
 
@@ -22,6 +22,7 @@
 |---------|------|--------|-----------|
 | 1.0.0 | 2026-02-07 | V1 baseline — all endpoints stable | — |
 | 1.1.0 | 2026-02-07 | Additive: `pages_analyzed` field added to GovernanceReport | CHG-001 |
+| 1.3.0 | 2026-02-07 | Additive: `GET /api/report/suggest-competitors` endpoint, `CompetitorSuggestion` model, `SuggestCompetitorsResponse` model | CHG-008 |
 | 1.2.0 | 2026-02-07 | Additive: `executive_narrative` on ExecutiveSummary, `business_category` on Issue, `TopImprovement` model, `top_improvements` on GovernanceReport | CHG-005 |
 
 ---
@@ -92,6 +93,34 @@
 
 **Response:** `202 Accepted` — same `{ job_id, status }` shape.
 
+### GET /api/report/suggest-competitors
+
+**Query Parameters:**
+| Param | Type | Required |
+|-------|------|----------|
+| business_type | BusinessType | yes |
+| city | string (min 1) | yes |
+| region | string | no |
+| country | string | no |
+| website_url | string | no |
+
+**Response:** `200 OK`
+```json
+{
+  "suggestions": [
+    {
+      "name": "Smile Dental",
+      "address": "123 Main St, Austin, TX",
+      "rating": 4.5,
+      "review_count": 120,
+      "website_url": null
+    }
+  ]
+}
+```
+
+Returns empty `suggestions` list if Places API key is not configured (graceful degradation).
+
 ### GET /api/health
 
 **Response:** `200 OK`
@@ -119,6 +148,20 @@
 ---
 
 ## Models
+
+### CompetitorSuggestion
+| Field | Type | Required |
+|-------|------|----------|
+| name | string | yes |
+| address | string \| null | no |
+| rating | number \| null | no |
+| review_count | number \| null | no |
+| website_url | string \| null | no |
+
+### SuggestCompetitorsResponse
+| Field | Type | Required |
+|-------|------|----------|
+| suggestions | CompetitorSuggestion[] | yes |
 
 ### Location
 | Field | Type | Required |

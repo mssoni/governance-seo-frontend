@@ -4,6 +4,8 @@
  * In production/integration, this points to the real backend.
  */
 
+import type { SuggestCompetitorsResponse } from '../types/api'
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
 interface RequestOptions {
@@ -62,3 +64,19 @@ export class ApiError extends Error {
 }
 
 export const apiClient = new ApiClient(API_BASE_URL)
+
+export interface SuggestCompetitorsParams {
+  business_type: string
+  city: string
+  region: string
+  country: string
+}
+
+export async function fetchCompetitorSuggestions(
+  params: SuggestCompetitorsParams,
+): Promise<SuggestCompetitorsResponse> {
+  const query = new URLSearchParams(params).toString()
+  return apiClient.get<SuggestCompetitorsResponse>(
+    `/api/report/suggest-competitors?${query}`,
+  )
+}
