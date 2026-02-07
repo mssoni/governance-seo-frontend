@@ -100,14 +100,18 @@ After V1 completion, work arrives as **change requests** instead of phase-scoped
 
 ## IO Boundary Rule (MANDATORY)
 
-Only these modules may perform HTTP / API calls:
-- `src/services/api-client.ts`
+Only these modules may perform IO (API calls via `api-client`):
+- `src/services/api-client.ts` — the ONLY module that calls `fetch()`
 - `src/hooks/useJobPolling.ts` (via api-client)
 - `src/hooks/useSeoJobPolling.ts` (via api-client)
+- `src/pages/LandingPage.tsx` (via api-client — pages are the orchestration layer)
+- `src/pages/ReportPage.tsx` (via api-client)
 
-**All components** receive data via props. No direct fetch/axios calls in components.
+**Pages may NOT call `fetch()` directly** — always go through `api-client.ts`.
 
-**Layering rule:** Components (`src/components/`) cannot import from `src/services/`. Pages (`src/pages/`) and hooks (`src/hooks/`) may import `api-client.ts` since they are the orchestration layer. Components receive data via props.
+**All components** (`src/components/`) receive data via props. No `fetch()`, `axios`, or `api-client` imports in components.
+
+**Layering rule:** Components (`src/components/`) cannot import from `src/services/`. Only pages and hooks may import `api-client.ts`.
 
 Tests for components use golden fixtures from `src/mocks/golden/`. Tests for hooks mock the api-client.
 
