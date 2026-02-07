@@ -5,12 +5,22 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
+**Contract Version: 1.0.0**
+
 ## Rules
 
 1. **Contract-First**: Any schema change must update this file FIRST, then code, then golden fixtures.
 2. **Additive-Only**: Never remove or rename fields. Only add new ones.
 3. **Breaking Changes**: If unavoidable, flag as `[BREAKING SCHEMA CHANGE]` in PROGRESS.md.
 4. **Golden Fixtures**: Every endpoint has a golden fixture that validates against the schema.
+5. **Version Bumping**: Additive changes bump MINOR. Breaking changes bump MAJOR. Bug fixes bump PATCH.
+6. **Sync Required**: `contract_version` must match between this file and `CHANGE_MANIFEST.json`.
+
+## Version History
+
+| Version | Date | Change | Change ID |
+|---------|------|--------|-----------|
+| 1.0.0 | 2026-02-07 | V1 baseline — all endpoints stable | — |
 
 ---
 

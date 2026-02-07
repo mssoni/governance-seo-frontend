@@ -94,7 +94,7 @@ After V1 completion, work arrives as **change requests** instead of phase-scoped
 - The Change Agent (orchestrator) provides you with stories and acceptance criteria
 - You still follow the same TDD workflow (Phases A-G above)
 - You still update ARCHITECTURE.md, PROGRESS.md, CURRENT_TASKS.md after each story
-- Run `DEFINITION_OF_DONE.md` checklist before committing
+- Run `make dod` + `DEFINITION_OF_DONE.md` checklist before committing
 - `make check` must pass before reporting completion
 - If schema changes: bump `contract_version` in CONTRACTS.md + CHANGE_MANIFEST.json
 
@@ -107,19 +107,22 @@ Only these modules may perform HTTP / API calls:
 
 **All components** receive data via props. No direct fetch/axios calls in components.
 
+**Layering rule:** Components (`src/components/`) cannot import from `src/services/`. Pages (`src/pages/`) and hooks (`src/hooks/`) may import `api-client.ts` since they are the orchestration layer. Components receive data via props.
+
 Tests for components use golden fixtures from `src/mocks/golden/`. Tests for hooks mock the api-client.
 
-## Kill Switch (Conditional)
+## Kill Switch (Attempt Budget)
 
-| Task Type | Time Limit | Approach Limit |
-|-----------|-----------|---------------|
-| Pure logic (utility, type, formatter) | 20 min | 3 distinct strategies |
-| Integration (hook, page, API wiring) | 45 min | 3 distinct strategies |
-| External dependency failure (backend down) | Immediate | 1 attempt |
+| Task Type | Max Approaches | Max Failed Test Cycles | Action |
+|-----------|---------------|----------------------|--------|
+| Pure logic (utility, type, formatter) | 3 distinct strategies | 2 consecutive failures | BLOCKERS.md + release lock |
+| Integration (hook, page, API wiring) | 3 distinct strategies | 3 consecutive failures | BLOCKERS.md + release lock |
+| External dependency failure (backend down) | 1 attempt | 1 failure | BLOCKERS.md + immediate fallback |
 
 An "approach" = a distinct strategy, not repeated retries of the same thing.
+A "failed test cycle" = `make check` with test failures for the current story.
 
-When triggered: write to BLOCKERS.md, release lock, commit WIP, report to orchestrator.
+When triggered: write to BLOCKERS.md, log attempt count in PROGRESS.md, release lock, commit WIP, report to orchestrator.
 
 ## What NOT To Do
 

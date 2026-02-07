@@ -19,5 +19,16 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Forbid console.log/debug/info in production code
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+    },
+  },
+  // Allow console in test files and mocks
+  {
+    files: ['**/__tests__/**', '**/*.test.*', '**/test-setup.*', '**/mocks/**'],
+    rules: {
+      'no-console': 'off',
+    },
   },
 ])

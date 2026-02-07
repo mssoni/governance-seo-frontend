@@ -19,6 +19,7 @@ After all checks pass: report APPROVED status to orchestrator.
 
 ## Quality Gate (Must Pass First)
 - [ ] `make check` passes (tests + types + lint in one command)
+- [ ] `make dod` passes (automated DoD enforcement)
 - [ ] If it fails and fix is small: fix it yourself, re-run, continue
 - [ ] If it fails and fix is architectural: REJECT to REVIEW_LOG.md
 
@@ -78,9 +79,11 @@ If ANY of these are true, reject immediately and log to REVIEW_LOG.md:
 4. `git diff main` includes files outside the change's allowed scope
 5. Any live API call found in test files (no mocks)
 6. Any direct fetch/axios import in a component (IO boundary violation)
-7. `make check` fails after review fixes
-8. CHANGE_LOG.md entry missing for the Change ID
-9. DEFINITION_OF_DONE.md checklist has failing items
+7. Any component (not page) importing from `src/services/` (layering violation)
+8. `make check` fails after review fixes
+9. `make dod` fails after review fixes
+10. CHANGE_LOG.md entry missing for the Change ID
+11. `DEFINITION_OF_DONE.md` checklist has failing items
 
 ## IO Boundary Enforcement
 
@@ -92,12 +95,21 @@ Only these modules may perform HTTP/API calls:
 All components receive data via props. No direct fetch/axios calls in components.
 Reject if: `fetch(`, `axios.`, or direct HTTP imports appear in any component file.
 
+### Layering Enforcement
+Components (`src/components/`) cannot import from `src/services/`.
+Pages (`src/pages/`) and hooks (`src/hooks/`) may import `api-client.ts` — they are the orchestration layer.
+Components receive data via props only.
+Reject if: `from '../services/'` or `from '../../services/'` appears in any component file (not pages).
+This is checked automatically by `make dod` and `make io-boundary-check`.
+
 ## Flaky Test Protocol
 
 - If a test fails on review but passes on retry: it is flaky
 - Flaky tests must be quarantined in FLAKY_TESTS.md within 24 hours
+- **Hard rule:** `{ retry: N }` must be fixed or removed within 24h of detection
 - Reject merges that introduce new flaky tests without a fix plan
-- See FLAKY_TESTS.md for full protocol
+- Any `{ retry: N }` quarantined > 24h without a companion fix PR → auto-reject
+- See FLAKY_TESTS.md for full protocol (including weekly sweep)
 
 ## Change Review Checklist (Post-V1 Changes)
 
