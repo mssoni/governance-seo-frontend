@@ -118,6 +118,8 @@ App
     ├── [error] Error display      # Error message + "Try again" button
     └── [complete]
         ├── ReportHeader           # Website URL, location, intent badge
+        ├── PagesAnalyzedText      # "Based on analysis of {N} most important pages" [Added in CHG-001]
+        ├── FullReportCTA          # Subtle blue info banner for full-site audit CTA [Added in CHG-001]
         └── ReportTabs             # WCAG tab navigation (Governance / SEO)
             ├── [governance tab]
             │   ├── GovernanceContent
@@ -412,3 +414,4 @@ User Input (form)
 - 2026-02-07 US-9.2: Error handling & edge cases. ErrorBoundary class component wrapping App (catches rendering errors, shows fallback UI with role="alert" and retry button). NotFoundPage for 404 catch-all route. App.tsx updated with ErrorBoundary wrapper and `*` route. 8 tests (4 ErrorBoundary + 4 NotFoundPage).
 - 2026-02-07 US-9.3: Print-friendly styling. Comprehensive @media print CSS in index.css: hides .no-print, tablist, #competitors; expands all evidence panels (evidence-list always visible); page breaks between major sections; print color adjust; URL printing on links; removes shadows; full-width layout. EvidencePanel updated to always render evidence in DOM (hidden attribute when collapsed) for print CSS override.
 - 2026-02-07 Story 4: Wire frontend to real backend API. API client already uses VITE_API_BASE_URL with http://localhost:8000 default. Created .env file. Expanded api-client tests: verifies base URL config, Content-Type headers on GET/POST, error handling, URL construction. 7 tests (up from 1).
+- 2026-02-07 CHG-001: Pages analyzed display + full report CTA. Added `pages_analyzed: number` field to GovernanceReport type and golden fixture. ReportPage shows "Based on analysis of {N} most important pages" text and a subtle blue CTA banner ("For a comprehensive full-site audit, reach out to us."). Contract version bumped to 1.1.0. 2 tests.

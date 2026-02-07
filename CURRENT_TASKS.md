@@ -3,6 +3,10 @@
 ## Active Locks
 (none)
 
+## Post-V1 Changes
+
+- ✅ CHG-001: increase-limits-cta | Agent-B | completed 2026-02-07 | REVIEWED+APPROVED
+
 ## Phase 4 Complete — All Integration & Polish Stories Done ✅
 
 All Phase 4 frontend stories are COMPLETE:

@@ -129,6 +129,14 @@
   - Created .env file with VITE_API_BASE_URL=http://localhost:8000
   - Expanded test coverage: base URL, headers, error handling, URL construction
 
+- [x] CHG-001: Pages analyzed display + full report CTA (2026-02-07) — 2 tests
+  - Added `pages_analyzed: number` field to GovernanceReport type (additive contract change)
+  - Updated golden fixture with `pages_analyzed: 8`
+  - ReportPage: "Based on analysis of {N} most important pages" text below header
+  - ReportPage: Subtle blue info CTA banner for full-site audit
+  - Contract version bumped: 1.0.0 → 1.1.0
+  - Branch: change/CHG-001-increase-limits-cta
+
 ## In Progress
 (none)
 
@@ -144,7 +152,8 @@
 | Phase 2 (Core Engine) | COMPLETE | US-5.1 through US-5.7 | 35 |
 | Phase 3 (SEO Module) | COMPLETE | US-6.2, US-8.1, US-8.2, US-8.3, US-8.4 | 42 |
 | Phase 4 (Integration & Polish) | COMPLETE | US-9.1 analytics (7 tests), US-9.2 error handling (8 tests), US-9.3 print CSS (0 tests), API wiring (6 tests) | 21 |
-| **Total** | **COMPLETE** | **19 stories** | **120 tests** |
+| CHG-001 (Increase Limits CTA) | COMPLETE | 1 story | 2 |
+| **Total** | **COMPLETE** | **19 stories + 1 change** | **122 tests** |
 
 ## Up Next
 (none pending — Phase 4 complete)

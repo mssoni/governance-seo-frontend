@@ -219,4 +219,38 @@ describe('ReportPage (US-5.1)', () => {
     // Should NOT have made additional calls
     expect(mockedGet.mock.calls.length).toBe(callCount)
   })
+
+  it('shows pages analyzed text in the report header area', async () => {
+    mockedGet.mockResolvedValue(completeResponse)
+
+    renderReportPage()
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100)
+    })
+
+    await waitFor(() => {
+      // goldenReport has pages_analyzed: 8
+      expect(screen.getByText(/based on analysis of 8 most important pages/i)).toBeInTheDocument()
+    })
+  })
+
+  it('shows CTA banner for full-site audit', async () => {
+    mockedGet.mockResolvedValue(completeResponse)
+
+    renderReportPage()
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100)
+    })
+
+    await waitFor(() => {
+      const ctaBanner = screen.getByTestId('full-report-cta')
+      expect(ctaBanner).toBeInTheDocument()
+      // goldenReport has pages_analyzed: 8
+      expect(ctaBanner).toHaveTextContent(/8 most important pages/i)
+      expect(ctaBanner).toHaveTextContent(/comprehensive full-site audit/i)
+      expect(ctaBanner).toHaveTextContent(/reach out to us/i)
+    })
+  })
 })

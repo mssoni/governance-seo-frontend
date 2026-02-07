@@ -122,6 +122,7 @@ export interface LimitationItem {
 }
 
 export interface GovernanceReport {
+  pages_analyzed: number
   summary: ExecutiveSummary
   metrics: MetricCard[]
   issues: Issue[]

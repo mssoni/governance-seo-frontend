@@ -848,6 +848,78 @@ The integration fix correctly passes form data via URLSearchParams to enable Com
 
 ---
 
+## CHG-001 Review — Pages Analyzed Display + Full Report CTA — 2026-02-07
+
+### Branch: change/CHG-001-increase-limits-cta
+
+### Quality Gate
+- `make check`: **PASSED** (122 tests, eslint clean, tsc clean)
+- `make dod`: **PASSED** (6/6 checks green, contract version sync v1.1.0)
+
+### Frontend Changes Reviewed
+
+#### Story 3: Display pages analyzed + full report CTA
+- `src/types/api.ts`: `pages_analyzed: number` added to GovernanceReport interface ✓
+- `src/pages/ReportPage.tsx`: "Based on analysis of {N} most important pages" text + blue CTA banner ✓
+- `src/mocks/golden/governance-report.json`: `pages_analyzed: 8` added ✓
+- `src/pages/__tests__/report-page.test.tsx`: 2 new tests (pages analyzed text, CTA banner) ✓
+
+#### Contract changes
+- `CONTRACTS.md`: Version bumped 1.0.0→1.1.0, version history entry, `pages_analyzed` field added to GovernanceReport table ✓
+
+#### Documentation
+- `ARCHITECTURE.md`: PagesAnalyzedText and FullReportCTA added to component tree, change log entry ✓
+- `PROGRESS.md`: CHG-001 entry, test count updated 120→122 ✓
+
+### Auto-Reject Trigger Check
+
+| Trigger | Result |
+|---------|--------|
+| 1. Contract changed without version bump | **PASS** — bumped to 1.1.0 |
+| 2. New dependency without ARCHITECTURE.md | **PASS** — no new deps |
+| 3. New component without tests | **PASS** — CTA is inline in ReportPage, tested |
+| 4. Scope drift | **PASS** — only change-related files |
+| 5. Live API call in tests | **PASS** — all mocked |
+| 6. fetch/axios in component | **PASS** — none |
+| 7. Component importing services | **PASS** — none |
+| 8. make check fails after fixes | **PASS** — green |
+| 9. make dod fails after fixes | **PASS** — green |
+| 10. CHANGE_LOG.md entry missing | **PASS** — updated by reviewer (workspace root) |
+
+### Copy Tone Check
+- "Based on analysis of {N} most important pages" — transparent, factual ✓
+- "This report covers your {N} most important pages. For a comprehensive full-site audit, reach out to us." — soft CTA, no salesy language ✓
+- Zero banned words (boost, skyrocket, guaranteed, dominate, supercharge, turbocharge, unleash) ✓
+
+### Schema Drift Check
+- Backend `GovernanceReport.pages_analyzed: int = 0` (Pydantic, default 0)
+- Frontend `GovernanceReport.pages_analyzed: number` (TypeScript)
+- Field names match, types compatible ✓
+
+### Accessibility Check
+- CTA banner: `data-testid="full-report-cta"`, info icon has `aria-hidden="true"` ✓
+- Text is readable, good contrast (blue-800 on blue-50) ✓
+
+### UI Quality
+- Pages analyzed text: gray-500, text-sm — subtle, non-intrusive ✓
+- CTA banner: blue-50 bg, blue-200 border, blue-800 text — info style, not aggressive ✓
+- Info icon (circle-i) — appropriate for informational CTA ✓
+
+### Issues Found
+- None (code level)
+
+### Minor Notes (Non-Blocking)
+- Golden fixture has `pages_analyzed: 8` (frontend) vs `pages_analyzed: 6` (backend) — different test values, both valid
+- CONTRACTS.md field ordering differs between repos: frontend has `pages_analyzed` before `summary`, backend has it after `limitations` — cosmetic inconsistency only
+- CONTRACTS.md version history ordering differs: backend newest-first, frontend oldest-first — cosmetic
+
+### Review Fixes Applied
+- `CURRENT_TASKS.md`: Added CHG-001 to completed entries
+
+### Verdict: **APPROVED**
+
+---
+
 <!-- Format:
 
 ## Phase X Review - DATE
