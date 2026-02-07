@@ -80,6 +80,7 @@ export interface Issue {
   severity: Severity
   confidence: Confidence
   detected_as: DetectedAs
+  business_category: string
   evidence: Evidence[]
   why_it_matters: string
   what_happens_if_ignored: string
@@ -103,6 +104,7 @@ export interface SummaryItem {
 }
 
 export interface ExecutiveSummary {
+  executive_narrative: string
   whats_working: SummaryItem[]
   needs_attention: SummaryItem[]
 }
@@ -121,6 +123,13 @@ export interface LimitationItem {
   description: string
 }
 
+export interface TopImprovement {
+  title: string
+  description: string
+  effort: Effort
+  category: string
+}
+
 export interface GovernanceReport {
   pages_analyzed: number
   summary: ExecutiveSummary
@@ -128,6 +137,7 @@ export interface GovernanceReport {
   issues: Issue[]
   checklist_30d: ChecklistItem[]
   limitations: LimitationItem[]
+  top_improvements: TopImprovement[]
 }
 
 // --- Response Models: SEO Report ---

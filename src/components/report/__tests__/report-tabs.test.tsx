@@ -2,10 +2,11 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
 import ReportTabs from '../ReportTabs'
+import type { TabId } from '../ReportTabs'
 
 function renderTabs(
   overrides: Partial<{
-    activeTab: 'governance' | 'seo'
+    activeTab: TabId
     onTabChange: ReturnType<typeof vi.fn>
     seoEnabled: boolean
   }> = {},
@@ -13,7 +14,7 @@ function renderTabs(
 ) {
   const onTabChange = overrides.onTabChange ?? vi.fn()
   const props = {
-    activeTab: overrides.activeTab ?? 'governance' as const,
+    activeTab: overrides.activeTab ?? 'business' as TabId,
     onTabChange,
     seoEnabled: overrides.seoEnabled ?? false,
   }
@@ -28,11 +29,12 @@ function renderTabs(
 }
 
 describe('ReportTabs (US-8.4)', () => {
-  it('renders both tab buttons (Governance and SEO)', () => {
+  it('renders all three tab buttons (Business, Technical, SEO)', () => {
     renderTabs()
 
     expect(screen.getByRole('tablist')).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: /governance report/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /business overview/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /technical details/i })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /competitive seo report/i })).toBeInTheDocument()
   })
 
@@ -50,19 +52,29 @@ describe('ReportTabs (US-8.4)', () => {
     expect(seoTab).toBeEnabled()
   })
 
-  it('clicking governance tab calls onTabChange with "governance"', async () => {
+  it('clicking business tab calls onTabChange with "business"', async () => {
     const user = userEvent.setup()
-    const { onTabChange } = renderTabs({ activeTab: 'seo', seoEnabled: true })
+    const { onTabChange } = renderTabs({ activeTab: 'technical' })
 
-    const govTab = screen.getByRole('tab', { name: /governance report/i })
-    await user.click(govTab)
+    const businessTab = screen.getByRole('tab', { name: /business overview/i })
+    await user.click(businessTab)
 
-    expect(onTabChange).toHaveBeenCalledWith('governance')
+    expect(onTabChange).toHaveBeenCalledWith('business')
+  })
+
+  it('clicking technical tab calls onTabChange with "technical"', async () => {
+    const user = userEvent.setup()
+    const { onTabChange } = renderTabs({ activeTab: 'business' })
+
+    const techTab = screen.getByRole('tab', { name: /technical details/i })
+    await user.click(techTab)
+
+    expect(onTabChange).toHaveBeenCalledWith('technical')
   })
 
   it('clicking SEO tab calls onTabChange with "seo" when enabled', async () => {
     const user = userEvent.setup()
-    const { onTabChange } = renderTabs({ activeTab: 'governance', seoEnabled: true })
+    const { onTabChange } = renderTabs({ activeTab: 'business', seoEnabled: true })
 
     const seoTab = screen.getByRole('tab', { name: /competitive seo report/i })
     await user.click(seoTab)
@@ -72,7 +84,7 @@ describe('ReportTabs (US-8.4)', () => {
 
   it('clicking disabled SEO tab does not call onTabChange', async () => {
     const user = userEvent.setup()
-    const { onTabChange } = renderTabs({ activeTab: 'governance', seoEnabled: false })
+    const { onTabChange } = renderTabs({ activeTab: 'business', seoEnabled: false })
 
     const seoTab = screen.getByRole('tab', { name: /competitive seo report/i })
     await user.click(seoTab)
@@ -81,22 +93,24 @@ describe('ReportTabs (US-8.4)', () => {
   })
 
   it('active tab has aria-selected=true', () => {
-    renderTabs({ activeTab: 'governance' })
+    renderTabs({ activeTab: 'business' })
 
-    const govTab = screen.getByRole('tab', { name: /governance report/i })
+    const businessTab = screen.getByRole('tab', { name: /business overview/i })
+    const techTab = screen.getByRole('tab', { name: /technical details/i })
     const seoTab = screen.getByRole('tab', { name: /competitive seo report/i })
 
-    expect(govTab).toHaveAttribute('aria-selected', 'true')
+    expect(businessTab).toHaveAttribute('aria-selected', 'true')
+    expect(techTab).toHaveAttribute('aria-selected', 'false')
     expect(seoTab).toHaveAttribute('aria-selected', 'false')
   })
 
   it('SEO tab shows aria-selected=true when active', () => {
     renderTabs({ activeTab: 'seo', seoEnabled: true })
 
-    const govTab = screen.getByRole('tab', { name: /governance report/i })
+    const businessTab = screen.getByRole('tab', { name: /business overview/i })
     const seoTab = screen.getByRole('tab', { name: /competitive seo report/i })
 
-    expect(govTab).toHaveAttribute('aria-selected', 'false')
+    expect(businessTab).toHaveAttribute('aria-selected', 'false')
     expect(seoTab).toHaveAttribute('aria-selected', 'true')
   })
 
@@ -107,31 +121,31 @@ describe('ReportTabs (US-8.4)', () => {
   })
 
   it('renders children inside tabpanel', () => {
-    renderTabs({}, <div>My governance content</div>)
+    renderTabs({}, <div>My business content</div>)
 
     const panel = screen.getByRole('tabpanel')
     expect(panel).toBeInTheDocument()
-    expect(screen.getByText('My governance content')).toBeInTheDocument()
+    expect(screen.getByText('My business content')).toBeInTheDocument()
   })
 
   it('tabs have aria-controls linking to panel', () => {
     renderTabs()
 
-    const govTab = screen.getByRole('tab', { name: /governance report/i })
+    const businessTab = screen.getByRole('tab', { name: /business overview/i })
     const panel = screen.getByRole('tabpanel')
 
     // Active tab controls the panel
-    expect(govTab).toHaveAttribute('aria-controls', panel.id)
+    expect(businessTab).toHaveAttribute('aria-controls', panel.id)
   })
 
   it('supports keyboard navigation with arrow keys', async () => {
     const user = userEvent.setup()
-    const { onTabChange } = renderTabs({ activeTab: 'governance', seoEnabled: true })
+    const { onTabChange } = renderTabs({ activeTab: 'business', seoEnabled: true })
 
-    const govTab = screen.getByRole('tab', { name: /governance report/i })
-    govTab.focus()
+    const businessTab = screen.getByRole('tab', { name: /business overview/i })
+    businessTab.focus()
 
     await user.keyboard('{ArrowRight}')
-    expect(onTabChange).toHaveBeenCalledWith('seo')
+    expect(onTabChange).toHaveBeenCalledWith('technical')
   })
 })

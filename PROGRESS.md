@@ -137,6 +137,19 @@
   - Contract version bumped: 1.0.0 → 1.1.0
   - Branch: change/CHG-001-increase-limits-cta
 
+- [x] CHG-005: Two-View Report — Business Overview + Technical Details (2026-02-07) [SCHEMA CHANGE] — 17 tests
+  - Added 3 new components: ExecutiveStory, BusinessImpactCategories, TopImprovements
+  - ReportTabs: 2 tabs → 3 tabs (Business Overview default, Technical Details, SEO)
+  - SidePanel: added topImprovements + activeTab props, conditional rendering
+  - ReportPage: added BusinessContent, tab routing, default to 'business'
+  - Types: added executive_narrative, business_category, TopImprovement, top_improvements
+  - Updated golden fixture
+  - Updated report-tabs tests for 3-tab navigation
+  - Updated report-page tests for Business/Technical tab behavior
+  - Contract version bumped: 1.1.0 → 1.2.0
+  - Branch: change/CHG-005-two-view-report
+  - Test count: 127→145
+
 ## In Progress
 (none)
 
@@ -154,7 +167,8 @@
 | Phase 4 (Integration & Polish) | COMPLETE | US-9.1 analytics (7 tests), US-9.2 error handling (8 tests), US-9.3 print CSS (0 tests), API wiring (6 tests) | 21 |
 | CHG-001 (Increase Limits CTA) | COMPLETE | 1 story | 2 |
 | CHG-004 (Fix Progress %) | COMPLETE | 1 story | 5 |
-| **Total** | **COMPLETE** | **19 stories + 2 changes** | **127 tests** |
+| CHG-005 (Two-View Report) | COMPLETE | 3 stories | 17 |
+| **Total** | **COMPLETE** | **19 stories + 3 changes** | **145 tests** |
 
 ## Up Next
 (none pending)

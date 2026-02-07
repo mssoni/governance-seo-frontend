@@ -5,7 +5,7 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
-**Contract Version: 1.1.0**
+**Contract Version: 1.2.0**
 
 ## Rules
 
@@ -22,6 +22,7 @@
 |---------|------|--------|-----------|
 | 1.0.0 | 2026-02-07 | V1 baseline — all endpoints stable | — |
 | 1.1.0 | 2026-02-07 | Additive: `pages_analyzed` field added to GovernanceReport | CHG-001 |
+| 1.2.0 | 2026-02-07 | Additive: `executive_narrative` on ExecutiveSummary, `business_category` on Issue, `TopImprovement` model, `top_improvements` on GovernanceReport | CHG-005 |
 
 ---
 
@@ -140,6 +141,7 @@
 | severity | Severity | yes |
 | confidence | Confidence | yes |
 | detected_as | DetectedAs | yes |
+| business_category | string | no (default "") |
 | evidence | Evidence[] | yes |
 | why_it_matters | string | yes |
 | what_happens_if_ignored | string | yes |
@@ -166,6 +168,7 @@
 ### ExecutiveSummary
 | Field | Type | Required |
 |-------|------|----------|
+| executive_narrative | string | no (default "") |
 | whats_working | SummaryItem[] (min 3) | yes |
 | needs_attention | SummaryItem[] (min 3, max 5) | yes |
 
@@ -185,6 +188,14 @@
 | title | string | yes |
 | description | string | yes |
 
+### TopImprovement
+| Field | Type | Required |
+|-------|------|----------|
+| title | string | yes |
+| description | string | yes |
+| effort | Effort | yes |
+| category | string | yes |
+
 ### GovernanceReport
 | Field | Type | Required |
 |-------|------|----------|
@@ -194,6 +205,7 @@
 | issues | Issue[] | yes |
 | checklist_30d | ChecklistItem[] | yes |
 | limitations | LimitationItem[] | yes |
+| top_improvements | TopImprovement[] | no (default [], added in 1.2.0 CHG-005) |
 
 ### CompetitorRow
 | Field | Type | Required |

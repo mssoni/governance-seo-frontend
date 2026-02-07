@@ -36,7 +36,10 @@ frontend/
 │   │   │   ├── CompetitorTable.tsx  # Competitor overview table with color coding, tooltips
 │   │   │   ├── StrengthsGaps.tsx   # Strengths, weaknesses & gap breakdown section
 │   │   │   ├── SEOActionPlan.tsx   # 30-day week-by-week action plan with collapsible weeks
-│   │   │   ├── ReportTabs.tsx     # WCAG-compliant tab navigation (Governance/SEO) [Added in US-8.4]
+│   │   │   ├── ReportTabs.tsx     # WCAG-compliant tab navigation (Business/Technical/SEO) [Added in US-8.4, Updated in CHG-005]
+│   │   │   ├── ExecutiveStory.tsx  # Executive narrative with working/attention pills [Added in CHG-005]
+│   │   │   ├── BusinessImpactCategories.tsx # Business impact category cards [Added in CHG-005]
+│   │   │   ├── TopImprovements.tsx # Top 3 improvements with effort/category [Added in CHG-005]
 │   │   │   └── __tests__/
 │   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
 │   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
@@ -47,7 +50,10 @@ frontend/
 │   │   │       ├── competitor-table.test.tsx    # CompetitorTable tests (7 cases)
 │   │   │       ├── strengths-gaps.test.tsx      # StrengthsGaps tests (4 cases)
 │   │   │       ├── action-plan.test.tsx         # SEOActionPlan tests (5 cases)
-│   │   │       └── report-tabs.test.tsx        # ReportTabs tests (11 cases) [Added in US-8.4]
+│   │   │       ├── report-tabs.test.tsx        # ReportTabs tests (11 cases) [Added in US-8.4, Updated in CHG-005]
+│   │   │       ├── executive-story.test.tsx    # ExecutiveStory tests (4 cases) [Added in CHG-005]
+│   │   │       ├── business-impact-categories.test.tsx # BusinessImpactCategories tests (5 cases) [Added in CHG-005]
+│   │   │       └── top-improvements.test.tsx   # TopImprovements tests (5 cases) [Added in CHG-005]
 │   │   ├── CompetitorForm.tsx     # Competitor input form (3 URL fields, validation, SEO submit)
 │   │   ├── ErrorBoundary.tsx      # React error boundary with retry (role="alert") [Added in US-9.2]
 │   │   └── __tests__/
@@ -120,8 +126,13 @@ App
         ├── ReportHeader           # Website URL, location, intent badge
         ├── PagesAnalyzedText      # "Based on analysis of {N} most important pages" [Added in CHG-001]
         ├── FullReportCTA          # Subtle blue info banner for full-site audit CTA [Added in CHG-001]
-        └── ReportTabs             # WCAG tab navigation (Governance / SEO)
-            ├── [governance tab]
+        └── ReportTabs             # WCAG tab navigation (Business / Technical / SEO) [Updated in CHG-005]
+            ├── [business tab — default] [Added in CHG-005]
+            │   └── BusinessContent
+            │       ├── ExecutiveStory      # Narrative text + working/attention pills
+            │       ├── BusinessImpactCategories  # 4 category cards with severity indicators
+            │       └── TopImprovements     # Top 3 improvements with effort/category badges
+            ├── [technical tab] [Renamed from governance in CHG-005]
             │   ├── GovernanceContent
             │   │   ├── ExecutiveSummary   # Working items (green) + attention items (orange)
             │   │   │   └── SummaryCard    # Per-item card with Badge + ConfidenceChip
@@ -141,11 +152,11 @@ App
             │       ├── StrengthsGaps       # Advantages, strengths, gap breakdown
             │       └── SEOActionPlan       # 4-week plan with disclaimer
             └── SidePanel (right col, sticky, desktop only, hidden on print)
-                ├── Top Actions (first 5 issues)
+                ├── Top Improvements (business tab) / Top Actions (other tabs) [Updated in CHG-005]
                 ├── Print Report button (tracks cta_click)
                 ├── Need help? CTA (tracks cta_click)
-                ├── Connect GA/GSC (disabled, Coming soon)
-                └── Compare against competitors (link, tracks cta_click)
+                ├── Connect GA/GSC (disabled, Coming soon — hidden on business tab)
+                └── Compare against competitors (link, tracks cta_click — hidden on business tab)
 └── * → NotFoundPage  # 404 catch-all with home link
 ```
 
@@ -291,16 +302,38 @@ User Input (form)
 - Each item: title (bold) + description
 - "What we can detect quickly" sub-section at bottom
 
-### src/components/report/SidePanel.tsx
+### src/components/report/SidePanel.tsx [Updated in CHG-005]
 - Default export: `SidePanel` component
-- Props: `{ issues: Issue[] }`
-- Shows first 5 issues as numbered "Top Actions"
+- Props: `{ issues: Issue[], topImprovements?: TopImprovement[], activeTab?: TabId }`
+- Business tab: shows "Top Improvements" (up to 3 from topImprovements prop), hides GA/GSC and Compare links
+- Other tabs: shows first 5 issues as numbered "Top Actions", full CTA set
 - Print button: calls `window.print()`
 - "Need help?" — primary CTA button
-- "Connect GA/GSC" — disabled button with "Coming soon"
-- "Compare against competitors" — link with href="#competitors"
+- "Connect GA/GSC" — disabled button with "Coming soon" (hidden on business tab)
+- "Compare against competitors" — link with href="#competitors" (hidden on business tab)
 - Has `no-print` class (hidden via `@media print` in index.css)
 - Sticky positioning: `sticky top-4` in desktop right column
+
+### src/components/report/ExecutiveStory.tsx [Added in CHG-005]
+- Default export: `ExecutiveStory` component
+- Props: `{ narrative: string, whatsWorking: SummaryItem[], needsAttention: SummaryItem[] }`
+- Renders narrative text paragraph (no technical jargon)
+- "What's working" pills (green) and "Needs attention" pills (amber)
+- Does NOT show DetectedAs badges or Confidence chips (business-friendly)
+
+### src/components/report/BusinessImpactCategories.tsx [Added in CHG-005]
+- Default export: `BusinessImpactCategories` component
+- Props: `{ issues: Issue[] }`
+- Groups issues by `business_category` into 4 cards: "Trust & Credibility", "Search Visibility", "User Experience", "Operational Risk"
+- Each card shows: icon, category name, finding count badge, severity-based status text ("Looking good" / "Minor improvements available" / "Needs attention"), summary text
+- Color-coded left border: green (no issues), amber (low/medium), red (high)
+
+### src/components/report/TopImprovements.tsx [Added in CHG-005]
+- Default export: `TopImprovements` component
+- Props: `{ improvements: TopImprovement[], onSwitchToTechnical?: () => void }`
+- Renders up to 3 improvement cards with numbered circles, title, description, effort badge (Small/Medium/Large), category pill
+- "We can help with this" CTA link per card
+- "View full 30-day checklist in Technical Details" button at bottom
 
 ### src/components/CompetitorForm.tsx
 - Default export: `CompetitorForm` component
@@ -351,15 +384,17 @@ User Input (form)
   - action text (title), why, signal_strengthened (indigo badge), estimated_impact, verification_method
   - Uses `<dl>` definition list for structured field display
 
-### src/components/report/ReportTabs.tsx
+### src/components/report/ReportTabs.tsx [Updated in CHG-005]
 - Default export: `ReportTabs` component
-- Props: `{ activeTab: 'governance' | 'seo', onTabChange: (tab) => void, seoEnabled: boolean, children: React.ReactNode }`
+- Exported type: `TabId = 'business' | 'technical' | 'seo'`
+- Props: `{ activeTab: TabId, onTabChange: (tab: TabId) => void, seoEnabled: boolean, children: React.ReactNode }`
+- 3 tabs: Business Overview (default), Technical Details, Competitive SEO Report
 - WCAG-compliant tab pattern: `role="tablist"`, `role="tab"`, `role="tabpanel"`
 - `aria-selected`, `aria-controls`, `aria-disabled` attributes
 - `tabIndex={0}` for active tab, `tabIndex={-1}` for inactive
-- Keyboard navigation: ArrowLeft/ArrowRight to switch tabs
+- Keyboard navigation: ArrowLeft/ArrowRight to switch tabs (skips disabled SEO)
 - SEO tab disabled with lock icon + "Add competitors to unlock" tooltip when `seoEnabled=false`
-- Tab IDs: `tab-governance`, `tab-seo`; Panel IDs: `tabpanel-governance`, `tabpanel-seo`
+- Tab IDs: `tab-business`, `tab-technical`, `tab-seo`; Panel IDs: `tabpanel-business`, `tabpanel-technical`, `tabpanel-seo`
 
 ### src/hooks/useSeoJobPolling.ts
 - `useSeoJobPolling(jobId: string | null)` → `{ status, progress, currentStep, stepsCompleted, seoReport, error, retry }`
@@ -415,3 +450,4 @@ User Input (form)
 - 2026-02-07 US-9.3: Print-friendly styling. Comprehensive @media print CSS in index.css: hides .no-print, tablist, #competitors; expands all evidence panels (evidence-list always visible); page breaks between major sections; print color adjust; URL printing on links; removes shadows; full-width layout. EvidencePanel updated to always render evidence in DOM (hidden attribute when collapsed) for print CSS override.
 - 2026-02-07 Story 4: Wire frontend to real backend API. API client already uses VITE_API_BASE_URL with http://localhost:8000 default. Created .env file. Expanded api-client tests: verifies base URL config, Content-Type headers on GET/POST, error handling, URL construction. 7 tests (up from 1).
 - 2026-02-07 CHG-001: Pages analyzed display + full report CTA. Added `pages_analyzed: number` field to GovernanceReport type and golden fixture. ReportPage shows "Based on analysis of {N} most important pages" text and a subtle blue CTA banner ("For a comprehensive full-site audit, reach out to us."). Contract version bumped to 1.1.0. 2 tests.
+- 2026-02-07 CHG-005: Two-View Report — Business Overview + Technical Details. Added 3 new components: ExecutiveStory (narrative + pills), BusinessImpactCategories (4 category cards), TopImprovements (top 3 with effort/category). ReportTabs updated to 3 tabs (Business Overview default, Technical Details, SEO). SidePanel updated with topImprovements + activeTab props. ReportPage updated with BusinessContent + tab routing. Types updated: executive_narrative on ExecutiveSummary, business_category on Issue, TopImprovement interface, top_improvements on GovernanceReport. Golden fixture updated. Contract 1.1.0→1.2.0. 17 new tests (4 ExecutiveStory + 5 BusinessImpactCategories + 5 TopImprovements + 3 ReportPage).
