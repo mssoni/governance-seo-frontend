@@ -86,7 +86,7 @@ If ANY of these are true, reject immediately and log to REVIEW_LOG.md:
 10. CHANGE_LOG.md entry missing for the Change ID
 11. Any of the 8 lifecycle steps was skipped — regardless of execution mode (INLINE or STANDARD)
 
-**Umbrella rule:** Also reject if any `DEFINITION_OF_DONE.md` checklist item fails (even if not covered by the 10 triggers above).
+**Umbrella rule:** Also reject if any `DEFINITION_OF_DONE.md` checklist item fails (even if not covered by the 11 triggers above).
 
 ## IO Boundary Enforcement
 
