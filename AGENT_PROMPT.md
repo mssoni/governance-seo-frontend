@@ -40,9 +40,11 @@ Golden fixtures available:
 - `src/mocks/golden/governance-report.json` -- complete governance report
 - `src/mocks/golden/seo-report.json` -- complete SEO report
 
-## NO SHORTCUTS — EVER
+## ALL STEPS, EVERY TIME
 
-Every story follows the full workflow below, regardless of perceived simplicity. A one-line CSS tweak gets the same Preflight → TDD → Quality Gate → Docs → DoD sequence as a multi-component feature. You are forbidden from judging whether a change is "too simple" for the process. There are no fast paths, no abbreviated flows, no exceptions.
+Every story follows the full workflow below. No step is ever skipped — whether you are a spawned dev agent (STANDARD mode) or the orchestrator is executing directly (INLINE mode). The execution mode controls *who* runs the steps, not which steps run.
+
+**Risk is determined by what you touch, not by how much you change.** A one-line change to an IO module is higher risk than a 50-line presentational component. INLINE mode is single-brain execution, not a quick hack — all gates still apply: TDD, `make check`, `make dod`, doc updates.
 
 ## TDD Workflow
 
