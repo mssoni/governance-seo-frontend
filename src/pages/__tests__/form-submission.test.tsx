@@ -96,7 +96,14 @@ describe('Form Submission (US-1.3)', () => {
     await fillAndSubmitForm()
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/report?job=job-456')
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('job=job-456'),
+      )
+      const navUrl = mockNavigate.mock.calls[0][0] as string
+      expect(navUrl).toContain('url=https')
+      expect(navUrl).toContain('location=')
+      expect(navUrl).toContain('business_type=clinic')
+      expect(navUrl).toContain('intent=governance')
     })
   })
 
@@ -147,7 +154,9 @@ describe('Form Submission (US-1.3)', () => {
     await user.click(retryBtn)
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/report?job=retry-789')
+      expect(mockNavigate).toHaveBeenCalledWith(
+        expect.stringContaining('job=retry-789'),
+      )
     })
   })
 })

@@ -143,8 +143,8 @@
 | Phase 1 (Foundation) | COMPLETE | US-1.1 through US-1.3 | 20 |
 | Phase 2 (Core Engine) | COMPLETE | US-5.1 through US-5.7 | 35 |
 | Phase 3 (SEO Module) | COMPLETE | US-6.2, US-8.1, US-8.2, US-8.3, US-8.4 | 42 |
-| Phase 4 (Integration & Polish) | COMPLETE | US-9.1, US-9.2, US-9.3, API wiring | 21 |
-| **Total** | | **19 stories** | **120 tests** |
+| Phase 4 (Integration & Polish) | COMPLETE | US-9.1 analytics (7 tests), US-9.2 error handling (8 tests), US-9.3 print CSS (0 tests), API wiring (6 tests) | 21 |
+| **Total** | **COMPLETE** | **19 stories** | **120 tests** |
 
 ## Up Next
 (none pending — Phase 4 complete)

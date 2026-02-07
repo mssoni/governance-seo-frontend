@@ -13,14 +13,15 @@ You are building the frontend for a Website Governance + Local Competitive SEO R
 
 ## Current Phase
 
-**Phase 4 -- Integration & Polish** (awaiting kickoff)
+**Phase 4 -- Integration & Polish** ✅ **COMPLETE**
 
-Active stories: (to be assigned)
-- US-9.1: Analytics instrumentation
-- US-9.2: Error handling & edge cases
-- US-9.3: Print-friendly styling
-- Integration: Wire real API to frontend, fix mismatches
-- E2E: End-to-end testing with browser MCP
+**Project Status:** All phases complete. All user stories delivered.
+
+Completed (Phase 4 — Integration & Polish):
+- US-9.1: Analytics instrumentation (7 tests)
+- US-9.2: Error handling & edge cases (8 tests)
+- US-9.3: Print-friendly styling (0 tests, CSS-only)
+- API wiring to real backend (6 tests)
 
 Completed (Phase 3 — SEO Module):
 - US-6.2, US-8.1, US-8.2, US-8.3, US-8.4
@@ -81,6 +82,19 @@ Every story follows this EXACT sequence:
 20. Release lock in CURRENT_TASKS.md
 21. PR scope check -- only story-related changes
 22. Commit: `feat(US-X.Y): [what was built]`
+
+## Change Mode (Post-V1)
+
+After V1 completion, work arrives as **change requests** instead of phase-scoped user stories.
+
+- Changes are identified by a Change ID: `CHG-NNN`
+- Branch naming: `change/chg-nnn-short-description` (not `epic-X/us-X.Y/...`)
+- Commit format: `feat(CHG-NNN): <description>` or `fix(CHG-NNN): <description>`
+- The full process is defined in `CHANGE_PROCESS.md` at the workspace root
+- The Change Agent (orchestrator) provides you with stories and acceptance criteria
+- You still follow the same TDD workflow (Phases A-G above)
+- You still update ARCHITECTURE.md, PROGRESS.md, CURRENT_TASKS.md after each story
+- `make check` must pass before reporting completion
 
 ## Kill Switch
 

@@ -65,6 +65,19 @@ After all checks pass: merge feature branch to main with `--no-ff`
 - [ ] Test names clearly describe what they verify
 - [ ] No test interdependencies (each test runs independently)
 
+## Change Review Checklist (Post-V1 Changes)
+
+When reviewing a change request (CHG-NNN) rather than a phase story:
+
+- [ ] **No regressions**: all pre-existing tests still pass (test count >= baseline)
+- [ ] **No breaking schema changes** without explicit `[BREAKING SCHEMA CHANGE]` flag and CONTRACTS.md update
+- [ ] **Scope discipline**: only files related to the change are modified — no drive-by refactors
+- [ ] **Backward compatibility**: existing TypeScript types in `src/types/api.ts` are additive-only
+- [ ] **Branch hygiene**: work is on `change/chg-nnn-*` branch, not directly on main
+- [ ] **Change log**: CHANGE_LOG.md entry exists with correct Change ID
+- [ ] **Rollback safety**: changes can be reverted with a single `git revert` without side effects
+- [ ] **Accessibility preserved**: no removal of aria attributes, keyboard navigation, or semantic HTML
+
 ## Phase-Specific Checks
 (Added by review agent as patterns emerge)
 

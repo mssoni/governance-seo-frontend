@@ -628,6 +628,164 @@ The frontend codebase is well-structured, well-tested, and follows established p
 
 ---
 
+## Phase 4 Review — Integration & Polish — 2026-02-07
+
+### Frontend Stories Reviewed
+
+#### US-9.1: Analytics instrumentation (`src/analytics/tracker.ts`, component integration)
+- Status: **APPROVED**
+- Tests: 7/7 passing (default console.info, timestamp enrichment, custom handler, AnalyticsEvent shape, resetHandler, no-properties, all event types)
+- Issues found: None
+- Tracker module:
+  - `EventName` typed union: report_generation_start, report_generation_complete, report_generation_failed, cta_click, tab_switch, evidence_expand, seo_report_start, seo_report_complete ✓
+  - `AnalyticsEvent` interface with event + properties ✓
+  - Default handler: `console.info('[analytics]', event, properties)` — not `console.log` ✓
+  - `track()` enriches with `timestamp: Date.now()` ✓
+  - `setHandler()` / `resetHandler()` for extensibility (GA, Mixpanel, etc.) ✓
+  - eslint-disable only on `console.info` line ✓
+- Component integration verified (6 files):
+  - `Hero.tsx`: `track('cta_click', { cta: 'generate_governance_report' })` ✓
+  - `LandingPage.tsx`: report_generation_start, report_generation_failed (api_error + network_error) ✓
+  - `ReportPage.tsx`: tab_switch, report_generation_complete, report_generation_failed, seo_report_start, seo_report_complete ✓
+  - `EvidencePanel.tsx`: evidence_expand (only on first open) ✓
+  - `SidePanel.tsx`: cta_click (print_report, need_help, connect_ga_gsc, compare_competitors) ✓
+- Code quality: Clean module, typed exports, no `any`, 65 lines ✓
+- Test quality: Mocked `console.info` via `vi.spyOn`, custom handler isolation, AnalyticsEvent shape assertion, all 8 event names tested ✓
+
+#### US-9.2: Error handling (ErrorBoundary, NotFoundPage, App.tsx)
+- Status: **APPROVED**
+- Tests: 4 ErrorBoundary + 4 NotFoundPage = 8 tests passing
+- Issues found: None
+- ErrorBoundary (`src/components/ErrorBoundary.tsx`):
+  - React class component with `getDerivedStateFromError` + `componentDidCatch` ✓
+  - `componentDidCatch` logs via `console.warn` (not `console.log`) with eslint-disable ✓
+  - Fallback UI: `role="alert"`, accessible `<h1>Something went wrong</h1>`, descriptive text, retry button ✓
+  - Retry resets state via `this.setState({ hasError: false, error: null })` ✓
+  - SVG icon has `aria-hidden="true"` ✓
+  - Tests: renders children, catches errors, retry resets, accessible heading ✓
+- NotFoundPage (`src/pages/NotFoundPage.tsx`):
+  - 404 code, `<h1>Page not found</h1>`, descriptive text, `<Link to="/">Go back home</Link>` ✓
+  - Accessible: heading hierarchy, link with clear text ✓
+  - Tests: 404 heading, heading hierarchy, home link with `href="/"`, descriptive content ✓
+- App.tsx integration:
+  - `<ErrorBoundary>` wraps `<BrowserRouter>` — catches errors from all routes ✓
+  - `<Route path="*" element={<NotFoundPage />} />` — catches unmatched routes ✓
+- No `console.log` in production code ✓
+
+#### US-9.3: Print-friendly styling (`src/index.css` @media print)
+- Status: **APPROVED**
+- Tests: N/A (CSS, verified by inspection)
+- Issues found: None
+- Print stylesheet coverage:
+  - Hides `.no-print`, `[role="tablist"]`, `#competitors` ✓
+  - A4 page setup: `@page { margin: 1.5cm 2cm; size: A4; }` ✓
+  - Print header via `body::before` with date ✓
+  - Expands all `.evidence-list` panels (`display: block !important`) ✓
+  - Hides evidence toggle buttons (`[aria-expanded] { display: none }`) ✓
+  - But keeps checklist section content visible via `section [aria-expanded] + div` ✓
+  - Clean page breaks: `section { break-inside: avoid }`, `h2 { break-before: page }` ✓
+  - First section skips page break (`break-before: auto`) ✓
+  - Readable styling: 12pt, line-height 1.5, dark text on white ✓
+  - Removes shadows, sticky positioning ✓
+  - Makes links show URLs via `a[href^="http"]::after { content: " (" attr(href) ")" }` ✓
+  - Prevents card breaks: issue-card, user-row, rounded-lg ✓
+  - Full width layout: `grid-template-columns: 1fr !important` ✓
+  - Hides desktop side panel: `.hidden.lg\:block { display: none }` ✓
+  - `print-color-adjust: exact` for background color printing ✓
+- Quality: Comprehensive, well-commented, handles all edge cases
+
+#### API client wiring (`.env`, `src/services/api-client.ts`)
+- Status: **APPROVED**
+- Tests: 6/6 passing (base URL default, base URL fallback, POST headers, GET headers, error handling, URL construction)
+- Issues found: None
+- `.env`: `VITE_API_BASE_URL=http://localhost:8000` ✓
+- `api-client.ts`:
+  - `import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'` — env var with fallback ✓
+  - `ApiClient` class with `get<T>()` and `post<T>()` methods ✓
+  - Sets `Content-Type: application/json` on all requests ✓
+  - Custom `ApiError` class with `status` and `body` properties ✓
+  - Throws `ApiError` on non-ok responses ✓
+  - Singleton export: `export const apiClient = new ApiClient(API_BASE_URL)` ✓
+- No secrets in source code ✓
+
+### Issues Found & Fixed
+
+| Issue | Severity | Fix |
+|-------|----------|-----|
+| Missing `FullReportRequest` type in `src/types/api.ts` | SMALL | Added `FullReportRequest` interface matching backend `FullReportRequest` Pydantic model (website_url, location, business_type, intent, optional competitors) |
+
+### Schema Alignment Check
+
+| Backend Model | Frontend Type | Status |
+|---------------|---------------|--------|
+| `FullReportRequest` | `FullReportRequest` | **FIXED** — added to `src/types/api.ts` |
+| `GovernanceReportRequest` | `GovernanceReportRequest` | **ALIGNED** |
+| `SEOReportRequest` | `SEOReportRequest` | **ALIGNED** |
+| `JobCreateResponse` | `JobCreateResponse` | **ALIGNED** |
+| `JobStatusResponse` | `JobStatusResponse` | **ALIGNED** |
+| `GovernanceReport` (all nested types) | `GovernanceReport` (all nested types) | **ALIGNED** |
+| `SEOReport` (all nested types) | `SEOReport` (all nested types) | **ALIGNED** |
+| All enums (BusinessType, Intent, JobStatus, etc.) | All type unions | **ALIGNED** |
+
+### Console.log Audit
+- `console.info` in `tracker.ts` (analytics — by design) ✓
+- `console.warn` in `ErrorBoundary.tsx` (error logging — acceptable) ✓
+- `console.error` in test files only (suppressing React noise) ✓
+- **Zero `console.log` in production code** ✓
+
+### Phase 4 Summary (Frontend)
+
+| Story | Status | Tests |
+|-------|--------|-------|
+| US-9.1: Analytics instrumentation | APPROVED | 7 |
+| US-9.2: Error handling (ErrorBoundary, 404) | APPROVED | 8 |
+| US-9.3: Print-friendly styling | APPROVED | — (CSS) |
+| API client wiring | APPROVED | 6 |
+| **Total** | **4/4 APPROVED** | **120 frontend tests total** |
+
+### Quality Gate
+- `make check`: **PASSED** (21 test files, 120 tests, eslint clean, tsc clean)
+
+---
+
+## All Phases Complete (Frontend)
+
+| Phase | Status | Stories | Frontend Tests |
+|-------|---------|--------|----------------|
+| Phase 0 (Bootstrap) | COMPLETE | US-0.2 | 2 |
+| Phase 1 (Foundation) | COMPLETE | US-1.1–1.3 | 20 |
+| Phase 2 (Core Engine) | COMPLETE | US-5.1–5.7 | 35 |
+| Phase 3 (SEO Module) | COMPLETE | US-6.2, US-8.1–8.4 | 42 |
+| Phase 4 (Integration & Polish) | COMPLETE | US-9.1–9.3, API client | 21 |
+| **TOTAL** | **ALL COMPLETE** | | **120 tests** |
+
+---
+
+## Phase 4 Completion — Combined Summary — 2026-02-07
+
+### Final Test Counts (Both Repos)
+
+| Repo | Test Files | Tests | Lint | Types |
+|------|------------|-------|------|-------|
+| Backend | — | **215 passing** | ruff clean | mypy clean |
+| Frontend | **21 passing** | **120 passing** | eslint clean | tsc clean |
+| **TOTAL** | | **335 tests** | all clean | all clean |
+
+### Review Fixes Applied in Phase 4
+- Added `FullReportRequest` type to frontend `src/types/api.ts` (schema alignment)
+
+### Non-Blocking Items Carried Forward
+1. Backend: `pipeline.py` (~920 lines) — extract report builder helpers
+2. Backend: `issue_builder.py` (481 lines) — extract signal check sub-functions
+3. Backend: `seo_pipeline.py` (411 lines) — extract `_build_user_competitor_row`
+4. Backend: `google.generativeai` FutureWarning — migrate to `google.genai`
+5. Backend: Default `allowed_origins` includes `"*"` — restrict in production deployment
+6. Frontend: `IssuesList.tsx` slightly over 150-line guideline (previously accepted)
+
+**Phase 4 is COMPLETE. All stories approved across both repos. Total: 335 tests passing.**
+
+---
+
 <!-- Format:
 
 ## Phase X Review - DATE

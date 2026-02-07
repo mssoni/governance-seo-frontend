@@ -59,6 +59,14 @@ export interface SEOReportRequest {
   competitors: string[] // 2-3 URLs
 }
 
+export interface FullReportRequest {
+  website_url: string
+  location: Location
+  business_type: BusinessType
+  intent: Intent
+  competitors?: string[] // 0-3 URLs; omit for governance-only
+}
+
 // --- Response Models: Governance Report ---
 
 export interface Evidence {

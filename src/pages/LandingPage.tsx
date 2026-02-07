@@ -30,7 +30,14 @@ export default function LandingPage() {
         '/api/report/governance',
         data,
       )
-      navigate(`/report?job=${response.job_id}`)
+      const params = new URLSearchParams({
+        job: response.job_id,
+        url: data.website_url,
+        location: `${data.location.city},${data.location.region},${data.location.country}`,
+        business_type: data.business_type,
+        intent: data.intent,
+      })
+      navigate(`/report?${params.toString()}`)
     } catch (err) {
       if (err instanceof ApiError) {
         track('report_generation_failed', { error_type: 'api_error', status: err.status })
