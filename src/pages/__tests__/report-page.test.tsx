@@ -324,4 +324,36 @@ describe('ReportPage (US-5.1)', () => {
     const sitemapElements = screen.getAllByText('No sitemap.xml found')
     expect(sitemapElements.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('shows competitor form on SEO tab, not on business or technical tabs', async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+    mockedGet.mockResolvedValue(completeResponse)
+
+    // Render with URL params needed by CompetitorForm
+    render(
+      <MemoryRouter initialEntries={['/report?job=test-123&url=https://example.com&location=Miami,FL,US&intent=seo&business_type=dental']}>
+        <Routes>
+          <Route path="/report" element={<ReportPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100)
+    })
+
+    // Business Overview tab is default — competitor form should NOT be visible
+    await waitFor(() => {
+      expect(screen.getByRole('tab', { name: /business overview/i })).toHaveAttribute('aria-selected', 'true')
+    })
+    expect(screen.queryByText(/enter competitor urls/i)).not.toBeInTheDocument()
+
+    // Click SEO tab — competitor form SHOULD be visible
+    const seoTab = screen.getByRole('tab', { name: /competitive seo/i })
+    await user.click(seoTab)
+
+    await waitFor(() => {
+      expect(screen.getByText(/enter competitor urls/i)).toBeInTheDocument()
+    })
+  })
 })

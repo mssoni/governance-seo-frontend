@@ -230,7 +230,8 @@ function ReportPageContent({
     [],
   )
 
-  const seoEnabled = seoPolling.seoReport !== null
+  // SEO tab is always accessible (competitor form lives there)
+  const seoEnabled = true
   const parsedLocation = parseLocation(location)
   const intentValue = (intent || 'both') as Intent
 
@@ -298,8 +299,15 @@ function ReportPageContent({
                 )}
 
                 {activeTab === 'technical' && (
+                  <GovernanceContent report={report} />
+                )}
+
+                {activeTab === 'seo' && (
                   <>
-                    <GovernanceContent report={report} />
+                    {/* SEO report complete — show results */}
+                    {seoPolling.seoReport && (
+                      <SEOContent report={seoPolling.seoReport} />
+                    )}
 
                     {/* SEO polling in progress indicator */}
                     {seoJobId && !seoPolling.seoReport && seoPolling.status !== 'failed' && (
@@ -320,8 +328,8 @@ function ReportPageContent({
                       </div>
                     )}
 
-                    {/* CompetitorForm CTA — show when no SEO job is running */}
-                    {!seoJobId && (
+                    {/* CompetitorForm — show when no SEO job and no SEO report */}
+                    {!seoJobId && !seoPolling.seoReport && (
                       <CompetitorForm
                         websiteUrl={websiteUrl}
                         location={parsedLocation}
@@ -333,10 +341,6 @@ function ReportPageContent({
                       />
                     )}
                   </>
-                )}
-
-                {activeTab === 'seo' && seoPolling.seoReport && (
-                  <SEOContent report={seoPolling.seoReport} />
                 )}
               </div>
 
