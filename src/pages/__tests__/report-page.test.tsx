@@ -41,7 +41,7 @@ function renderReportPage(jobId = 'test-123') {
 const processingResponse: JobStatusResponse = {
   job_id: 'test-123',
   status: 'processing',
-  progress: 30,
+  progress: 0.30,
   current_step: 'parse_sitemap',
   steps_completed: ['url_normalize', 'fetch_homepage'],
   error: null,
@@ -52,7 +52,7 @@ const processingResponse: JobStatusResponse = {
 const completeResponse: JobStatusResponse = {
   job_id: 'test-123',
   status: 'complete',
-  progress: 100,
+  progress: 1.0,
   current_step: null,
   steps_completed: [
     'url_normalize',
@@ -73,7 +73,7 @@ const completeResponse: JobStatusResponse = {
 const failedResponse: JobStatusResponse = {
   job_id: 'test-123',
   status: 'failed',
-  progress: 45,
+  progress: 0.45,
   current_step: 'run_detectors',
   steps_completed: ['url_normalize', 'fetch_homepage', 'parse_sitemap', 'sample_pages'],
   error: 'Detector engine timed out after 30 seconds',
