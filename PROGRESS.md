@@ -153,7 +153,8 @@
 | Phase 3 (SEO Module) | COMPLETE | US-6.2, US-8.1, US-8.2, US-8.3, US-8.4 | 42 |
 | Phase 4 (Integration & Polish) | COMPLETE | US-9.1 analytics (7 tests), US-9.2 error handling (8 tests), US-9.3 print CSS (0 tests), API wiring (6 tests) | 21 |
 | CHG-001 (Increase Limits CTA) | COMPLETE | 1 story | 2 |
-| **Total** | **COMPLETE** | **19 stories + 1 change** | **122 tests** |
+| CHG-004 (Fix Progress %) | COMPLETE | 1 story | 5 |
+| **Total** | **COMPLETE** | **19 stories + 2 changes** | **127 tests** |
 
 ## Up Next
-(none pending — Phase 4 complete)
+(none pending)
