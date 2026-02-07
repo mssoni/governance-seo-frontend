@@ -18,9 +18,9 @@ describe('ExecutiveStory (CHG-005)', () => {
       />,
     )
 
-    expect(screen.getByText(/Your website is performing well/)).toBeInTheDocument()
+    expect(screen.getByText(/growing your online presence and building credibility/)).toBeInTheDocument()
     expect(
-      screen.getByText(/most of these improvements are straightforward/),
+      screen.getByText(/common and fixable/),
     ).toBeInTheDocument()
   })
 
