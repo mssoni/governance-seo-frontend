@@ -5,7 +5,7 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
-**Contract Version: 1.0.0**
+**Contract Version: 1.1.0**
 
 ## Rules
 
@@ -21,6 +21,7 @@
 | Version | Date | Change | Change ID |
 |---------|------|--------|-----------|
 | 1.0.0 | 2026-02-07 | V1 baseline — all endpoints stable | — |
+| 1.1.0 | 2026-02-07 | Additive: `pages_analyzed` field added to GovernanceReport | CHG-001 |
 
 ---
 
@@ -187,6 +188,7 @@
 ### GovernanceReport
 | Field | Type | Required |
 |-------|------|----------|
+| pages_analyzed | number | yes |
 | summary | ExecutiveSummary | yes |
 | metrics | MetricCard[] | yes |
 | issues | Issue[] | yes |
