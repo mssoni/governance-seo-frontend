@@ -5,6 +5,7 @@
 
 ## Post-V1 Changes
 
+- ✅ CHG-005: two-view-report | Agent-B | completed 2026-02-07 | REVIEWED+APPROVED
 - ✅ CHG-001: increase-limits-cta | Agent-B | completed 2026-02-07 | REVIEWED+APPROVED
 
 ## Phase 4 Complete — All Integration & Polish Stories Done ✅
