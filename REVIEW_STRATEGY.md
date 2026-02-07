@@ -1,4 +1,4 @@
-# Review Strategy v2.0
+# Review Strategy v2.2
 
 ## Review Agent Role: Review + Fix + APPROVE (Not Merge)
 
@@ -69,36 +69,42 @@ After all checks pass: report APPROVED status to orchestrator.
 - [ ] Test names clearly describe what they verify
 - [ ] No test interdependencies (each test runs independently)
 
-## Auto-Reject Triggers (Immediate Rejection, No Fix Attempt)
+## Auto-Reject Triggers (10 Deterministic Rules)
 
 If ANY of these are true, reject immediately and log to REVIEW_LOG.md:
 
 1. Contract changed without `contract_version` bump + golden fixture updates
 2. New dependency added without ARCHITECTURE.md update
 3. New component/page added without tests
-4. `git diff main` includes files outside the change's allowed scope
+4. `git diff main` includes files outside the change's allowed scope _(heuristic)_
 5. Any live API call found in test files (no mocks)
-6. Any direct fetch/axios import in a component (IO boundary violation)
+6. Any direct `fetch()`/`axios` import in a component (IO boundary violation)
 7. Any component (not page) importing from `src/services/` (layering violation)
 8. `make check` fails after review fixes
 9. `make dod` fails after review fixes
 10. CHANGE_LOG.md entry missing for the Change ID
-11. `DEFINITION_OF_DONE.md` checklist has failing items
+
+**Umbrella rule:** Also reject if any `DEFINITION_OF_DONE.md` checklist item fails (even if not covered by the 10 triggers above).
 
 ## IO Boundary Enforcement
 
-Only these modules may perform HTTP/API calls:
-- `src/services/api-client.ts`
-- `src/hooks/useJobPolling.ts` (via api-client)
-- `src/hooks/useSeoJobPolling.ts` (via api-client)
+IO is allowed in three layers only:
 
-All components receive data via props. No direct fetch/axios calls in components.
+| Layer | Modules | What they may do |
+|-------|---------|-----------------|
+| **Service layer** | `src/services/api-client.ts` | Define HTTP methods. The ONLY module that calls `fetch`. |
+| **Hook layer** | `src/hooks/useJobPolling.ts`, `src/hooks/useSeoJobPolling.ts` | Call `api-client` methods. |
+| **Page layer** | `src/pages/LandingPage.tsx`, `src/pages/ReportPage.tsx` | Import and call `api-client` methods. Wire data into components via props. |
+
+**Pages may NOT call `fetch()` directly** — they must go through `api-client.ts`.
+
+Components (`src/components/`) receive ALL data via props. Zero imports from `src/services/`.
 Reject if: `fetch(`, `axios.`, or direct HTTP imports appear in any component file.
 
 ### Layering Enforcement
 Components (`src/components/`) cannot import from `src/services/`.
-Pages (`src/pages/`) and hooks (`src/hooks/`) may import `api-client.ts` — they are the orchestration layer.
-Components receive data via props only.
+Pages (`src/pages/`) may import `api-client.ts` (but not `fetch` directly) — they are the orchestration layer.
+Hooks (`src/hooks/`) may import `api-client.ts`.
 Reject if: `from '../services/'` or `from '../../services/'` appears in any component file (not pages).
 This is checked automatically by `make dod` and `make io-boundary-check`.
 

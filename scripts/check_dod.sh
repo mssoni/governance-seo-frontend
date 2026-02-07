@@ -12,11 +12,13 @@ NC='\033[0m' # No Color
 FAIL=0
 
 echo "=== Frontend DoD Checks ==="
+echo "  [H] = hard gate  [~] = heuristic"
+echo ""
 
 # ---------------------------------------------------------------
 # 1. No console.log in production code (exclude tests, mocks, analytics)
 # ---------------------------------------------------------------
-echo -n "[1/6] No console.log in production code... "
+echo -n "[1/6] [H] No console.log in production code... "
 CONSOLE_VIOLATIONS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E 'console\.(log|debug)\(' src/ \
   --exclude-dir="__tests__" --exclude-dir="mocks" --exclude-dir="analytics" \
@@ -32,7 +34,7 @@ fi
 # ---------------------------------------------------------------
 # 2. IO boundary — no fetch/axios in components
 # ---------------------------------------------------------------
-echo -n "[2/6] IO boundary (no fetch/axios in components)... "
+echo -n "[2/6] [H] IO boundary (no fetch/axios in components)... "
 VIOLATIONS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E '(^import.*from.*(axios)|^\s*fetch\(|^\s*axios\.)' \
   src/components/ src/pages/ 2>/dev/null \
@@ -49,7 +51,7 @@ fi
 # 3. Layering — components cannot import from services/
 #    (Pages ARE allowed to import services — they are the orchestration layer)
 # ---------------------------------------------------------------
-echo -n "[3/6] Layering (components don't import services)... "
+echo -n "[3/6] [H] Layering (components don't import services)... "
 LAYER_VIOLATIONS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E "from.*['\"].*services/" \
   src/components/ 2>/dev/null \
@@ -65,7 +67,7 @@ fi
 # ---------------------------------------------------------------
 # 4. No live API calls in tests
 # ---------------------------------------------------------------
-echo -n "[4/6] No live API calls in tests... "
+echo -n "[4/6] [H] No live API calls in tests... "
 LIVE_CALLS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E '^\s*(await\s+)?fetch\(' \
   src/**/__tests__/ src/**/*.test.* 2>/dev/null \
@@ -82,7 +84,7 @@ fi
 # 5. Component test coverage (heuristic: every component has a test)
 #    Converts PascalCase to kebab-case for matching
 # ---------------------------------------------------------------
-echo -n "[5/6] Component test coverage (heuristic)... "
+echo -n "[5/6] [~] Component test coverage (heuristic)... "
 MISSING=0
 for comp in src/components/*.tsx src/pages/*.tsx; do
   [ -f "$comp" ] || continue
@@ -118,7 +120,7 @@ fi
 # ---------------------------------------------------------------
 # 6. Contract version sync (CONTRACTS.md vs CHANGE_MANIFEST.json)
 # ---------------------------------------------------------------
-echo -n "[6/6] Contract version sync... "
+echo -n "[6/6] [H] Contract version sync... "
 CONTRACTS_VER=$(grep -E 'Contract Version:\s*[0-9]+\.[0-9]+\.[0-9]+' CONTRACTS.md 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || echo "MISSING")
 MANIFEST_VER=$(node -e "console.log(require('../CHANGE_MANIFEST.json').contract_version)" 2>/dev/null || echo "MISSING")
 if [ "$CONTRACTS_VER" = "$MANIFEST_VER" ]; then
