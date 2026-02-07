@@ -87,18 +87,39 @@ Every story follows this EXACT sequence:
 
 After V1 completion, work arrives as **change requests** instead of phase-scoped user stories.
 
-- Changes are identified by a Change ID: `CHG-NNN`
-- Branch naming: `change/chg-nnn-short-description` (not `epic-X/us-X.Y/...`)
+- Changes are identified by a Change ID: `CHG-NNN` (ALWAYS uppercase)
+- Branch naming: `change/CHG-NNN-short-description` (uppercase CHG, not `epic-X/us-X.Y/...`)
 - Commit format: `feat(CHG-NNN): <description>` or `fix(CHG-NNN): <description>`
 - The full process is defined in `CHANGE_PROCESS.md` at the workspace root
 - The Change Agent (orchestrator) provides you with stories and acceptance criteria
 - You still follow the same TDD workflow (Phases A-G above)
 - You still update ARCHITECTURE.md, PROGRESS.md, CURRENT_TASKS.md after each story
+- Run `DEFINITION_OF_DONE.md` checklist before committing
 - `make check` must pass before reporting completion
+- If schema changes: bump `contract_version` in CONTRACTS.md + CHANGE_MANIFEST.json
 
-## Kill Switch
+## IO Boundary Rule (MANDATORY)
 
-If stuck > 20 minutes: write to BLOCKERS.md, release lock, commit WIP, move to next story.
+Only these modules may perform HTTP / API calls:
+- `src/services/api-client.ts`
+- `src/hooks/useJobPolling.ts` (via api-client)
+- `src/hooks/useSeoJobPolling.ts` (via api-client)
+
+**All components** receive data via props. No direct fetch/axios calls in components.
+
+Tests for components use golden fixtures from `src/mocks/golden/`. Tests for hooks mock the api-client.
+
+## Kill Switch (Conditional)
+
+| Task Type | Time Limit | Approach Limit |
+|-----------|-----------|---------------|
+| Pure logic (utility, type, formatter) | 20 min | 3 distinct strategies |
+| Integration (hook, page, API wiring) | 45 min | 3 distinct strategies |
+| External dependency failure (backend down) | Immediate | 1 attempt |
+
+An "approach" = a distinct strategy, not repeated retries of the same thing.
+
+When triggered: write to BLOCKERS.md, release lock, commit WIP, report to orchestrator.
 
 ## What NOT To Do
 
