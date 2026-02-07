@@ -43,7 +43,7 @@ After all checks pass: report APPROVED status to orchestrator.
 - [ ] PR contains ONLY changes for the claimed user story
 - [ ] No drive-by refactors of unrelated code
 - [ ] No unrelated file changes or "while I'm here" fixes
-- [ ] Commit message follows format: "feat(US-X.Y): [description]"
+- [ ] Commit message follows format: `feat(US-X.Y): [description]` or `feat(CHG-NNN): [description]`
 
 ## Copy Tone & Transparency (for UI stories with user-facing text)
 - [ ] No salesy language ("boost", "skyrocket", "guaranteed results", "dominate")
