@@ -168,7 +168,8 @@
 | CHG-001 (Increase Limits CTA) | COMPLETE | 1 story | 2 |
 | CHG-004 (Fix Progress %) | COMPLETE | 1 story | 5 |
 | CHG-005 (Two-View Report) | COMPLETE | 3 stories | 17 |
-| **Total** | **COMPLETE** | **19 stories + 3 changes** | **145 tests** |
+| CHG-007 (Move Competitor Form) | COMPLETE | 1 story | 1 |
+| **Total** | **COMPLETE** | **19 stories + 4 changes** | **146 tests** |
 
 ## Up Next
 (none pending)
