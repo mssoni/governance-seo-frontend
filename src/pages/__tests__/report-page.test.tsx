@@ -147,7 +147,7 @@ describe('ReportPage (US-5.1)', () => {
 
     // After completion, the business overview content should be visible (default tab)
     await waitFor(() => {
-      expect(screen.getByText(/Your website is performing well/)).toBeInTheDocument()
+      expect(screen.getByText(/growing your online presence and building credibility/)).toBeInTheDocument()
     })
   })
 
@@ -274,7 +274,7 @@ describe('ReportPage (US-5.1)', () => {
     })
 
     // Business content should be visible
-    expect(screen.getByText(/Your website is performing well/)).toBeInTheDocument()
+    expect(screen.getByText(/growing your online presence and building credibility/)).toBeInTheDocument()
   })
 
   it('shows technical details when Technical Details tab clicked', async () => {
