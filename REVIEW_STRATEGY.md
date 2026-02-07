@@ -70,7 +70,7 @@ After all checks pass: report APPROVED status to orchestrator.
 - [ ] Test names clearly describe what they verify
 - [ ] No test interdependencies (each test runs independently)
 
-## Auto-Reject Triggers (10 Deterministic Rules)
+## Auto-Reject Triggers (11 Deterministic Rules)
 
 If ANY of these are true, reject immediately and log to REVIEW_LOG.md:
 
@@ -84,6 +84,7 @@ If ANY of these are true, reject immediately and log to REVIEW_LOG.md:
 8. `make check` fails after review fixes
 9. `make dod` fails after review fixes
 10. CHANGE_LOG.md entry missing for the Change ID
+11. Any process step was skipped (no DECOMPOSE, no TDD, no Review Agent, no DoD, no doc updates) — regardless of change size
 
 **Umbrella rule:** Also reject if any `DEFINITION_OF_DONE.md` checklist item fails (even if not covered by the 10 triggers above).
 

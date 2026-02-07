@@ -40,6 +40,10 @@ Golden fixtures available:
 - `src/mocks/golden/governance-report.json` -- complete governance report
 - `src/mocks/golden/seo-report.json` -- complete SEO report
 
+## NO SHORTCUTS — EVER
+
+Every story follows the full workflow below, regardless of perceived simplicity. A one-line CSS tweak gets the same Preflight → TDD → Quality Gate → Docs → DoD sequence as a multi-component feature. You are forbidden from judging whether a change is "too simple" for the process. There are no fast paths, no abbreviated flows, no exceptions.
+
 ## TDD Workflow
 
 Every story follows this EXACT sequence:
