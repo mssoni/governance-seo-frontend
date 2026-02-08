@@ -118,6 +118,51 @@ describe('CompetitorForm (US-6.2)', () => {
     expect(submitBtn).toBeDisabled()
   })
 
+  it('includes governance_job_id in payload when prop is provided (CHG-013)', async () => {
+    const onSubmit = vi.fn(async () => {})
+    render(
+      <CompetitorForm
+        {...defaultProps}
+        onSubmit={onSubmit}
+        governanceJobId="gov-job-abc123"
+      />,
+    )
+    const user = userEvent.setup()
+
+    await user.type(screen.getByLabelText(/competitor 1 url/i), 'https://competitor-a.com')
+    await user.type(screen.getByLabelText(/competitor 2 url/i), 'https://competitor-b.com')
+    await user.tab()
+
+    const submitBtn = screen.getByRole('button', { name: /generate local competitive seo report/i })
+    await user.click(submitBtn)
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          governance_job_id: 'gov-job-abc123',
+          competitors: ['https://competitor-a.com', 'https://competitor-b.com'],
+        }),
+      )
+    })
+  })
+
+  it('omits governance_job_id from payload when prop is not provided (CHG-013)', async () => {
+    const { onSubmit } = renderForm()
+    const user = userEvent.setup()
+
+    await user.type(screen.getByLabelText(/competitor 1 url/i), 'https://competitor-a.com')
+    await user.type(screen.getByLabelText(/competitor 2 url/i), 'https://competitor-b.com')
+    await user.tab()
+
+    const submitBtn = screen.getByRole('button', { name: /generate local competitive seo report/i })
+    await user.click(submitBtn)
+
+    await waitFor(() => {
+      const call = onSubmit.mock.calls[0][0]
+      expect(call.governance_job_id).toBeUndefined()
+    })
+  })
+
   it('shows error state with retry capability', async () => {
     const { rerender } = render(
       <CompetitorForm

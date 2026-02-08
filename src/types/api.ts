@@ -57,6 +57,7 @@ export interface SEOReportRequest {
   business_type: BusinessType
   intent: Intent
   competitors: string[] // 2-3 URLs
+  governance_job_id?: string // CHG-013: reuse governance results
 }
 
 export interface FullReportRequest {

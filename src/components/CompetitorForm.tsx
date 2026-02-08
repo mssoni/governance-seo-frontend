@@ -39,6 +39,7 @@ interface CompetitorFormProps {
   suggestions?: CompetitorSuggestion[]
   suggestionsLoading?: boolean
   userPlace?: CompetitorSuggestion | null
+  governanceJobId?: string // CHG-013: pass to reuse governance results
 }
 
 // --- Component ---
@@ -54,6 +55,7 @@ export default function CompetitorForm({
   suggestions = [],
   suggestionsLoading = false,
   userPlace,
+  governanceJobId,
 }: CompetitorFormProps) {
   const [competitors, setCompetitors] = useState<[string, string, string]>(['', '', ''])
   const [errors, setErrors] = useState<[string?, string?, string?]>([])
@@ -199,11 +201,12 @@ export default function CompetitorForm({
         business_type: businessType,
         intent,
         competitors: competitorUrls,
+        ...(governanceJobId ? { governance_job_id: governanceJobId } : {}),
       }
 
       await onSubmit(payload)
     },
-    [competitors, websiteUrl, location, businessType, intent, onSubmit, validateCompetitor],
+    [competitors, websiteUrl, location, businessType, intent, onSubmit, validateCompetitor, governanceJobId],
   )
 
   const inputClasses = (index: number) =>

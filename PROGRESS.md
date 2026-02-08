@@ -180,7 +180,8 @@
 | CHG-008 (Suggest Competitors) | COMPLETE | 1 story | 4 |
 | CHG-011 (Improve Suggestions) | COMPLETE | 1 story | 4 |
 | CHG-012 (Click Suggestion Fill) | COMPLETE | 1 story | 5 |
-| **Total** | **COMPLETE** | **20 stories + 7 changes** | **159 tests** |
+| CHG-013 (SEO Reuse Governance) | COMPLETE | 1 story | 2 |
+| **Total** | **COMPLETE** | **20 stories + 8 changes** | **161 tests** |
 
 ## Up Next
 (none pending)
