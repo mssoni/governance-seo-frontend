@@ -352,6 +352,7 @@ function ReportPageContent({
                         suggestions={competitorSuggestions}
                         suggestionsLoading={suggestionsLoading}
                         userPlace={userPlace}
+                        governanceJobId={jobId ?? undefined}
                       />
                     )}
                   </>

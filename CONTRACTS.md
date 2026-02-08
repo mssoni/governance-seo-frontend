@@ -5,7 +5,7 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
-**Contract Version: 1.4.0**
+**Contract Version: 1.5.0**
 
 ## Rules
 
@@ -22,6 +22,7 @@
 |---------|------|--------|-----------|
 | 1.0.0 | 2026-02-07 | V1 baseline — all endpoints stable | — |
 | 1.1.0 | 2026-02-07 | Additive: `pages_analyzed` field added to GovernanceReport | CHG-001 |
+| 1.5.0 | 2026-02-08 | Additive: optional `governance_job_id` on `SEOReportRequest` for governance data reuse | CHG-013 |
 | 1.4.0 | 2026-02-07 | Additive: `user_place` on `SuggestCompetitorsResponse`, two-step search, `websiteUri` extraction | CHG-011 |
 | 1.3.0 | 2026-02-07 | Additive: `GET /api/report/suggest-competitors` endpoint, `CompetitorSuggestion` model, `SuggestCompetitorsResponse` model | CHG-008 |
 | 1.2.0 | 2026-02-07 | Additive: `executive_narrative` on ExecutiveSummary, `business_category` on Issue, `TopImprovement` model, `top_improvements` on GovernanceReport | CHG-005 |
@@ -88,9 +89,14 @@
   "competitors": [
     "https://competitor1.com",
     "https://competitor2.com"
-  ]
+  ],
+  "governance_job_id": "uuid-of-previous-governance-job"
 }
 ```
+
+> `governance_job_id` is optional (default `null`). When provided, the backend reuses
+> governance results from the referenced job instead of re-running crawl/detect/PSI steps.
+> Falls back to full pipeline if the referenced job is missing or incomplete. (CHG-013)
 
 **Response:** `202 Accepted` — same `{ job_id, status }` shape.
 
