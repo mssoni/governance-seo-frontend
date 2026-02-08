@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import CompetitorForm from '../CompetitorForm'
 import type { CompetitorSuggestion } from '../../types/api'
@@ -18,14 +18,14 @@ const mockSuggestions: CompetitorSuggestion[] = [
     address: '123 Main St, Miami, FL',
     rating: 4.5,
     review_count: 120,
-    website_url: null,
+    website_url: 'https://smiledental.com',
   },
   {
     name: 'Bright Teeth Dentistry',
     address: '456 Oak Ave, Miami, FL',
     rating: 4.2,
     review_count: 89,
-    website_url: null,
+    website_url: 'https://brightteeth.com',
   },
   {
     name: 'City Dental Care',
@@ -97,6 +97,91 @@ describe('Competitor Suggestions (CHG-008)', () => {
     expect(screen.queryByText(/nearby competitors in your area/i)).not.toBeInTheDocument()
     // Form should still work
     expect(screen.getByLabelText(/competitor 1 url/i)).toBeInTheDocument()
+  })
+})
+
+describe('Click Suggestion to Fill URL (CHG-012)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('fills the first empty competitor URL input when clicking a suggestion with website_url', () => {
+    renderForm({ suggestions: mockSuggestions, suggestionsLoading: false })
+
+    // Click on "Smile Dental Clinic" which has a website_url
+    const smileCard = screen.getByText('Smile Dental Clinic').closest('[data-testid^="suggestion-card-"]')!
+    fireEvent.click(smileCard)
+
+    // First competitor field should now have the website URL
+    const input1 = screen.getByLabelText(/competitor 1 url/i) as HTMLInputElement
+    expect(input1.value).toBe('https://smiledental.com')
+  })
+
+  it('fills the next empty field when first is already filled', () => {
+    renderForm({ suggestions: mockSuggestions, suggestionsLoading: false })
+
+    // Click first suggestion
+    const smileCard = screen.getByText('Smile Dental Clinic').closest('[data-testid^="suggestion-card-"]')!
+    fireEvent.click(smileCard)
+
+    // Click second suggestion
+    const brightCard = screen.getByText('Bright Teeth Dentistry').closest('[data-testid^="suggestion-card-"]')!
+    fireEvent.click(brightCard)
+
+    // Second competitor field should now have the website URL
+    const input2 = screen.getByLabelText(/competitor 2 url/i) as HTMLInputElement
+    expect(input2.value).toBe('https://brightteeth.com')
+  })
+
+  it('shows "no website" message when clicking a suggestion without website_url', () => {
+    renderForm({ suggestions: mockSuggestions, suggestionsLoading: false })
+
+    // Click on "City Dental Care" which has no website_url
+    const cityCard = screen.getByText('City Dental Care').closest('[data-testid^="suggestion-card-"]')!
+    fireEvent.click(cityCard)
+
+    // Should show a no-website message
+    expect(screen.getByText(/has no website listed/i)).toBeInTheDocument()
+
+    // No competitor field should be filled
+    const input1 = screen.getByLabelText(/competitor 1 url/i) as HTMLInputElement
+    expect(input1.value).toBe('')
+  })
+
+  it('does not fill when all 3 competitor fields are already filled', () => {
+    renderForm({ suggestions: mockSuggestions, suggestionsLoading: false })
+
+    // Fill all three fields by clicking suggestions and manually
+    const smileCard = screen.getByText('Smile Dental Clinic').closest('[data-testid^="suggestion-card-"]')!
+    fireEvent.click(smileCard)
+
+    const brightCard = screen.getByText('Bright Teeth Dentistry').closest('[data-testid^="suggestion-card-"]')!
+    fireEvent.click(brightCard)
+
+    // Manually fill the third
+    const input3 = screen.getByLabelText(/competitor 3 url/i) as HTMLInputElement
+    fireEvent.change(input3, { target: { value: 'https://third.com' } })
+
+    // Now all 3 are filled — create a new suggestion with a website
+    // Re-click Smile — should NOT overwrite anything
+    fireEvent.click(smileCard)
+
+    // Values should remain unchanged
+    const input1 = screen.getByLabelText(/competitor 1 url/i) as HTMLInputElement
+    const input2 = screen.getByLabelText(/competitor 2 url/i) as HTMLInputElement
+    expect(input1.value).toBe('https://smiledental.com')
+    expect(input2.value).toBe('https://brightteeth.com')
+    expect(input3.value).toBe('https://third.com')
+  })
+
+  it('shows visual selection indicator on clicked suggestion card', () => {
+    renderForm({ suggestions: mockSuggestions, suggestionsLoading: false })
+
+    const smileCard = screen.getByText('Smile Dental Clinic').closest('[data-testid^="suggestion-card-"]')!
+    fireEvent.click(smileCard)
+
+    // Card should have a selected visual indicator (e.g., checkmark or border)
+    expect(smileCard).toHaveAttribute('data-selected', 'true')
   })
 })
 
