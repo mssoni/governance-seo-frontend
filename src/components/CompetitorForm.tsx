@@ -58,6 +58,8 @@ export default function CompetitorForm({
   const [competitors, setCompetitors] = useState<[string, string, string]>(['', '', ''])
   const [errors, setErrors] = useState<[string?, string?, string?]>([])
   const [touched, setTouched] = useState<[boolean, boolean, boolean]>([false, false, false])
+  const [selectedSuggestions, setSelectedSuggestions] = useState<Set<string>>(new Set())
+  const [noWebsiteMessage, setNoWebsiteMessage] = useState<string | null>(null)
 
   const validateCompetitor = useCallback(
     (index: number, value: string): string | undefined => {
@@ -124,6 +126,49 @@ export default function CompetitorForm({
     })
     return validUrls.length >= 2
   }, [competitors, validateCompetitor])
+
+  const handleSuggestionClick = useCallback(
+    (suggestion: CompetitorSuggestion) => {
+      // Clear any previous no-website message
+      setNoWebsiteMessage(null)
+
+      if (!suggestion.website_url) {
+        setNoWebsiteMessage(`"${suggestion.name}" has no website listed on Google.`)
+        return
+      }
+
+      // Find the first empty competitor field
+      const emptyIndex = competitors.findIndex((url) => url.trim() === '')
+      if (emptyIndex === -1) {
+        // All fields are filled — do nothing
+        return
+      }
+
+      // Fill the empty field with the suggestion's website URL
+      setCompetitors((prev) => {
+        const next = [...prev] as [string, string, string]
+        next[emptyIndex] = suggestion.website_url!
+        return next
+      })
+
+      // Mark the field as touched and clear its error
+      setTouched((prev) => {
+        const next = [...prev] as [boolean, boolean, boolean]
+        next[emptyIndex] = true
+        return next
+      })
+      setErrors((prev) => {
+        const next = [...prev] as [string?, string?, string?]
+        next[emptyIndex] = undefined
+        return next
+      })
+
+      // Track this suggestion as selected
+      const key = `${suggestion.name}-${suggestion.address}`
+      setSelectedSuggestions((prev) => new Set(prev).add(key))
+    },
+    [competitors],
+  )
 
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
@@ -222,24 +267,49 @@ export default function CompetitorForm({
       {!suggestionsLoading && suggestions.length > 0 && (
         <div className="mb-6">
           <p className="mb-3 text-sm font-medium text-gray-600">
-            Nearby competitors in your area (optional — helps you compare)
+            Nearby competitors in your area — click to add as competitor
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {suggestions.map((suggestion) => (
-              <div
-                key={`${suggestion.name}-${suggestion.address}`}
-                className="rounded-lg border border-gray-200 bg-white p-3 shadow-sm"
-              >
-                <p className="font-semibold text-gray-900">{suggestion.name}</p>
-                <p className="mt-1 text-xs text-gray-500">{suggestion.address}</p>
-                {suggestion.rating != null && suggestion.review_count != null && (
-                  <p className="mt-1 text-xs text-amber-600">
-                    {suggestion.rating} ★ ({suggestion.review_count} reviews)
-                  </p>
-                )}
-              </div>
-            ))}
+            {suggestions.map((suggestion, idx) => {
+              const key = `${suggestion.name}-${suggestion.address}`
+              const isSelected = selectedSuggestions.has(key)
+              return (
+                <button
+                  type="button"
+                  key={key}
+                  data-testid={`suggestion-card-${idx}`}
+                  data-selected={isSelected ? 'true' : 'false'}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className={`cursor-pointer rounded-lg border p-3 text-left shadow-sm transition-all hover:shadow-md ${
+                    isSelected
+                      ? 'border-indigo-400 bg-indigo-50 ring-1 ring-indigo-300'
+                      : 'border-gray-200 bg-white hover:border-indigo-200'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <p className="font-semibold text-gray-900">{suggestion.name}</p>
+                    {isSelected && (
+                      <span className="ml-1 text-indigo-600" aria-label="Selected">✓</span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">{suggestion.address}</p>
+                  {suggestion.rating != null && suggestion.review_count != null && (
+                    <p className="mt-1 text-xs text-amber-600">
+                      {suggestion.rating} ★ ({suggestion.review_count} reviews)
+                    </p>
+                  )}
+                  {!suggestion.website_url && (
+                    <p className="mt-1 text-xs italic text-gray-400">No website listed</p>
+                  )}
+                </button>
+              )
+            })}
           </div>
+          {noWebsiteMessage && (
+            <p className="mt-2 text-sm text-amber-600" role="status">
+              {noWebsiteMessage}
+            </p>
+          )}
         </div>
       )}
 

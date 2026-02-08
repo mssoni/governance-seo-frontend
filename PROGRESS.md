@@ -178,7 +178,9 @@
 | CHG-005 (Two-View Report) | COMPLETE | 3 stories | 17 |
 | CHG-007 (Move Competitor Form) | COMPLETE | 1 story | 1 |
 | CHG-008 (Suggest Competitors) | COMPLETE | 1 story | 4 |
-| **Total** | **COMPLETE** | **20 stories + 5 changes** | **150 tests** |
+| CHG-011 (Improve Suggestions) | COMPLETE | 1 story | 4 |
+| CHG-012 (Click Suggestion Fill) | COMPLETE | 1 story | 5 |
+| **Total** | **COMPLETE** | **20 stories + 7 changes** | **159 tests** |
 
 ## Up Next
 (none pending)

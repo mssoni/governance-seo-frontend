@@ -59,7 +59,7 @@ frontend/
 │   │   └── __tests__/
 │   │       ├── input-form.test.tsx  # InputForm tests (8 cases)
 │   │       ├── competitor-form.test.tsx  # CompetitorForm tests (7 cases)
-│   │       ├── competitor-suggestions.test.tsx  # Competitor suggestions tests (4 cases) [Added in CHG-008]
+│   │       ├── competitor-suggestions.test.tsx  # Competitor suggestions tests (13 cases) [Added in CHG-008, Updated in CHG-012]
 │   │       └── error-boundary.test.tsx  # ErrorBoundary tests (4 cases) [Added in US-9.2]
 │   ├── hooks/
 │   │   ├── useJobPolling.ts       # Custom hook: polls job status, returns state + retry
@@ -339,11 +339,13 @@ User Input (form)
 - "We can help with this" CTA link per card
 - "View full 30-day checklist in Technical Details" button at bottom
 
-### src/components/CompetitorForm.tsx [Updated in CHG-008, CHG-011]
+### src/components/CompetitorForm.tsx [Updated in CHG-008, CHG-011, CHG-012]
 - Default export: `CompetitorForm` component
 - Props: `{ websiteUrl: string, location: Location, businessType: BusinessType, intent: Intent, onSubmit: (data: SEOReportRequest) => Promise<void>, isLoading: boolean, error?: string, suggestions?: CompetitorSuggestion[], suggestionsLoading?: boolean, userPlace?: CompetitorSuggestion | null }`
 - `suggestions`, `suggestionsLoading`, and `userPlace` received as props from page layer (not fetched internally) — IO layering compliant
 - When `userPlace` is provided, renders a Google Business Profile review card (data-testid="user-review-card") showing name, address, rating, review count
+- **Clickable suggestion cards** (CHG-012): clicking a suggestion with `website_url` fills the next empty competitor URL input; clicking one without `website_url` shows "has no website listed" message; selected cards show visual indicator (indigo border + checkmark + `data-selected="true"`)
+- Suggestion cards rendered as `<button>` elements with `data-testid="suggestion-card-{idx}"`
 - 3 competitor URL fields (competitor 1 & 2 required, competitor 3 optional)
 - URL validation matching InputForm pattern (same `isValidUrl` function)
 - Submit disabled until at least 2 valid competitor URLs entered
@@ -467,4 +469,5 @@ User Input (form)
 - 2026-02-07 CHG-001: Pages analyzed display + full report CTA. Added `pages_analyzed: number` field to GovernanceReport type and golden fixture. ReportPage shows "Based on analysis of {N} most important pages" text and a subtle blue CTA banner ("For a comprehensive full-site audit, reach out to us."). Contract version bumped to 1.1.0. 2 tests.
 - 2026-02-07 CHG-011: Improve competitor suggestions. Updated SuggestCompetitorsResponse type with user_place field. Updated api-client.ts to pass website_url param. Updated useCompetitorSuggestions hook to accept websiteUrl and return userPlace. Updated ReportPage to pass websiteUrl to hook and userPlace to CompetitorForm. Added Google Business Profile review card to CompetitorForm (data-testid="user-review-card"). 8 tests (4 new for review card). Contract 1.3.0→1.4.0.
 - 2026-02-07 CHG-008: Suggest Competitors via Google Places API. Added CompetitorSuggestion and SuggestCompetitorsResponse types to api.ts. Added fetchCompetitorSuggestions() to api-client.ts. Added useCompetitorSuggestions hook (hooks/useCompetitorSuggestions.ts). Updated CompetitorForm to accept suggestions/suggestionsLoading as props (IO layering fix — hook called at page level in ReportPage, not in component). Updated ReportPage to fetch suggestions and pass as props. 4 tests (competitor-suggestions.test.tsx). Contract 1.2.0→1.3.0.
+- 2026-02-08 CHG-012: Click suggestion to fill URL. Suggestion cards now clickable `<button>` elements. Clicking fills next empty competitor URL input with website_url. Cards without website show "no website" message. Selected cards show indigo border + checkmark. 5 new tests (159 total). No schema/contract change.
 - 2026-02-07 CHG-005: Two-View Report — Business Overview + Technical Details. Added 3 new components: ExecutiveStory (narrative + pills), BusinessImpactCategories (4 category cards), TopImprovements (top 3 with effort/category). ReportTabs updated to 3 tabs (Business Overview default, Technical Details, SEO). SidePanel updated with topImprovements + activeTab props. ReportPage updated with BusinessContent + tab routing. Types updated: executive_narrative on ExecutiveSummary, business_category on Issue, TopImprovement interface, top_improvements on GovernanceReport. Golden fixture updated. Contract 1.1.0→1.2.0. 17 new tests (4 ExecutiveStory + 5 BusinessImpactCategories + 5 TopImprovements + 3 ReportPage).
