@@ -68,7 +68,10 @@ function BusinessContent({
         whatsWorking={report.summary.whats_working}
         needsAttention={report.summary.needs_attention}
       />
-      <BusinessImpactCategories issues={highConfidenceIssues} />
+      <BusinessImpactCategories
+        issues={highConfidenceIssues}
+        categoryInsights={report.category_insights}
+      />
       <TopImprovements
         improvements={report.top_improvements}
         onSwitchToTechnical={onSwitchToTechnical}
