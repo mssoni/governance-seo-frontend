@@ -63,7 +63,9 @@ describe('ExecutiveSummary (US-5.2)', () => {
 
     render(<ExecutiveSummary summary={summaryWithInferred} />)
 
-    expect(screen.getByText('Inferred')).toBeInTheDocument()
+    // CHG-020: Multiple inferred items possible now (fixture has inferred needs_attention)
+    const inferredBadges = screen.getAllByText('Inferred')
+    expect(inferredBadges.length).toBeGreaterThan(0)
   })
 
   it('shows confidence chips (High/Medium/Low)', () => {

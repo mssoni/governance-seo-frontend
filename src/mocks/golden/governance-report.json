@@ -20,6 +20,18 @@
         "description": "We detected Google Analytics tracking code on the site.",
         "detected_as": "observed",
         "confidence": "high"
+      },
+      {
+        "title": "Consistent page structure",
+        "description": "Header and footer layout is consistent across all sampled pages.",
+        "detected_as": "observed",
+        "confidence": "high"
+      },
+      {
+        "title": "Contact form functional",
+        "description": "Contact Form 7 is installed and accessible on the contact page.",
+        "detected_as": "observed",
+        "confidence": "high"
       }
     ],
     "needs_attention": [
@@ -39,6 +51,18 @@
         "title": "Missing alt text on images",
         "description": "Several images lack descriptive alt attributes.",
         "detected_as": "observed",
+        "confidence": "medium"
+      },
+      {
+        "title": "Missing security headers",
+        "description": "HSTS and CSP headers are not configured, leaving visitors less protected.",
+        "detected_as": "observed",
+        "confidence": "high"
+      },
+      {
+        "title": "No uptime monitoring detected",
+        "description": "No public status page or monitoring service was found.",
+        "detected_as": "inferred",
         "confidence": "medium"
       }
     ]
