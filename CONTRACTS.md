@@ -5,7 +5,7 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
-**Contract Version: 1.6.0**
+**Contract Version: 1.7.0**
 
 ## Rules
 
@@ -162,6 +162,8 @@ Returns empty `suggestions` list if Places API key is not configured (graceful d
 | DetectedAs | observed, inferred |
 | Effort | S, M, L |
 | Owner | business, developer, agency |
+| CustomerSegment | revenue_driven, risk_aware, oversight |
+| CategoryStatus | at_risk, on_track, good |
 
 ---
 
@@ -268,6 +270,20 @@ Returns empty `suggestions` list if Places API key is not configured (graceful d
 | limitations | LimitationItem[] | yes |
 | pages_analyzed | number | yes (default 0, added in 1.1.0 CHG-001) |
 | top_improvements | TopImprovement[] | no (default [], added in 1.2.0 CHG-005) |
+| customer_segment | CustomerSegment \| null | no (default null, added in 1.7.0 CHG-018) |
+| category_insights | CategoryInsight[] | no (default [], added in 1.7.0 CHG-018) |
+
+### CategoryInsight (added in 1.7.0 CHG-018)
+| Field | Type | Required |
+|-------|------|----------|
+| category_id | string | yes |
+| display_name | string | yes |
+| headline | string | yes |
+| detail | string | yes |
+| icon | string | no (default "shield") |
+| status | CategoryStatus | yes |
+| issue_count | number | no (default 0) |
+| max_severity | Severity \| null | no (default null) |
 
 ### CompetitorRow
 | Field | Type | Required |

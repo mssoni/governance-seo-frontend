@@ -1,6 +1,13 @@
 # Progress
 
 ## Completed
+- [x] CHG-018: Segment-Aware Personalized Business Overview (2026-02-09) — 5 tests
+  - `src/types/api.ts`: CustomerSegment, CategoryStatus, CategoryInsight types, extended GovernanceReport
+  - `src/components/report/BusinessImpactCategories.tsx`: PersonalizedCards + LegacyCards conditional rendering
+  - `src/pages/ReportPage.tsx`: Pass categoryInsights prop to BusinessImpactCategories
+  - `src/components/report/__tests__/business-impact-categories.test.tsx`: Legacy path + Personalized path tests
+  - `src/mocks/golden/governance-report.json`: Added customer_segment + category_insights defaults
+  - Contract 1.6.0→1.7.0
 - [x] CHG-008: Suggest Competitors via Google Places API (2026-02-07) — 4 tests
   - `src/types/api.ts`: CompetitorSuggestion and SuggestCompetitorsResponse types
   - `src/services/api-client.ts`: fetchCompetitorSuggestions() function
@@ -181,7 +188,8 @@
 | CHG-011 (Improve Suggestions) | COMPLETE | 1 story | 4 |
 | CHG-012 (Click Suggestion Fill) | COMPLETE | 1 story | 5 |
 | CHG-013 (SEO Reuse Governance) | COMPLETE | 1 story | 2 |
-| **Total** | **COMPLETE** | **20 stories + 8 changes** | **161 tests** |
+| CHG-018 (Segment Personalization) | COMPLETE | 1 story | 5 |
+| **Total** | **COMPLETE** | **21 stories + 9 changes** | **166 tests** |
 
 ## Up Next
 (none pending)

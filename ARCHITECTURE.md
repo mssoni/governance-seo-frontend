@@ -38,7 +38,7 @@ frontend/
 │   │   │   ├── SEOActionPlan.tsx   # 30-day week-by-week action plan with collapsible weeks
 │   │   │   ├── ReportTabs.tsx     # WCAG-compliant tab navigation (Business/Technical/SEO) [Added in US-8.4, Updated in CHG-005]
 │   │   │   ├── ExecutiveStory.tsx  # Executive narrative with working/attention pills [Added in CHG-005]
-│   │   │   ├── BusinessImpactCategories.tsx # Business impact category cards [Added in CHG-005]
+│   │   │   ├── BusinessImpactCategories.tsx # Business impact category cards with personalized path [Added in CHG-005, Updated in CHG-016, CHG-018]
 │   │   │   ├── TopImprovements.tsx # Top 3 improvements with effort/category [Added in CHG-005]
 │   │   │   └── __tests__/
 │   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
@@ -52,7 +52,7 @@ frontend/
 │   │   │       ├── action-plan.test.tsx         # SEOActionPlan tests (5 cases)
 │   │   │       ├── report-tabs.test.tsx        # ReportTabs tests (11 cases) [Added in US-8.4, Updated in CHG-005]
 │   │   │       ├── executive-story.test.tsx    # ExecutiveStory tests (4 cases) [Added in CHG-005]
-│   │   │       ├── business-impact-categories.test.tsx # BusinessImpactCategories tests (5 cases) [Added in CHG-005]
+│   │   │       ├── business-impact-categories.test.tsx # BusinessImpactCategories tests (10 cases) [Added in CHG-005, Updated in CHG-016, CHG-018]
 │   │   │       └── top-improvements.test.tsx   # TopImprovements tests (5 cases) [Added in CHG-005]
 │   │   ├── CompetitorForm.tsx     # Competitor input form (3 URL fields, validation, SEO submit)
 │   │   ├── ErrorBoundary.tsx      # React error boundary with retry (role="alert") [Added in US-9.2]
@@ -78,13 +78,13 @@ frontend/
 │   │       └── not-found.test.tsx       # NotFoundPage tests (4 cases) [Added in US-9.2]
 │   ├── lib/                       # Utility functions (empty)
 │   ├── types/
-│   │   └── api.ts                 # TypeScript types matching backend Pydantic models [Updated in CHG-015]
+│   │   └── api.ts                 # TypeScript types matching backend Pydantic models [Updated in CHG-015, CHG-018]
 │   ├── services/
 │   │   ├── api-client.ts          # Fetch-based API client
 │   │   └── api-client.test.ts     # API client tests
 │   └── mocks/
 │       └── golden/
-│           ├── governance-report.json  # Golden governance report fixture [Updated in CHG-015]
+│           ├── governance-report.json  # Golden governance report fixture [Updated in CHG-015, CHG-018]
 │           └── seo-report.json         # Golden SEO report fixture
 ├── public/
 │   └── vite.svg
