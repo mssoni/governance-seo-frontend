@@ -17,38 +17,54 @@ export default function ExecutiveStory({
       <p className="text-base leading-relaxed text-gray-700">{narrative}</p>
 
       <div className="mt-6 space-y-4">
-        {/* What's working */}
+        {/* What's working — CHG-020: bulleted list with title + description */}
         <div>
           <h4 className="mb-2 text-sm font-semibold text-gray-500 uppercase tracking-wide">
             What&apos;s working
           </h4>
-          <div className="flex flex-wrap gap-2">
+          <ul className="space-y-3">
             {whatsWorking.map((item, i) => (
-              <span
+              <li
                 key={i}
-                className="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-200"
+                className="flex items-start gap-2 rounded-lg border-l-4 border-l-green-400 bg-green-50/50 px-3 py-2"
               >
-                {item.title}
-              </span>
+                <span className="mt-0.5 text-green-500" aria-hidden="true">
+                  &#10003;
+                </span>
+                <div>
+                  <span className="font-semibold text-gray-800">{item.title}</span>
+                  {item.description && (
+                    <p className="mt-0.5 text-sm text-gray-600">{item.description}</p>
+                  )}
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
-        {/* Needs attention */}
+        {/* Needs attention — CHG-020: bulleted list with title + description */}
         <div>
           <h4 className="mb-2 text-sm font-semibold text-gray-500 uppercase tracking-wide">
             Needs attention
           </h4>
-          <div className="flex flex-wrap gap-2">
+          <ul className="space-y-3">
             {needsAttention.map((item, i) => (
-              <span
+              <li
                 key={i}
-                className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700 ring-1 ring-inset ring-amber-200"
+                className="flex items-start gap-2 rounded-lg border-l-4 border-l-amber-400 bg-amber-50/50 px-3 py-2"
               >
-                {item.title}
-              </span>
+                <span className="mt-0.5 text-amber-500" aria-hidden="true">
+                  &#9888;
+                </span>
+                <div>
+                  <span className="font-semibold text-gray-800">{item.title}</span>
+                  {item.description && (
+                    <p className="mt-0.5 text-sm text-gray-600">{item.description}</p>
+                  )}
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
     </section>
