@@ -44,6 +44,26 @@ const CATEGORIES: CategoryConfig[] = [
   },
 ]
 
+// CHG-016: Business-impact framing per category (from business_goals.py)
+const CATEGORY_BUSINESS_IMPACT: Record<string, {atRisk: string; onTrack: string}> = {
+  "Trust & Credibility": {
+    atRisk: "Visitors may not fully trust your site yet",
+    onTrack: "Your site signals trust and security to visitors",
+  },
+  "Search Visibility": {
+    atRisk: "Fewer people can find you in search results",
+    onTrack: "Search engines can find and understand your content well",
+  },
+  "User Experience": {
+    atRisk: "Some visitors may struggle or leave quickly",
+    onTrack: "Your site loads well and is easy to use",
+  },
+  "Operational Risk": {
+    atRisk: "Small gaps could become bigger problems",
+    onTrack: "Your site's technical foundation is solid",
+  },
+}
+
 function getMaxSeverity(issues: Issue[]): Severity | null {
   if (issues.length === 0) return null
   if (issues.some((i) => i.severity === 'high')) return 'high'
@@ -51,24 +71,11 @@ function getMaxSeverity(issues: Issue[]): Severity | null {
   return 'low'
 }
 
-function getStatusText(maxSeverity: Severity | null): string {
-  if (maxSeverity === null) return 'Looking good'
-  if (maxSeverity === 'low') return 'Minor improvements available'
-  return 'Needs attention'
-}
-
 function getBorderColor(maxSeverity: Severity | null): string {
   if (maxSeverity === null) return 'border-l-green-400'
   if (maxSeverity === 'low') return 'border-l-amber-400'
   if (maxSeverity === 'medium') return 'border-l-amber-400'
   return 'border-l-red-400'
-}
-
-function getStatusColor(maxSeverity: Severity | null): string {
-  if (maxSeverity === null) return 'text-green-600'
-  if (maxSeverity === 'low') return 'text-amber-600'
-  if (maxSeverity === 'medium') return 'text-amber-600'
-  return 'text-red-600'
 }
 
 export default function BusinessImpactCategories({ issues }: BusinessImpactCategoriesProps) {
@@ -88,20 +95,19 @@ export default function BusinessImpactCategories({ issues }: BusinessImpactCateg
         {CATEGORIES.map((category) => {
           const categoryIssues = issuesByCategory.get(category.name) ?? []
           const maxSeverity = getMaxSeverity(categoryIssues)
-          const statusText = getStatusText(maxSeverity)
           const borderColor = getBorderColor(maxSeverity)
-          const statusColor = getStatusColor(maxSeverity)
 
-          const summaryText =
+          // CHG-016: Lead with business impact, not severity
+          const impactText =
             categoryIssues.length > 0
-              ? categoryIssues[0].why_it_matters
-              : 'No concerns detected in this area'
+              ? CATEGORY_BUSINESS_IMPACT[category.name]?.atRisk ?? 'Areas for improvement'
+              : CATEGORY_BUSINESS_IMPACT[category.name]?.onTrack ?? 'Looking good'
 
           const countText =
             categoryIssues.length === 1
-              ? '1 finding'
+              ? '1 high-confidence finding'
               : categoryIssues.length > 1
-                ? `${categoryIssues.length} findings`
+                ? `${categoryIssues.length} high-confidence findings`
                 : null
 
           return (
@@ -109,19 +115,35 @@ export default function BusinessImpactCategories({ issues }: BusinessImpactCateg
               key={category.name}
               className={`rounded-lg border border-gray-200 border-l-4 ${borderColor} bg-white p-5 shadow-sm`}
             >
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-400">{category.icon}</span>
-                  <h3 className="font-bold text-gray-900">{category.name}</h3>
-                </div>
-                {countText && (
-                  <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">
-                    {countText}
-                  </span>
-                )}
+              {/* Category header */}
+              <div className="mb-3 flex items-center gap-2">
+                <span className="text-gray-400">{category.icon}</span>
+                <h3 className="font-bold text-gray-900">{category.name}</h3>
               </div>
-              <p className={`mb-2 text-sm font-medium ${statusColor}`}>{statusText}</p>
-              <p className="text-sm leading-relaxed text-gray-600">{summaryText}</p>
+
+              {/* Business impact (leads) */}
+              <p className="mb-3 text-base font-medium text-gray-900 leading-snug">{impactText}</p>
+
+              {/* What we observed */}
+              {categoryIssues.length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    We observed
+                  </p>
+                  <ul className="list-disc list-inside space-y-1">
+                    {categoryIssues.map((issue, i) => (
+                      <li key={i} className="text-sm text-gray-700 leading-relaxed">
+                        {issue.title}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Confidence indicator (subtle) */}
+              {countText && (
+                <p className="text-xs text-gray-400 mt-3">Based on {countText}</p>
+              )}
             </div>
           )
         })}

@@ -55,6 +55,12 @@ function BusinessContent({
   report: GovernanceReport
   onSwitchToTechnical: () => void
 }) {
+  // CHG-016: Filter for high-confidence observed issues only in Business Overview
+  // Technical Details tab still shows all issues
+  const highConfidenceIssues = report.issues.filter(
+    (issue) => issue.confidence === 'high' && issue.detected_as === 'observed'
+  )
+
   return (
     <>
       <ExecutiveStory
@@ -62,7 +68,7 @@ function BusinessContent({
         whatsWorking={report.summary.whats_working}
         needsAttention={report.summary.needs_attention}
       />
-      <BusinessImpactCategories issues={report.issues} />
+      <BusinessImpactCategories issues={highConfidenceIssues} />
       <TopImprovements
         improvements={report.top_improvements}
         onSwitchToTechnical={onSwitchToTechnical}
