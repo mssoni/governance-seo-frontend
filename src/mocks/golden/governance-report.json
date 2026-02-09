@@ -1,7 +1,7 @@
 {
   "pages_analyzed": 8,
   "summary": {
-    "executive_narrative": "Your website is set up to help with growing your online presence and building credibility — but a few gaps are quietly working against you. Right now, search engines have less confidence ranking your pages, which means fewer people find you. Additionally, some visitors may struggle with slow loading or usability issues, which can drive them away. On the positive side, your site is encrypted and secure for visitors, your site works well on phones and tablets and you're tracking how visitors interact with your site. These are solid foundations to build on. We found 3 areas for improvement that could strengthen your position with visitors. The gaps we found are common and fixable — none require rebuilding your site.",
+    "executive_narrative": "Your website is set up to help with growing your online presence and building credibility \u2014 but a few gaps are quietly working against you. Right now, search engines have less confidence ranking your pages, which means fewer people find you. Additionally, some visitors may struggle with slow loading or usability issues, which can drive them away. On the positive side, your site is encrypted and secure for visitors, your site works well on phones and tablets and you're tracking how visitors interact with your site. These are solid foundations to build on. We found 3 areas for improvement that could strengthen your position with visitors. The gaps we found are common and fixable \u2014 none require rebuilding your site.",
     "whats_working": [
       {
         "title": "SSL/HTTPS enabled",
@@ -47,10 +47,16 @@
     {
       "name": "Performance",
       "value": "42/100",
-      "meaning": "Below average — page loads slowly on mobile devices.",
+      "meaning": "Below average \u2014 page loads slowly on mobile devices.",
       "evidence": [
-        { "description": "PageSpeed Insights mobile score: 42", "raw_value": "42" },
-        { "description": "Largest Contentful Paint: 4.2s", "raw_value": "4200" }
+        {
+          "description": "PageSpeed Insights mobile score: 42",
+          "raw_value": "42"
+        },
+        {
+          "description": "Largest Contentful Paint: 4.2s",
+          "raw_value": "4200"
+        }
       ],
       "why_it_matters": "Slow sites lose visitors and may rank lower in search results."
     },
@@ -59,8 +65,14 @@
       "value": "Medium",
       "meaning": "Some accessibility issues detected that may affect users with disabilities.",
       "evidence": [
-        { "description": "5 images missing alt text", "raw_value": "5" },
-        { "description": "Missing lang attribute on html element", "raw_value": null }
+        {
+          "description": "5 images missing alt text",
+          "raw_value": "5"
+        },
+        {
+          "description": "Missing lang attribute on html element",
+          "raw_value": null
+        }
       ],
       "why_it_matters": "Accessibility issues can exclude users and create legal risk."
     },
@@ -69,7 +81,10 @@
       "value": "Good",
       "meaning": "Site structure appears consistent across sampled pages.",
       "evidence": [
-        { "description": "Consistent header/footer across 6 sampled pages", "raw_value": "6" }
+        {
+          "description": "Consistent header/footer across 6 sampled pages",
+          "raw_value": "6"
+        }
       ],
       "why_it_matters": "Consistent structure reduces maintenance cost and user confusion."
     },
@@ -78,9 +93,18 @@
       "value": "Fair",
       "meaning": "HTTPS present but some security headers missing.",
       "evidence": [
-        { "description": "HTTPS: enabled", "raw_value": "true" },
-        { "description": "HSTS header: missing", "raw_value": null },
-        { "description": "CSP header: missing", "raw_value": null }
+        {
+          "description": "HTTPS: enabled",
+          "raw_value": "true"
+        },
+        {
+          "description": "HSTS header: missing",
+          "raw_value": null
+        },
+        {
+          "description": "CSP header: missing",
+          "raw_value": null
+        }
       ],
       "why_it_matters": "Missing security headers increase risk of attacks and data exposure."
     },
@@ -89,9 +113,18 @@
       "value": "3 integrations",
       "meaning": "Site uses Google Analytics, Google Tag Manager, and a contact form plugin.",
       "evidence": [
-        { "description": "Google Analytics (GA4) detected", "raw_value": "GA4" },
-        { "description": "Google Tag Manager detected", "raw_value": "GTM-XXXX" },
-        { "description": "Contact Form 7 detected", "raw_value": "CF7" }
+        {
+          "description": "Google Analytics (GA4) detected",
+          "raw_value": "GA4"
+        },
+        {
+          "description": "Google Tag Manager detected",
+          "raw_value": "GTM-XXXX"
+        },
+        {
+          "description": "Contact Form 7 detected",
+          "raw_value": "CF7"
+        }
       ],
       "why_it_matters": "Third-party integrations add functionality but also maintenance burden."
     },
@@ -100,7 +133,10 @@
       "value": "Unknown",
       "meaning": "We cannot detect uptime monitoring from public signals alone.",
       "evidence": [
-        { "description": "No public status page found", "raw_value": null }
+        {
+          "description": "No public status page found",
+          "raw_value": null
+        }
       ],
       "why_it_matters": "Without monitoring, downtime may go unnoticed and damage reputation."
     }
@@ -114,8 +150,14 @@
       "detected_as": "observed",
       "business_category": "Search Visibility",
       "evidence": [
-        { "description": "No sitemap.xml at /sitemap.xml", "raw_value": "404" },
-        { "description": "No Sitemap directive in robots.txt", "raw_value": null }
+        {
+          "description": "No sitemap.xml at /sitemap.xml",
+          "raw_value": "404"
+        },
+        {
+          "description": "No Sitemap directive in robots.txt",
+          "raw_value": null
+        }
       ],
       "why_it_matters": "Search engines may discover pages inconsistently without a sitemap.",
       "what_happens_if_ignored": "New or updated pages may take longer to appear in search results.",
@@ -134,7 +176,10 @@
       "detected_as": "observed",
       "business_category": "User Experience",
       "evidence": [
-        { "description": "LCP: 4.2 seconds (threshold: < 2.5s)", "raw_value": "4200" }
+        {
+          "description": "LCP: 4.2 seconds (threshold: < 2.5s)",
+          "raw_value": "4200"
+        }
       ],
       "why_it_matters": "LCP above 2.5s indicates the main content loads slowly, frustrating users.",
       "what_happens_if_ignored": "Higher bounce rates and potential ranking penalties from Core Web Vitals.",
@@ -153,7 +198,10 @@
       "detected_as": "observed",
       "business_category": "User Experience",
       "evidence": [
-        { "description": "5 images found without alt attributes across 3 pages", "raw_value": "5" }
+        {
+          "description": "5 images found without alt attributes across 3 pages",
+          "raw_value": "5"
+        }
       ],
       "why_it_matters": "Screen readers cannot describe these images to visually impaired users.",
       "what_happens_if_ignored": "Accessibility compliance risk and missed image search traffic.",
@@ -251,5 +299,24 @@
       "effort": "S",
       "category": "User Experience"
     }
-  ]
+  ],
+  "copyright_year": 2023,
+  "blog_last_updated": "2023-06-15",
+  "sitemap_latest_lastmod": "2023-07-01",
+  "site_maintenance_status": "sporadic",
+  "agency_name": "Web Design Co",
+  "agency_credit_url": "https://webdesign.example.com",
+  "login_routes_detected": [],
+  "multi_locale_detected": false,
+  "site_complexity": "simple",
+  "page_count_by_section": {
+    "/blog": 25,
+    "/services": 8,
+    "/": 1
+  },
+  "templates_estimate": 5,
+  "technical_debt_score": 58,
+  "design_age_level": "dated",
+  "design_age_score": 45,
+  "accessibility_risk_level": "medium"
 }

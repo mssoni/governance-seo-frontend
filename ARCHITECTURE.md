@@ -78,13 +78,13 @@ frontend/
 │   │       └── not-found.test.tsx       # NotFoundPage tests (4 cases) [Added in US-9.2]
 │   ├── lib/                       # Utility functions (empty)
 │   ├── types/
-│   │   └── api.ts                 # TypeScript types matching backend Pydantic models
+│   │   └── api.ts                 # TypeScript types matching backend Pydantic models [Updated in CHG-015]
 │   ├── services/
 │   │   ├── api-client.ts          # Fetch-based API client
 │   │   └── api-client.test.ts     # API client tests
 │   └── mocks/
 │       └── golden/
-│           ├── governance-report.json  # Golden governance report fixture
+│           ├── governance-report.json  # Golden governance report fixture [Updated in CHG-015]
 │           └── seo-report.json         # Golden SEO report fixture
 ├── public/
 │   └── vite.svg
