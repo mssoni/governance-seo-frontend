@@ -1,6 +1,12 @@
 # Progress
 
 ## Completed
+- [x] CHG-020: Honest 5+5 Bulleted Lists in Business Overview (2026-02-10) — 0 net new tests (8 rewritten)
+  - `src/components/report/ExecutiveStory.tsx`: Replaced green/amber pills (rounded-full span) with bulleted `<ul>/<li>` lists; each item shows bold title + description with green (checkmark) or amber (warning) left-border styling
+  - `src/components/report/__tests__/executive-story.test.tsx`: Rewrote 8 tests verifying list items, descriptions, bold titles, no pills
+  - `src/components/report/__tests__/executive-summary.test.tsx`: Fixed Inferred badge test for multiple inferred items
+  - `src/mocks/golden/governance-report.json`: Expanded from 3 to 5 items in both whats_working and needs_attention
+  - Contract unchanged (1.7.0)
 - [x] CHG-018: Segment-Aware Personalized Business Overview (2026-02-09) — 5 tests
   - `src/types/api.ts`: CustomerSegment, CategoryStatus, CategoryInsight types, extended GovernanceReport
   - `src/components/report/BusinessImpactCategories.tsx`: PersonalizedCards + LegacyCards conditional rendering
@@ -189,7 +195,8 @@
 | CHG-012 (Click Suggestion Fill) | COMPLETE | 1 story | 5 |
 | CHG-013 (SEO Reuse Governance) | COMPLETE | 1 story | 2 |
 | CHG-018 (Segment Personalization) | COMPLETE | 1 story | 5 |
-| **Total** | **COMPLETE** | **21 stories + 9 changes** | **166 tests** |
+| CHG-020 (Honest 5+5 Lists) | COMPLETE | 1 story | 0 (8 rewritten) |
+| **Total** | **COMPLETE** | **21 stories + 10 changes** | **170 tests** |
 
 ## Up Next
 (none pending)

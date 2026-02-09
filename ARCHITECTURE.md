@@ -37,11 +37,11 @@ frontend/
 │   │   │   ├── StrengthsGaps.tsx   # Strengths, weaknesses & gap breakdown section
 │   │   │   ├── SEOActionPlan.tsx   # 30-day week-by-week action plan with collapsible weeks
 │   │   │   ├── ReportTabs.tsx     # WCAG-compliant tab navigation (Business/Technical/SEO) [Added in US-8.4, Updated in CHG-005]
-│   │   │   ├── ExecutiveStory.tsx  # Executive narrative with working/attention pills [Added in CHG-005]
+│   │   │   ├── ExecutiveStory.tsx  # Executive narrative with bulleted working/attention lists [Added in CHG-005, Updated in CHG-020]
 │   │   │   ├── BusinessImpactCategories.tsx # Business impact category cards with personalized path [Added in CHG-005, Updated in CHG-016, CHG-018]
 │   │   │   ├── TopImprovements.tsx # Top 3 improvements with effort/category [Added in CHG-005]
 │   │   │   └── __tests__/
-│   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases)
+│   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases) [Updated in CHG-020]
 │   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
 │   │   │       ├── metrics-cards.test.tsx      # MetricsCards tests (4 cases)
 │   │   │       ├── checklist.test.tsx           # ChecklistSection tests (5 cases)
@@ -51,7 +51,7 @@ frontend/
 │   │   │       ├── strengths-gaps.test.tsx      # StrengthsGaps tests (4 cases)
 │   │   │       ├── action-plan.test.tsx         # SEOActionPlan tests (5 cases)
 │   │   │       ├── report-tabs.test.tsx        # ReportTabs tests (11 cases) [Added in US-8.4, Updated in CHG-005]
-│   │   │       ├── executive-story.test.tsx    # ExecutiveStory tests (4 cases) [Added in CHG-005]
+│   │   │       ├── executive-story.test.tsx    # ExecutiveStory tests (8 cases) [Added in CHG-005, Updated in CHG-020]
 │   │   │       ├── business-impact-categories.test.tsx # BusinessImpactCategories tests (10 cases) [Added in CHG-005, Updated in CHG-016, CHG-018]
 │   │   │       └── top-improvements.test.tsx   # TopImprovements tests (5 cases) [Added in CHG-005]
 │   │   ├── CompetitorForm.tsx     # Competitor input form (3 URL fields, validation, SEO submit)
@@ -84,7 +84,7 @@ frontend/
 │   │   └── api-client.test.ts     # API client tests
 │   └── mocks/
 │       └── golden/
-│           ├── governance-report.json  # Golden governance report fixture [Updated in CHG-015, CHG-018]
+│           ├── governance-report.json  # Golden governance report fixture [Updated in CHG-015, CHG-018, CHG-020]
 │           └── seo-report.json         # Golden SEO report fixture
 ├── public/
 │   └── vite.svg
@@ -318,11 +318,13 @@ User Input (form)
 - Has `no-print` class (hidden via `@media print` in index.css)
 - Sticky positioning: `sticky top-4` in desktop right column
 
-### src/components/report/ExecutiveStory.tsx [Added in CHG-005]
+### src/components/report/ExecutiveStory.tsx [Added in CHG-005, Updated in CHG-020]
 - Default export: `ExecutiveStory` component
 - Props: `{ narrative: string, whatsWorking: SummaryItem[], needsAttention: SummaryItem[] }`
 - Renders narrative text paragraph (no technical jargon)
-- "What's working" pills (green) and "Needs attention" pills (amber)
+- "What's working" bulleted `<ul>/<li>` list with green left-border and checkmark styling (CHG-020: replaced pills)
+- "Needs attention" bulleted `<ul>/<li>` list with amber left-border and warning styling (CHG-020: replaced pills)
+- Each item shows bold title + description
 - Does NOT show DetectedAs badges or Confidence chips (business-friendly)
 
 ### src/components/report/BusinessImpactCategories.tsx [Added in CHG-005]
@@ -473,4 +475,5 @@ User Input (form)
 - 2026-02-08 CHG-013: SEO pipeline governance reuse. Added optional `governance_job_id` to `SEOReportRequest` type (api.ts). Added `governanceJobId` prop to CompetitorForm (CompetitorForm.tsx). ReportPage passes governance jobId to CompetitorForm (ReportPage.tsx). 2 new tests (161 total). Contract 1.4.0→1.5.0.
 - 2026-02-08 CHG-012: Click suggestion to fill URL. Suggestion cards now clickable `<button>` elements. Clicking fills next empty competitor URL input with website_url. Cards without website show "no website" message. Selected cards show indigo border + checkmark. 5 new tests (159 total). No schema/contract change.
 - 2026-02-07 CHG-005: Two-View Report — Business Overview + Technical Details. Added 3 new components: ExecutiveStory (narrative + pills), BusinessImpactCategories (4 category cards), TopImprovements (top 3 with effort/category). ReportTabs updated to 3 tabs (Business Overview default, Technical Details, SEO). SidePanel updated with topImprovements + activeTab props. ReportPage updated with BusinessContent + tab routing. Types updated: executive_narrative on ExecutiveSummary, business_category on Issue, TopImprovement interface, top_improvements on GovernanceReport. Golden fixture updated. Contract 1.1.0→1.2.0. 17 new tests (4 ExecutiveStory + 5 BusinessImpactCategories + 5 TopImprovements + 3 ReportPage).
+- 2026-02-10 CHG-020: Honest 5+5 Bulleted Lists in Business Overview. ExecutiveStory.tsx replaced green/amber pills (rounded-full span) with bulleted `<ul>/<li>` lists. Each item shows bold title + description with green (checkmark) or amber (warning) left-border styling. Rewrote 8 executive-story tests verifying list items, descriptions, bold titles, no pills. Fixed Inferred badge test in executive-summary tests. Golden fixture expanded from 3 to 5 items in both whats_working and needs_attention. Frontend-only render change, no schema/contract change.
 - 2026-02-09 CHG-016: Business-first confidence filtering for Foundation Signals. Business Overview now filters issues to show only HIGH confidence + OBSERVED signals (no guesses). BusinessImpactCategories redesigned: leads with business impact messaging instead of severity scores, "We observed" section lists findings, subtle confidence indicators at bottom. CATEGORY_BUSINESS_IMPACT constant added with atRisk/onTrack messages per category. 4 tests updated. Frontend-only, no schema/contract change.
