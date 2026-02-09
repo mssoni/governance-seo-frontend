@@ -131,6 +131,21 @@ export interface TopImprovement {
   category: string
 }
 
+// CHG-018: Segment-Aware Personalized Business Overview
+export type CustomerSegment = 'revenue_driven' | 'risk_aware' | 'oversight'
+export type CategoryStatus = 'at_risk' | 'on_track' | 'good'
+
+export interface CategoryInsight {
+  category_id: string
+  display_name: string
+  headline: string
+  detail: string
+  icon: string
+  status: CategoryStatus
+  issue_count: number
+  max_severity: Severity | null
+}
+
 export interface GovernanceReport {
   pages_analyzed: number
   summary: ExecutiveSummary
@@ -139,6 +154,9 @@ export interface GovernanceReport {
   checklist_30d: ChecklistItem[]
   limitations: LimitationItem[]
   top_improvements: TopImprovement[]
+  // CHG-018: Segment personalization
+  customer_segment?: CustomerSegment | null
+  category_insights?: CategoryInsight[]
 }
 
 // --- Response Models: SEO Report ---
