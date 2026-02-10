@@ -5,7 +5,7 @@
 > Frontend source of truth: `src/types/api.ts`
 > Golden fixtures: `tests/fixtures/reports/` (backend), `src/mocks/golden/` (frontend)
 
-**Contract Version: 1.7.0**
+**Contract Version: 1.8.0**
 
 ## Rules
 
@@ -20,6 +20,7 @@
 
 | Version | Date | Change | Change ID |
 |---------|------|--------|-----------|
+| 1.8.0 | 2026-02-10 | Additive: `issue_insights?: string[]` on `GovernanceReport` for batch Gemini issue summaries in Business Overview | CHG-023 |
 | 1.6.0 | 2026-02-09 | Additive: 15 Foundation Signals fields on `GovernanceReport` (site_age, partner, complexity, inventory, technical_debt) | CHG-015 |
 | 1.5.0 | 2026-02-08 | Additive: optional `governance_job_id` on `SEOReportRequest` for governance data reuse | CHG-013 |
 | 1.4.0 | 2026-02-07 | Additive: `user_place` on `SuggestCompetitorsResponse`, two-step search, `websiteUri` extraction | CHG-011 |
@@ -272,6 +273,7 @@ Returns empty `suggestions` list if Places API key is not configured (graceful d
 | top_improvements | TopImprovement[] | no (default [], added in 1.2.0 CHG-005) |
 | customer_segment | CustomerSegment \| null | no (default null, added in 1.7.0 CHG-018) |
 | category_insights | CategoryInsight[] | no (default [], added in 1.7.0 CHG-018) |
+| issue_insights | string[] | no (default [], added in 1.8.0 CHG-023) |
 
 ### CategoryInsight (added in 1.7.0 CHG-018)
 | Field | Type | Required |

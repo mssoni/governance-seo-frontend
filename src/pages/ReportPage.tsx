@@ -67,6 +67,7 @@ function BusinessContent({
         narrative={report.summary.executive_narrative}
         whatsWorking={report.summary.whats_working}
         needsAttention={report.summary.needs_attention}
+        issueInsights={report.issue_insights}
       />
       <BusinessImpactCategories
         issues={highConfidenceIssues}

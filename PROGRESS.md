@@ -1,6 +1,13 @@
 # Progress
 
 ## Completed
+- [x] CHG-023: Pipeline Performance Optimization — Frontend (2026-02-10) — 3 tests [SCHEMA_CHANGE]
+  - `src/types/api.ts`: Added `issue_insights?: string[]` to `GovernanceReport`
+  - `src/components/report/ExecutiveStory.tsx`: Added `issueInsights` prop, renders "Key Findings" blue-bordered bulleted list between narrative and what's working
+  - `src/pages/ReportPage.tsx`: Passes `report.issue_insights` to `ExecutiveStory`
+  - `src/components/report/__tests__/executive-story.test.tsx`: 3 new tests (renders Key Findings, hides when empty, hides when undefined)
+  - `src/mocks/golden/governance-report.json`: Added `issue_insights` array
+  - Contract 1.7.0 → 1.8.0
 - [x] CHG-020: Honest 5+5 Bulleted Lists in Business Overview (2026-02-10) — 0 net new tests (8 rewritten)
   - `src/components/report/ExecutiveStory.tsx`: Replaced green/amber pills (rounded-full span) with bulleted `<ul>/<li>` lists; each item shows bold title + description with green (checkmark) or amber (warning) left-border styling
   - `src/components/report/__tests__/executive-story.test.tsx`: Rewrote 8 tests verifying list items, descriptions, bold titles, no pills
