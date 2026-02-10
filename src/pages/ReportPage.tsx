@@ -7,123 +7,21 @@ import { apiClient } from '../services/api-client'
 import { track } from '../analytics/tracker'
 import ProgressBar from '../components/ProgressBar'
 import ReportHeader from '../components/ReportHeader'
-import ExecutiveSummary from '../components/report/ExecutiveSummary'
-import MetricsCards from '../components/report/MetricsCards'
-import IssuesList from '../components/report/IssuesList'
-import ChecklistSection from '../components/report/ChecklistSection'
-import LimitationsSection from '../components/report/LimitationsSection'
 import SidePanel from '../components/report/SidePanel'
 import ReportTabs from '../components/report/ReportTabs'
 import type { TabId } from '../components/report/ReportTabs'
 import CompetitorForm from '../components/CompetitorForm'
-import CompetitorTable from '../components/report/CompetitorTable'
-import StrengthsGaps from '../components/report/StrengthsGaps'
-import SEOActionPlan from '../components/report/SEOActionPlan'
-import ExecutiveStory from '../components/report/ExecutiveStory'
-import BusinessImpactCategories from '../components/report/BusinessImpactCategories'
-import TopImprovements from '../components/report/TopImprovements'
+import GovernanceContent from '../components/report/GovernanceContent'
+import BusinessContent from '../components/report/BusinessContent'
+import SEOContent from '../components/report/SEOContent'
+import SEOPollingProgress from '../components/report/SEOPollingProgress'
 import type {
-  GovernanceReport,
-  SEOReport,
   SEOReportRequest,
   JobCreateResponse,
   Location,
   BusinessType,
   Intent,
 } from '../types/api'
-
-// --- Governance Report Content ---
-
-function GovernanceContent({ report }: { report: GovernanceReport }) {
-  return (
-    <>
-      <ExecutiveSummary summary={report.summary} />
-      <MetricsCards metrics={report.metrics} />
-      <IssuesList issues={report.issues} />
-      <ChecklistSection items={report.checklist_30d} />
-      <LimitationsSection limitations={report.limitations} />
-    </>
-  )
-}
-
-// --- Business Overview Content ---
-
-function BusinessContent({
-  report,
-  onSwitchToTechnical,
-}: {
-  report: GovernanceReport
-  onSwitchToTechnical: () => void
-}) {
-  // CHG-016: Filter for high-confidence observed issues only in Business Overview
-  // Technical Details tab still shows all issues
-  const highConfidenceIssues = report.issues.filter(
-    (issue) => issue.confidence === 'high' && issue.detected_as === 'observed'
-  )
-
-  return (
-    <>
-      <ExecutiveStory
-        narrative={report.summary.executive_narrative}
-        whatsWorking={report.summary.whats_working}
-        needsAttention={report.summary.needs_attention}
-        issueInsights={report.issue_insights}
-      />
-      <BusinessImpactCategories
-        issues={highConfidenceIssues}
-        categoryInsights={report.category_insights}
-      />
-      <TopImprovements
-        improvements={report.top_improvements}
-        onSwitchToTechnical={onSwitchToTechnical}
-      />
-    </>
-  )
-}
-
-// --- SEO Report Content ---
-
-function SEOContent({ report }: { report: SEOReport }) {
-  const userRow = report.competitor_table[0]
-  const competitors = report.competitor_table.slice(1)
-
-  return (
-    <>
-      <CompetitorTable userRow={userRow} competitors={competitors} />
-      <StrengthsGaps
-        competitorAdvantages={report.competitor_advantages}
-        userStrengths={report.user_strengths}
-        gaps={report.gaps}
-      />
-      <SEOActionPlan plan={report.plan_30d} />
-    </>
-  )
-}
-
-// --- SEO Polling Progress Indicator ---
-
-function SEOPollingProgress({
-  progress,
-  currentStep,
-  stepsCompleted,
-}: {
-  progress: number
-  currentStep: string | null
-  stepsCompleted: string[]
-}) {
-  return (
-    <div className="mt-8 rounded-lg border border-indigo-100 bg-indigo-50/50 p-6">
-      <h3 className="mb-4 text-lg font-semibold text-gray-900">
-        Generating SEO Report...
-      </h3>
-      <ProgressBar
-        progress={progress}
-        currentStep={currentStep}
-        stepsCompleted={stepsCompleted}
-      />
-    </div>
-  )
-}
 
 // --- Helper to parse location string ---
 

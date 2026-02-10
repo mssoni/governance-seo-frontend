@@ -178,6 +178,15 @@
   - Branch: change/CHG-005-two-view-report
   - Test count: 127→145
 
+- [x] CHG-031: Extract ReportPage tab content + content map (2026-02-10) — 7 tests
+  - `src/components/report/GovernanceContent.tsx`: New — extracted ExecutiveSummary + MetricsCards + IssuesList + ChecklistSection + LimitationsSection
+  - `src/components/report/BusinessContent.tsx`: New — extracted ExecutiveStory + BusinessImpactCategories + TopImprovements (with high-confidence filter)
+  - `src/components/report/SEOContent.tsx`: New — extracted CompetitorTable + StrengthsGaps + SEOActionPlan
+  - `src/components/report/SEOPollingProgress.tsx`: New — extracted SEO polling progress indicator
+  - `src/pages/ReportPage.tsx`: Removed inline component definitions, imports from new files (397→294 lines)
+  - `src/components/report/__tests__/tab-content-extraction.test.tsx`: 7 tests (component rendering + line count enforcement)
+  - No schema/contract change
+
 ## In Progress
 (none)
 
@@ -204,7 +213,8 @@
 | CHG-018 (Segment Personalization) | COMPLETE | 1 story | 5 |
 | CHG-020 (Honest 5+5 Lists) | COMPLETE | 1 story | 0 (8 rewritten) |
 | CHG-023 (Pipeline Perf — Frontend) | COMPLETE | 1 story | 3 |
-| **Total** | **COMPLETE** | **21 stories + 11 changes** | **173 tests** |
+| CHG-031 (Tab Content Extraction) | COMPLETE | 1 story | 7 |
+| **Total** | **COMPLETE** | **21 stories + 12 changes** | **180 tests** |
 
 ## Up Next
 (none pending)

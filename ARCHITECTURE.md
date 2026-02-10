@@ -40,6 +40,10 @@ frontend/
 │   │   │   ├── ExecutiveStory.tsx  # Executive narrative with bulleted working/attention lists + Key Findings [Added in CHG-005, Updated in CHG-020, CHG-023]
 │   │   │   ├── BusinessImpactCategories.tsx # Business impact category cards with personalized path [Added in CHG-005, Updated in CHG-016, CHG-018]
 │   │   │   ├── TopImprovements.tsx # Top 3 improvements with effort/category [Added in CHG-005]
+│   │   │   ├── GovernanceContent.tsx  # Extracted tab content: ExecutiveSummary + Metrics + Issues + Checklist + Limitations [Added in CHG-031]
+│   │   │   ├── BusinessContent.tsx    # Extracted tab content: ExecutiveStory + BusinessImpactCategories + TopImprovements [Added in CHG-031]
+│   │   │   ├── SEOContent.tsx         # Extracted tab content: CompetitorTable + StrengthsGaps + SEOActionPlan [Added in CHG-031]
+│   │   │   ├── SEOPollingProgress.tsx # Extracted SEO polling progress indicator [Added in CHG-031]
 │   │   │   └── __tests__/
 │   │   │       ├── executive-summary.test.tsx  # ExecutiveSummary tests (7 cases) [Updated in CHG-020]
 │   │   │       ├── issues-list.test.tsx        # IssuesList tests (4 cases)
@@ -53,7 +57,8 @@ frontend/
 │   │   │       ├── report-tabs.test.tsx        # ReportTabs tests (11 cases) [Added in US-8.4, Updated in CHG-005]
 │   │   │       ├── executive-story.test.tsx    # ExecutiveStory tests (11 cases) [Added in CHG-005, Updated in CHG-020, CHG-023]
 │   │   │       ├── business-impact-categories.test.tsx # BusinessImpactCategories tests (10 cases) [Added in CHG-005, Updated in CHG-016, CHG-018]
-│   │   │       └── top-improvements.test.tsx   # TopImprovements tests (5 cases) [Added in CHG-005]
+│   │   │       ├── top-improvements.test.tsx   # TopImprovements tests (5 cases) [Added in CHG-005]
+│   │   │       └── tab-content-extraction.test.tsx # Tab content extraction tests (7 cases) [Added in CHG-031]
 │   │   ├── CompetitorForm.tsx     # Competitor input form (3 URL fields, validation, SEO submit)
 │   │   ├── ErrorBoundary.tsx      # React error boundary with retry (role="alert") [Added in US-9.2]
 │   │   └── __tests__/
@@ -69,12 +74,12 @@ frontend/
 │   │       └── useSeoJobPolling.test.ts  # SEO polling hook tests (7 cases) [Added in US-8.4]
 │   ├── pages/
 │   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form + error UI)
-│   │   ├── ReportPage.tsx         # Report page with polling, progress, header, report content [Updated in CHG-023]
+│   │   ├── ReportPage.tsx         # Report page with polling, progress, header, tab orchestration [Updated in CHG-031]
 │   │   ├── NotFoundPage.tsx       # 404 page with accessible heading + home link [Added in US-9.2]
 │   │   └── __tests__/
 │   │       ├── landing-page.test.tsx     # Landing page tests (8 cases)
 │   │       ├── form-submission.test.tsx  # Form submission + navigation tests (4 cases)
-│   │       ├── report-page.test.tsx     # Report page polling + display tests (6 cases)
+│   │       ├── report-page.test.tsx     # Report page polling + display tests (12 cases)
 │   │       └── not-found.test.tsx       # NotFoundPage tests (4 cases) [Added in US-9.2]
 │   ├── lib/                       # Utility functions (empty)
 │   ├── types/
@@ -274,7 +279,27 @@ User Input (form)
 - Error handling: `ApiError` → user-friendly message; network error → message + retry button
 - State: `isLoading`, `error: { message, isNetworkError }`, `lastPayload` (for retry)
 
-### src/pages/ReportPage.tsx [Updated in CHG-008]
+### src/components/report/GovernanceContent.tsx [Added in CHG-031]
+- Default export: `GovernanceContent` component
+- Props: `{ report: GovernanceReport }`
+- Renders ExecutiveSummary, MetricsCards, IssuesList, ChecklistSection, LimitationsSection
+
+### src/components/report/BusinessContent.tsx [Added in CHG-031]
+- Default export: `BusinessContent` component
+- Props: `{ report: GovernanceReport, onSwitchToTechnical: () => void }`
+- Filters issues to high-confidence observed only, renders ExecutiveStory, BusinessImpactCategories, TopImprovements
+
+### src/components/report/SEOContent.tsx [Added in CHG-031]
+- Default export: `SEOContent` component
+- Props: `{ report: SEOReport }`
+- Splits competitor_table into userRow + competitors, renders CompetitorTable, StrengthsGaps, SEOActionPlan
+
+### src/components/report/SEOPollingProgress.tsx [Added in CHG-031]
+- Default export: `SEOPollingProgress` component
+- Props: `{ progress: number, currentStep: string | null, stepsCompleted: string[] }`
+- Renders "Generating SEO Report..." heading + ProgressBar
+
+### src/pages/ReportPage.tsx [Updated in CHG-031]
 - Default export: `ReportPage` component (no props)
 - Reads `job`, `url`, `location`, `intent`, `business_type` from URL search params
 - Uses `useJobPolling(jobId)` for governance polling
@@ -481,3 +506,4 @@ User Input (form)
 - 2026-02-10 CHG-020: Honest 5+5 Bulleted Lists in Business Overview. ExecutiveStory.tsx replaced green/amber pills (rounded-full span) with bulleted `<ul>/<li>` lists. Each item shows bold title + description with green (checkmark) or amber (warning) left-border styling. Rewrote 8 executive-story tests verifying list items, descriptions, bold titles, no pills. Fixed Inferred badge test in executive-summary tests. Golden fixture expanded from 3 to 5 items in both whats_working and needs_attention. Frontend-only render change, no schema/contract change.
 - 2026-02-09 CHG-016: Business-first confidence filtering for Foundation Signals. Business Overview now filters issues to show only HIGH confidence + OBSERVED signals (no guesses). BusinessImpactCategories redesigned: leads with business impact messaging instead of severity scores, "We observed" section lists findings, subtle confidence indicators at bottom. CATEGORY_BUSINESS_IMPACT constant added with atRisk/onTrack messages per category. 4 tests updated. Frontend-only, no schema/contract change.
 - 2026-02-10 CHG-024: SOLID compliance checks. Frontend check_dod.sh gains checks [7/8] (component line count cap, 400 lines) and [8/8] (no apiClient/api-client imports in components). Permissive thresholds — current code passes. No production code changes.
+- 2026-02-10 CHG-031: Extract ReportPage tab content into components. 4 inline component definitions (GovernanceContent, BusinessContent, SEOContent, SEOPollingProgress) extracted from ReportPage.tsx into dedicated files under components/report/. ReportPage.tsx shrinks from 397→294 lines. 7 new tests (180 total).
