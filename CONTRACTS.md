@@ -21,7 +21,8 @@
 | Version | Date | Change | Change ID |
 |---------|------|--------|-----------|
 | 1.8.0 | 2026-02-10 | Additive: `issue_insights?: string[]` on `GovernanceReport` for batch Gemini issue summaries in Business Overview | CHG-023 |
-| 1.6.0 | 2026-02-09 | Additive: 15 Foundation Signals fields on `GovernanceReport` (site_age, partner, complexity, inventory, technical_debt) | CHG-015 |
+| 1.7.0 | 2026-02-09 | Additive: `CategoryInsight` model, `customer_segment` and `category_insights` fields on `GovernanceReport` for segment-aware personalized content | CHG-018 |
+| 1.6.0 | 2026-02-09 | Additive: 15 Foundation Signals fields on `GovernanceReport` (site_age, partner, complexity, inventory, technical_debt) | CHG-014 |
 | 1.5.0 | 2026-02-08 | Additive: optional `governance_job_id` on `SEOReportRequest` for governance data reuse | CHG-013 |
 | 1.4.0 | 2026-02-07 | Additive: `user_place` on `SuggestCompetitorsResponse`, two-step search, `websiteUri` extraction | CHG-011 |
 | 1.3.0 | 2026-02-07 | Additive: `GET /api/report/suggest-competitors` endpoint, `CompetitorSuggestion` model, `SuggestCompetitorsResponse` model | CHG-008 |
@@ -271,6 +272,18 @@ Returns empty `suggestions` list if Places API key is not configured (graceful d
 | limitations | LimitationItem[] | yes |
 | pages_analyzed | number | yes (default 0, added in 1.1.0 CHG-001) |
 | top_improvements | TopImprovement[] | no (default [], added in 1.2.0 CHG-005) |
+| copyright_year | number \| null | no (default null, added in 1.6.0 CHG-014) |
+| blog_last_updated | string \| null | no (default null, added in 1.6.0 CHG-014) |
+| sitemap_latest_lastmod | string \| null | no (default null, added in 1.6.0 CHG-014) |
+| site_maintenance_status | "active" \| "sporadic" \| "stale" \| "unknown" | no (default "unknown", added in 1.6.0 CHG-014) |
+| agency_name | string \| null | no (default null, added in 1.6.0 CHG-014) |
+| agency_credit_url | string \| null | no (default null, added in 1.6.0 CHG-014) |
+| login_routes_detected | string[] | no (default [], added in 1.6.0 CHG-014) |
+| multi_locale_detected | boolean | no (default false, added in 1.6.0 CHG-014) |
+| site_complexity | "simple" \| "moderate" \| "complex" \| "enterprise" | no (default "simple", added in 1.6.0 CHG-014) |
+| page_count_by_section | Record<string, number> | no (default {}, added in 1.6.0 CHG-014) |
+| templates_estimate | number | no (default 0, added in 1.6.0 CHG-014) |
+| technical_debt_score | number (0-100) | no (default 50, added in 1.6.0 CHG-014) |
 | customer_segment | CustomerSegment \| null | no (default null, added in 1.7.0 CHG-018) |
 | category_insights | CategoryInsight[] | no (default [], added in 1.7.0 CHG-018) |
 | issue_insights | string[] | no (default [], added in 1.8.0 CHG-023) |
