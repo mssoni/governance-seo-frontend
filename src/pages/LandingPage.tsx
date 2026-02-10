@@ -1,67 +1,45 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Hero from '../components/Hero'
 import TrustIndicators from '../components/TrustIndicators'
 import InputForm from '../components/InputForm'
-import { apiClient, ApiError } from '../services/api-client'
-import { track } from '../analytics/tracker'
-import type { GovernanceReportRequest, JobCreateResponse } from '../types/api'
+import { useGovernanceSubmit } from '../hooks/useGovernanceSubmit'
+import type { GovernanceReportRequest } from '../types/api'
 
-interface SubmissionError {
-  message: string
-  isNetworkError: boolean
+function navigateToReport(
+  navigate: ReturnType<typeof useNavigate>,
+  jobId: string,
+  data: GovernanceReportRequest,
+) {
+  const params = new URLSearchParams({
+    job: jobId,
+    url: data.website_url,
+    location: `${data.location.city},${data.location.region},${data.location.country}`,
+    business_type: data.business_type,
+    intent: data.intent,
+  })
+  navigate(`/report?${params.toString()}`)
 }
 
 export default function LandingPage() {
   const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<SubmissionError | null>(null)
-  const [lastPayload, setLastPayload] = useState<GovernanceReportRequest | null>(null)
+  const { submit, retry, isLoading, error } = useGovernanceSubmit()
+  const lastPayloadRef = useRef<GovernanceReportRequest | null>(null)
 
   const submitReport = useCallback(async (data: GovernanceReportRequest) => {
-    setIsLoading(true)
-    setError(null)
-    setLastPayload(data)
-
-    track('report_generation_start', { url: data.website_url })
-
-    try {
-      const response = await apiClient.post<JobCreateResponse>(
-        '/api/report/governance',
-        data,
-      )
-      const params = new URLSearchParams({
-        job: response.job_id,
-        url: data.website_url,
-        location: `${data.location.city},${data.location.region},${data.location.country}`,
-        business_type: data.business_type,
-        intent: data.intent,
-      })
-      navigate(`/report?${params.toString()}`)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        track('report_generation_failed', { error_type: 'api_error', status: err.status })
-        setError({
-          message: err.body || `Request failed (${err.status})`,
-          isNetworkError: false,
-        })
-      } else {
-        track('report_generation_failed', { error_type: 'network_error' })
-        setError({
-          message: 'Network error. Please check your connection and try again.',
-          isNetworkError: true,
-        })
-      }
-    } finally {
-      setIsLoading(false)
+    lastPayloadRef.current = data
+    const jobId = await submit(data)
+    if (jobId) {
+      navigateToReport(navigate, jobId, data)
     }
-  }, [navigate])
+  }, [submit, navigate])
 
   const handleRetry = useCallback(async () => {
-    if (lastPayload) {
-      await submitReport(lastPayload)
+    const jobId = await retry()
+    if (jobId && lastPayloadRef.current) {
+      navigateToReport(navigate, jobId, lastPayloadRef.current)
     }
-  }, [lastPayload, submitReport])
+  }, [retry, navigate])
 
   return (
     <div className="min-h-screen bg-white">
