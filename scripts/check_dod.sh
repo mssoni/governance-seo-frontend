@@ -11,6 +11,7 @@ NC='\033[0m' # No Color
 
 FAIL=0
 
+TOTAL_CHECKS=8
 echo "=== Frontend DoD Checks ==="
 echo "  [H] = hard gate  [~] = heuristic"
 echo ""
@@ -18,7 +19,7 @@ echo ""
 # ---------------------------------------------------------------
 # 1. No console.log in production code (exclude tests, mocks, analytics)
 # ---------------------------------------------------------------
-echo -n "[1/6] [H] No console.log in production code... "
+echo -n "[1/${TOTAL_CHECKS}] [H] No console.log in production code... "
 CONSOLE_VIOLATIONS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E 'console\.(log|debug)\(' src/ \
   --exclude-dir="__tests__" --exclude-dir="mocks" --exclude-dir="analytics" \
@@ -34,7 +35,7 @@ fi
 # ---------------------------------------------------------------
 # 2. IO boundary — no fetch/axios in components
 # ---------------------------------------------------------------
-echo -n "[2/6] [H] IO boundary (no fetch/axios in components)... "
+echo -n "[2/${TOTAL_CHECKS}] [H] IO boundary (no fetch/axios in components)... "
 VIOLATIONS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E '(^import.*from.*(axios)|^\s*fetch\(|^\s*axios\.)' \
   src/components/ src/pages/ 2>/dev/null \
@@ -51,7 +52,7 @@ fi
 # 3. Layering — components cannot import from services/
 #    (Pages ARE allowed to import services — they are the orchestration layer)
 # ---------------------------------------------------------------
-echo -n "[3/6] [H] Layering (components don't import services)... "
+echo -n "[3/${TOTAL_CHECKS}] [H] Layering (components don't import services)... "
 LAYER_VIOLATIONS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E "from.*['\"].*services/" \
   src/components/ 2>/dev/null \
@@ -67,7 +68,7 @@ fi
 # ---------------------------------------------------------------
 # 4. No live API calls in tests
 # ---------------------------------------------------------------
-echo -n "[4/6] [H] No live API calls in tests... "
+echo -n "[4/${TOTAL_CHECKS}] [H] No live API calls in tests... "
 LIVE_CALLS=$(grep -rn --include="*.ts" --include="*.tsx" \
   -E '^\s*(await\s+)?fetch\(' \
   src/**/__tests__/ src/**/*.test.* 2>/dev/null \
@@ -84,7 +85,7 @@ fi
 # 5. Component test coverage (heuristic: every component has a test)
 #    Converts PascalCase to kebab-case for matching
 # ---------------------------------------------------------------
-echo -n "[5/6] [~] Component test coverage (heuristic)... "
+echo -n "[5/${TOTAL_CHECKS}] [~] Component test coverage (heuristic)... "
 MISSING=0
 for comp in src/components/*.tsx src/pages/*.tsx; do
   [ -f "$comp" ] || continue
@@ -120,7 +121,7 @@ fi
 # ---------------------------------------------------------------
 # 6. Contract version sync (CONTRACTS.md vs CHANGE_MANIFEST.json)
 # ---------------------------------------------------------------
-echo -n "[6/6] [H] Contract version sync... "
+echo -n "[6/${TOTAL_CHECKS}] [H] Contract version sync... "
 CONTRACTS_VER=$(grep -E 'Contract Version:\s*[0-9]+\.[0-9]+\.[0-9]+' CONTRACTS.md 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || echo "MISSING")
 MANIFEST_VER=$(node -e "console.log(require('../CHANGE_MANIFEST.json').contract_version)" 2>/dev/null || echo "MISSING")
 if [ "$CONTRACTS_VER" = "$MANIFEST_VER" ]; then
@@ -128,6 +129,46 @@ if [ "$CONTRACTS_VER" = "$MANIFEST_VER" ]; then
 else
   echo -e "${RED}FAIL${NC} — CONTRACTS.md=${CONTRACTS_VER}, CHANGE_MANIFEST.json=${MANIFEST_VER}"
   FAIL=1
+fi
+
+# ---------------------------------------------------------------
+# 7. [H-SOLID-1] Component/page line count cap (SRP)
+#    No .tsx file under src/ may exceed threshold lines.
+#    Exempt: test files, __tests__/ directories
+#    Initial threshold: 400 (permissive). Ratcheted to 300 after refactoring.
+# ---------------------------------------------------------------
+SOLID_LINE_LIMIT=400
+echo -n "[7/${TOTAL_CHECKS}] [H] SOLID: Component line count cap (max ${SOLID_LINE_LIMIT})... "
+LINE_VIOLATIONS=""
+for tsxfile in $(find src/ -name "*.tsx" -type f | grep -v '__tests__' | grep -v '\.test\.'); do
+  LINES=$(wc -l < "$tsxfile" | tr -d ' ')
+  if [ "$LINES" -gt "$SOLID_LINE_LIMIT" ]; then
+    LINE_VIOLATIONS="${LINE_VIOLATIONS}  ${tsxfile}: ${LINES} lines (limit: ${SOLID_LINE_LIMIT})\n"
+  fi
+done
+if [ -n "$LINE_VIOLATIONS" ]; then
+  echo -e "${RED}FAIL${NC}"
+  echo -e "$LINE_VIOLATIONS"
+  FAIL=1
+else
+  echo -e "${GREEN}PASS${NC}"
+fi
+
+# ---------------------------------------------------------------
+# 8. [H-SOLID-3] No apiClient/api-client imports in components (DIP)
+#    Strengthens check [3] — components must not reference apiClient
+# ---------------------------------------------------------------
+echo -n "[8/${TOTAL_CHECKS}] [H] SOLID: No apiClient imports in components (DIP)... "
+APICLIENT_VIOLATIONS=$(grep -rn --include="*.ts" --include="*.tsx" \
+  -E "(apiClient|api-client)" \
+  src/components/ 2>/dev/null \
+  | grep -v '__tests__' | grep -v '\.test\.' | grep -v '\.mock\.' || true)
+if [ -n "$APICLIENT_VIOLATIONS" ]; then
+  echo -e "${RED}FAIL${NC}"
+  echo "$APICLIENT_VIOLATIONS"
+  FAIL=1
+else
+  echo -e "${GREEN}PASS${NC}"
 fi
 
 echo ""
