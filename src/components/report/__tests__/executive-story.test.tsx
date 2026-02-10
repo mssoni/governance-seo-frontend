@@ -131,4 +131,60 @@ describe('ExecutiveStory (CHG-005 + CHG-020)', () => {
     expect(screen.queryByText(/^Medium$/)).not.toBeInTheDocument()
     expect(screen.queryByText(/^Low$/)).not.toBeInTheDocument()
   })
+
+  // CHG-023: Key Findings (issue_insights)
+
+  it('renders Key Findings section when issueInsights provided', () => {
+    const insights = [
+      'Your site is not using HTTPS, putting visitor data at risk.',
+      'Missing meta descriptions reduce your visibility in search results.',
+    ]
+    render(
+      <ExecutiveStory
+        narrative={narrative}
+        whatsWorking={whatsWorking}
+        needsAttention={needsAttention}
+        issueInsights={insights}
+      />,
+    )
+
+    expect(screen.getByText('Key Findings')).toBeInTheDocument()
+    expect(
+      screen.getByText('Your site is not using HTTPS, putting visitor data at risk.'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Missing meta descriptions reduce your visibility in search results.'),
+    ).toBeInTheDocument()
+
+    // Should be rendered as <li> elements
+    const listItem = screen
+      .getByText('Your site is not using HTTPS, putting visitor data at risk.')
+      .closest('li')
+    expect(listItem).toBeTruthy()
+  })
+
+  it('hides Key Findings section when issueInsights is empty', () => {
+    render(
+      <ExecutiveStory
+        narrative={narrative}
+        whatsWorking={whatsWorking}
+        needsAttention={needsAttention}
+        issueInsights={[]}
+      />,
+    )
+
+    expect(screen.queryByText('Key Findings')).not.toBeInTheDocument()
+  })
+
+  it('hides Key Findings section when issueInsights is undefined', () => {
+    render(
+      <ExecutiveStory
+        narrative={narrative}
+        whatsWorking={whatsWorking}
+        needsAttention={needsAttention}
+      />,
+    )
+
+    expect(screen.queryByText('Key Findings')).not.toBeInTheDocument()
+  })
 })

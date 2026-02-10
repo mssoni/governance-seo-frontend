@@ -154,6 +154,7 @@ export interface GovernanceReport {
   checklist_30d: ChecklistItem[]
   limitations: LimitationItem[]
   top_improvements: TopImprovement[]
+  issue_insights?: string[] // CHG-023
   // CHG-018: Segment personalization
   customer_segment?: CustomerSegment | null
   category_insights?: CategoryInsight[]

@@ -324,6 +324,11 @@
       "category": "User Experience"
     }
   ],
+  "issue_insights": [
+    "Your site is missing a sitemap, making it harder for search engines to discover your pages.",
+    "Page loading speed is slow, which may frustrate visitors and reduce engagement.",
+    "Some images lack alt text, making them invisible to screen readers and search engines."
+  ],
   "customer_segment": null,
   "category_insights": [],
   "copyright_year": 2023,
