@@ -203,7 +203,8 @@
 | CHG-013 (SEO Reuse Governance) | COMPLETE | 1 story | 2 |
 | CHG-018 (Segment Personalization) | COMPLETE | 1 story | 5 |
 | CHG-020 (Honest 5+5 Lists) | COMPLETE | 1 story | 0 (8 rewritten) |
-| **Total** | **COMPLETE** | **21 stories + 10 changes** | **170 tests** |
+| CHG-023 (Pipeline Perf — Frontend) | COMPLETE | 1 story | 3 |
+| **Total** | **COMPLETE** | **21 stories + 11 changes** | **173 tests** |
 
 ## Up Next
 (none pending)
