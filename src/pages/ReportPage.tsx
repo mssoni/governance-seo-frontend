@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useJobPolling } from '../hooks/useJobPolling'
 import { useSeoJobPolling } from '../hooks/useSeoJobPolling'
 import { useCompetitorSuggestions } from '../hooks/useCompetitorSuggestions'
-import { apiClient } from '../services/api-client'
+import { useSeoSubmit } from '../hooks/useSeoSubmit'
 import { track } from '../analytics/tracker'
 import ProgressBar from '../components/ProgressBar'
 import ReportHeader from '../components/ReportHeader'
@@ -16,8 +16,6 @@ import BusinessContent from '../components/report/BusinessContent'
 import SEOContent from '../components/report/SEOContent'
 import SEOPollingProgress from '../components/report/SEOPollingProgress'
 import type {
-  SEOReportRequest,
-  JobCreateResponse,
   Location,
   BusinessType,
   Intent,
@@ -81,9 +79,7 @@ function ReportPageContent({
 
   // --- SEO state ---
   const [activeTab, setActiveTab] = useState<TabId>('business')
-  const [seoJobId, setSeoJobId] = useState<string | null>(null)
-  const [seoSubmitError, setSeoSubmitError] = useState<string | undefined>(undefined)
-  const [seoSubmitting, setSeoSubmitting] = useState(false)
+  const { submit: submitSeo, seoJobId, isSubmitting: seoSubmitting, error: seoSubmitError } = useSeoSubmit()
 
   const seoPolling = useSeoJobPolling(seoJobId)
 
@@ -94,8 +90,13 @@ function ReportPageContent({
   }, [])
 
   // --- Track governance report lifecycle ---
-  const reportStartTime = useRef<number>(Date.now())
+  const reportStartTime = useRef<number>(0)
   const prevStatus = useRef(status)
+
+  // Set report start time once on mount
+  useEffect(() => {
+    reportStartTime.current = Date.now()
+  }, [])
 
   useEffect(() => {
     if (prevStatus.current !== status) {
@@ -115,29 +116,11 @@ function ReportPageContent({
   useEffect(() => {
     if (prevSeoStatus.current !== 'complete' && seoPolling.status === 'complete' && seoPolling.seoReport) {
       track('seo_report_complete')
-      setActiveTab('seo')
+      // Defer to avoid synchronous setState in effect (react-hooks/set-state-in-effect)
+      queueMicrotask(() => setActiveTab('seo'))
     }
     prevSeoStatus.current = seoPolling.status
   }, [seoPolling.status, seoPolling.seoReport])
-
-  // --- Competitor form submission ---
-  const handleCompetitorSubmit = useCallback(
-    async (data: SEOReportRequest) => {
-      setSeoSubmitError(undefined)
-      setSeoSubmitting(true)
-      track('seo_report_start', { competitors: data.competitors.length })
-      try {
-        const response = await apiClient.post<JobCreateResponse>('/api/report/seo', data)
-        setSeoJobId(response.job_id)
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to start SEO analysis'
-        setSeoSubmitError(message)
-      } finally {
-        setSeoSubmitting(false)
-      }
-    },
-    [],
-  )
 
   // SEO tab is always accessible (competitor form lives there)
   const seoEnabled = true
@@ -254,7 +237,7 @@ function ReportPageContent({
                         location={parsedLocation}
                         businessType={businessType}
                         intent={intentValue}
-                        onSubmit={handleCompetitorSubmit}
+                        onSubmit={submitSeo}
                         isLoading={seoSubmitting}
                         error={seoSubmitError}
                         suggestions={competitorSuggestions}
