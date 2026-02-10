@@ -70,11 +70,15 @@ frontend/
 │   │   ├── useJobPolling.ts       # Custom hook: polls job status, returns state + retry
 │   │   ├── useSeoJobPolling.ts    # Custom hook: polls SEO job status, conditional activation [Added in US-8.4]
 │   │   ├── useCompetitorSuggestions.ts  # Custom hook: fetches competitor suggestions from Places API [Added in CHG-008]
+│   │   ├── useGovernanceSubmit.ts # Custom hook: POST /api/report/governance + error handling [Added in CHG-032]
+│   │   ├── useSeoSubmit.ts       # Custom hook: POST /api/report/seo + error handling [Added in CHG-032]
 │   │   └── __tests__/
-│   │       └── useSeoJobPolling.test.ts  # SEO polling hook tests (7 cases) [Added in US-8.4]
+│   │       ├── useSeoJobPolling.test.ts  # SEO polling hook tests (7 cases) [Added in US-8.4]
+│   │       ├── useGovernanceSubmit.test.ts  # Governance submit hook tests (5 cases) [Added in CHG-032]
+│   │       └── useSeoSubmit.test.ts  # SEO submit hook tests (4 cases) [Added in CHG-032]
 │   ├── pages/
-│   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form + error UI)
-│   │   ├── ReportPage.tsx         # Report page with polling, progress, header, tab orchestration [Updated in CHG-031]
+│   │   ├── LandingPage.tsx        # Landing page (Hero + TrustIndicators + form + hook submit) [Updated in CHG-032]
+│   │   ├── ReportPage.tsx         # Report page with polling, progress, header, tab orchestration [Updated in CHG-032]
 │   │   ├── NotFoundPage.tsx       # 404 page with accessible heading + home link [Added in US-9.2]
 │   │   └── __tests__/
 │   │       ├── landing-page.test.tsx     # Landing page tests (8 cases)
@@ -449,6 +453,21 @@ User Input (form)
 - Proper cleanup: `active` flag prevents state updates after unmount, `clearInterval` in effect cleanup
 - `retry()` increments `retryCount` to re-trigger the polling effect
 
+### src/hooks/useGovernanceSubmit.ts [Added in CHG-032]
+- `useGovernanceSubmit()` → `{ submit, retry, isLoading, error }`
+- `submit(data: GovernanceReportRequest)` → `Promise<string | null>` (returns job_id or null)
+- `retry()` → `Promise<string | null>` (re-submits last payload)
+- Calls `apiClient.post('/api/report/governance', data)` internally
+- Tracks analytics: `report_generation_start`, `report_generation_failed`
+- Error shape: `{ message: string, isNetworkError: boolean }`
+
+### src/hooks/useSeoSubmit.ts [Added in CHG-032]
+- `useSeoSubmit()` → `{ submit, seoJobId, isSubmitting, error }`
+- `submit(data: SEOReportRequest)` → `void`
+- Calls `apiClient.post('/api/report/seo', data)` internally
+- Sets `seoJobId` on success, `error` string on failure
+- Tracks analytics: `seo_report_start`
+
 ### src/types/api.ts [Updated in CHG-008, CHG-011, CHG-023]
 - All TypeScript interfaces matching backend Pydantic models (see CONTRACTS.md)
 - `CompetitorSuggestion` interface: name, address, rating, review_count, website_url — added in CHG-008
@@ -507,3 +526,4 @@ User Input (form)
 - 2026-02-09 CHG-016: Business-first confidence filtering for Foundation Signals. Business Overview now filters issues to show only HIGH confidence + OBSERVED signals (no guesses). BusinessImpactCategories redesigned: leads with business impact messaging instead of severity scores, "We observed" section lists findings, subtle confidence indicators at bottom. CATEGORY_BUSINESS_IMPACT constant added with atRisk/onTrack messages per category. 4 tests updated. Frontend-only, no schema/contract change.
 - 2026-02-10 CHG-024: SOLID compliance checks. Frontend check_dod.sh gains checks [7/8] (component line count cap, 400 lines) and [8/8] (no apiClient/api-client imports in components). Permissive thresholds — current code passes. No production code changes.
 - 2026-02-10 CHG-031: Extract ReportPage tab content into components. 4 inline component definitions (GovernanceContent, BusinessContent, SEOContent, SEOPollingProgress) extracted from ReportPage.tsx into dedicated files under components/report/. ReportPage.tsx shrinks from 397→294 lines. 7 new tests (180 total).
+- 2026-02-10 CHG-032: Extract page API calls into hooks. LandingPage uses useGovernanceSubmit, ReportPage uses useSeoSubmit. Both pages zero apiClient imports. 9 new tests (189 total).

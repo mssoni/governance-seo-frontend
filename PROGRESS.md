@@ -186,6 +186,14 @@
   - `src/pages/ReportPage.tsx`: Removed inline component definitions, imports from new files (397→294 lines)
   - `src/components/report/__tests__/tab-content-extraction.test.tsx`: 7 tests (component rendering + line count enforcement)
   - No schema/contract change
+- [x] CHG-032: Extract page API calls into hooks (2026-02-10) — 9 tests
+  - `src/hooks/useGovernanceSubmit.ts`: New — submit + retry + isLoading + error state for POST /api/report/governance
+  - `src/hooks/useSeoSubmit.ts`: New — submit + seoJobId + isSubmitting + error state for POST /api/report/seo
+  - `src/pages/LandingPage.tsx`: Removed apiClient import, uses useGovernanceSubmit hook
+  - `src/pages/ReportPage.tsx`: Removed apiClient import, uses useSeoSubmit hook; fixed react-hooks lint issues
+  - `src/hooks/__tests__/useGovernanceSubmit.test.ts`: 5 tests
+  - `src/hooks/__tests__/useSeoSubmit.test.ts`: 4 tests
+  - No schema/contract change
 
 ## In Progress
 (none)
@@ -214,7 +222,8 @@
 | CHG-020 (Honest 5+5 Lists) | COMPLETE | 1 story | 0 (8 rewritten) |
 | CHG-023 (Pipeline Perf — Frontend) | COMPLETE | 1 story | 3 |
 | CHG-031 (Tab Content Extraction) | COMPLETE | 1 story | 7 |
-| **Total** | **COMPLETE** | **21 stories + 12 changes** | **180 tests** |
+| CHG-032 (API Hook Extraction) | COMPLETE | 1 story | 9 |
+| **Total** | **COMPLETE** | **21 stories + 13 changes** | **189 tests** |
 
 ## Up Next
 (none pending)
