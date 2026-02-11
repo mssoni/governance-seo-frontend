@@ -543,3 +543,4 @@ User Input (form)
 - 2026-02-10 CHG-032: Extract page API calls into hooks. LandingPage uses useGovernanceSubmit, ReportPage uses useSeoSubmit. Both pages zero apiClient imports. 9 new tests (189 total).
 - 2026-02-10 CHG-033: Split BusinessImpactCategories dual rendering. Optional categoryInsights prop → PersonalizedCategoryCards (required) + LegacyCategoryCards (required). Dispatcher wrapper for backward compat. 0 new tests (existing 10 pass unchanged).
 - 2026-02-10 CHG-034: Split SidePanel dual contract. Optional topImprovements/activeTab props that switch rendering → BusinessSidePanel (required topImprovements) + TechnicalSidePanel (required issues). Dispatcher wrapper for backward compat. 0 new tests (existing 6 pass unchanged). 189 tests total.
+- 2026-02-10 CHG-035: Ratchet SOLID thresholds. Frontend line limit stays at 400 (current max 370). No frontend production code changes.
