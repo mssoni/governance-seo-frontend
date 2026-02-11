@@ -200,6 +200,12 @@
   - `src/components/report/BusinessImpactCategories.tsx`: Thin dispatcher (217→19 lines)
   - Existing 10 tests pass unchanged via dispatcher backward compat
   - No schema/contract change
+- [x] CHG-034: Split SidePanel dual contract (2026-02-10) — 0 new tests
+  - `src/components/report/BusinessSidePanel.tsx`: New — top improvements + Print + Need Help (required topImprovements prop)
+  - `src/components/report/TechnicalSidePanel.tsx`: New — top actions + all CTAs (required issues prop)
+  - `src/components/report/SidePanel.tsx`: Thin dispatcher (97→18 lines)
+  - Existing 6 tests pass unchanged via dispatcher backward compat
+  - No schema/contract change
 
 ## In Progress
 (none)
@@ -230,7 +236,8 @@
 | CHG-031 (Tab Content Extraction) | COMPLETE | 1 story | 7 |
 | CHG-032 (API Hook Extraction) | COMPLETE | 1 story | 9 |
 | CHG-033 (BusinessImpact Split) | COMPLETE | 1 story | 0 |
-| **Total** | **COMPLETE** | **21 stories + 14 changes** | **189 tests** |
+| CHG-034 (SidePanel Split) | COMPLETE | 1 story | 0 |
+| **Total** | **COMPLETE** | **21 stories + 15 changes** | **189 tests** |
 
 ## Up Next
 (none pending)
