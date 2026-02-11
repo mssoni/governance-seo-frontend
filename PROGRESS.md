@@ -194,6 +194,12 @@
   - `src/hooks/__tests__/useGovernanceSubmit.test.ts`: 5 tests
   - `src/hooks/__tests__/useSeoSubmit.test.ts`: 4 tests
   - No schema/contract change
+- [x] CHG-033: Split BusinessImpactCategories dual rendering (2026-02-10) — 0 new tests
+  - `src/components/report/PersonalizedCategoryCards.tsx`: New — category cards from CategoryInsight[] (all-required props)
+  - `src/components/report/LegacyCategoryCards.tsx`: New — category cards from Issue[] (all-required props)
+  - `src/components/report/BusinessImpactCategories.tsx`: Thin dispatcher (217→19 lines)
+  - Existing 10 tests pass unchanged via dispatcher backward compat
+  - No schema/contract change
 
 ## In Progress
 (none)
@@ -223,7 +229,8 @@
 | CHG-023 (Pipeline Perf — Frontend) | COMPLETE | 1 story | 3 |
 | CHG-031 (Tab Content Extraction) | COMPLETE | 1 story | 7 |
 | CHG-032 (API Hook Extraction) | COMPLETE | 1 story | 9 |
-| **Total** | **COMPLETE** | **21 stories + 13 changes** | **189 tests** |
+| CHG-033 (BusinessImpact Split) | COMPLETE | 1 story | 0 |
+| **Total** | **COMPLETE** | **21 stories + 14 changes** | **189 tests** |
 
 ## Up Next
 (none pending)
