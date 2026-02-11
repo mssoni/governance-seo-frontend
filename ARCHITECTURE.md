@@ -38,7 +38,9 @@ frontend/
 │   │   │   ├── SEOActionPlan.tsx   # 30-day week-by-week action plan with collapsible weeks
 │   │   │   ├── ReportTabs.tsx     # WCAG-compliant tab navigation (Business/Technical/SEO) [Added in US-8.4, Updated in CHG-005]
 │   │   │   ├── ExecutiveStory.tsx  # Executive narrative with bulleted working/attention lists + Key Findings [Added in CHG-005, Updated in CHG-020, CHG-023]
-│   │   │   ├── BusinessImpactCategories.tsx # Business impact category cards with personalized path [Added in CHG-005, Updated in CHG-016, CHG-018]
+│   │   │   ├── BusinessImpactCategories.tsx # Thin dispatcher → PersonalizedCategoryCards or LegacyCategoryCards [Updated in CHG-033]
+│   │   │   ├── PersonalizedCategoryCards.tsx # Personalized category cards (required insights prop) [Added in CHG-033]
+│   │   │   ├── LegacyCategoryCards.tsx      # Legacy category cards from issues (required issues prop) [Added in CHG-033]
 │   │   │   ├── TopImprovements.tsx # Top 3 improvements with effort/category [Added in CHG-005]
 │   │   │   ├── GovernanceContent.tsx  # Extracted tab content: ExecutiveSummary + Metrics + Issues + Checklist + Limitations [Added in CHG-031]
 │   │   │   ├── BusinessContent.tsx    # Extracted tab content: ExecutiveStory + BusinessImpactCategories + TopImprovements [Added in CHG-031]
@@ -527,3 +529,4 @@ User Input (form)
 - 2026-02-10 CHG-024: SOLID compliance checks. Frontend check_dod.sh gains checks [7/8] (component line count cap, 400 lines) and [8/8] (no apiClient/api-client imports in components). Permissive thresholds — current code passes. No production code changes.
 - 2026-02-10 CHG-031: Extract ReportPage tab content into components. 4 inline component definitions (GovernanceContent, BusinessContent, SEOContent, SEOPollingProgress) extracted from ReportPage.tsx into dedicated files under components/report/. ReportPage.tsx shrinks from 397→294 lines. 7 new tests (180 total).
 - 2026-02-10 CHG-032: Extract page API calls into hooks. LandingPage uses useGovernanceSubmit, ReportPage uses useSeoSubmit. Both pages zero apiClient imports. 9 new tests (189 total).
+- 2026-02-10 CHG-033: Split BusinessImpactCategories dual rendering. Optional categoryInsights prop → PersonalizedCategoryCards (required) + LegacyCategoryCards (required). Dispatcher wrapper for backward compat. 0 new tests (existing 10 pass unchanged).
