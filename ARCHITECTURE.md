@@ -32,7 +32,9 @@ frontend/
 │   │   │   ├── MetricsCards.tsx   # Metric cards grid with value, meaning, evidence, why_it_matters
 │   │   │   ├── ChecklistSection.tsx  # 30-day checklist grouped by category, interactive checkboxes
 │   │   │   ├── LimitationsSection.tsx # "What we can't control" always-visible section
-│   │   │   ├── SidePanel.tsx     # Sticky side panel with top actions, print, CTAs
+│   │   │   ├── SidePanel.tsx     # Thin dispatcher → BusinessSidePanel or TechnicalSidePanel [Updated in CHG-034]
+│   │   │   ├── BusinessSidePanel.tsx  # Business tab side panel: top improvements + Print + Need Help (required props) [Added in CHG-034]
+│   │   │   ├── TechnicalSidePanel.tsx # Technical tab side panel: top actions + all CTAs (required props) [Added in CHG-034]
 │   │   │   ├── CompetitorTable.tsx  # Competitor overview table with color coding, tooltips
 │   │   │   ├── StrengthsGaps.tsx   # Strengths, weaknesses & gap breakdown section
 │   │   │   ├── SEOActionPlan.tsx   # 30-day week-by-week action plan with collapsible weeks
@@ -164,12 +166,17 @@ App
             │       ├── CompetitorTable     # Color-coded comparison table
             │       ├── StrengthsGaps       # Advantages, strengths, gap breakdown
             │       └── SEOActionPlan       # 4-week plan with disclaimer
-            └── SidePanel (right col, sticky, desktop only, hidden on print)
-                ├── Top Improvements (business tab) / Top Actions (other tabs) [Updated in CHG-005]
-                ├── Print Report button (tracks cta_click)
-                ├── Need help? CTA (tracks cta_click)
-                ├── Connect GA/GSC (disabled, Coming soon — hidden on business tab)
-                └── Compare against competitors (link, tracks cta_click — hidden on business tab)
+            └── SidePanel (dispatcher, right col, sticky, desktop only, hidden on print) [Updated in CHG-034]
+                ├── [business tab] BusinessSidePanel [Added in CHG-034]
+                │   ├── Top Improvements (top 3)
+                │   ├── Print Report button
+                │   └── Need help? CTA
+                └── [other tabs] TechnicalSidePanel [Added in CHG-034]
+                    ├── Top Actions (top 5 issues)
+                    ├── Print Report button
+                    ├── Need help? CTA
+                    ├── Connect GA/GSC (disabled, Coming soon)
+                    └── Compare against competitors (link)
 └── * → NotFoundPage  # 404 catch-all with home link
 ```
 
@@ -337,17 +344,22 @@ User Input (form)
 - Each item: title (bold) + description
 - "What we can detect quickly" sub-section at bottom
 
-### src/components/report/SidePanel.tsx [Updated in CHG-005]
-- Default export: `SidePanel` component
+### src/components/report/SidePanel.tsx [Updated in CHG-034]
+- Default export: `SidePanel` component (thin dispatcher)
 - Props: `{ issues: Issue[], topImprovements?: TopImprovement[], activeTab?: TabId }`
-- Business tab: shows "Top Improvements" (up to 3 from topImprovements prop), hides GA/GSC and Compare links
-- Other tabs: shows first 5 issues as numbered "Top Actions", full CTA set
-- Print button: calls `window.print()`
-- "Need help?" — primary CTA button
-- "Connect GA/GSC" — disabled button with "Coming soon" (hidden on business tab)
-- "Compare against competitors" — link with href="#competitors" (hidden on business tab)
-- Has `no-print` class (hidden via `@media print` in index.css)
-- Sticky positioning: `sticky top-4` in desktop right column
+- Dispatches to `BusinessSidePanel` (business tab + topImprovements) or `TechnicalSidePanel` (all other cases)
+
+### src/components/report/BusinessSidePanel.tsx [Added in CHG-034]
+- Default export: `BusinessSidePanel` component
+- Props: `{ topImprovements: TopImprovement[] }` (all required)
+- Renders "Top Improvements" (up to 3), Print button, Need help? CTA
+- Has `no-print` class, sticky positioning
+
+### src/components/report/TechnicalSidePanel.tsx [Added in CHG-034]
+- Default export: `TechnicalSidePanel` component
+- Props: `{ issues: Issue[] }` (all required)
+- Renders "Top Actions" (top 5 issues), Print button, Need help? CTA, Connect GA/GSC (disabled), Compare against competitors link
+- Has `no-print` class, sticky positioning
 
 ### src/components/report/ExecutiveStory.tsx [Added in CHG-005, Updated in CHG-020, CHG-023]
 - Default export: `ExecutiveStory` component
@@ -530,3 +542,4 @@ User Input (form)
 - 2026-02-10 CHG-031: Extract ReportPage tab content into components. 4 inline component definitions (GovernanceContent, BusinessContent, SEOContent, SEOPollingProgress) extracted from ReportPage.tsx into dedicated files under components/report/. ReportPage.tsx shrinks from 397→294 lines. 7 new tests (180 total).
 - 2026-02-10 CHG-032: Extract page API calls into hooks. LandingPage uses useGovernanceSubmit, ReportPage uses useSeoSubmit. Both pages zero apiClient imports. 9 new tests (189 total).
 - 2026-02-10 CHG-033: Split BusinessImpactCategories dual rendering. Optional categoryInsights prop → PersonalizedCategoryCards (required) + LegacyCategoryCards (required). Dispatcher wrapper for backward compat. 0 new tests (existing 10 pass unchanged).
+- 2026-02-10 CHG-034: Split SidePanel dual contract. Optional topImprovements/activeTab props that switch rendering → BusinessSidePanel (required topImprovements) + TechnicalSidePanel (required issues). Dispatcher wrapper for backward compat. 0 new tests (existing 6 pass unchanged). 189 tests total.
