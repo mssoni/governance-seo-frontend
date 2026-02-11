@@ -237,7 +237,8 @@
 | CHG-032 (API Hook Extraction) | COMPLETE | 1 story | 9 |
 | CHG-033 (BusinessImpact Split) | COMPLETE | 1 story | 0 |
 | CHG-034 (SidePanel Split) | COMPLETE | 1 story | 0 |
-| **Total** | **COMPLETE** | **21 stories + 15 changes** | **189 tests** |
+| CHG-035 (Ratchet Thresholds) | COMPLETE | 1 story | 0 |
+| **Total** | **COMPLETE** | **21 stories + 16 changes** | **189 tests** |
 
 ## Up Next
 (none pending)
